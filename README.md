@@ -12,8 +12,8 @@ A página usa os arquivos da marca pelos nomes abaixo. Eles **não estão neste 
 | `assets/logo-horizontal.png` (900×278, fundo transparente) | header e rodapé |
 | `assets/sam-avatar.png` | header, botão flutuante, painel do Sam, chat |
 | `assets/favicon.png`, `assets/apple-touch-icon.png` | aba do navegador / iOS |
-| `assets/hero-1.webp` | painel de abertura |
-| `assets/hero-2.webp`, `hero-3.webp`, `hero-4.webp` | os 3 painéis de imóveis em destaque |
+| `assets/hero-1.webp` | primeiro slide do banner |
+| `assets/hero-2.webp`, `hero-3.webp`, `hero-4.webp` | os 3 slides de imóveis em destaque |
 
 Enquanto um arquivo não existe, a página não quebra:
 - **hero-\*.webp**: cai para uma foto demo do Unsplash e, sem internet, para o gradiente azul→marinho da marca;
@@ -22,7 +22,7 @@ Enquanto um arquivo não existe, a página não quebra:
 
 ## O que está pronto
 
-- Painéis de tela cheia com `scroll-snap` (obrigatório no desktop com mouse, `proximity` no touch), Ken Burns, parallax, entrada do texto por painel e pontos de navegação na lateral.
+- Banner de abertura em carrossel horizontal de tela cheia (início, 3 imóveis em destaque, Sam e Anunciar): as fotos passam para o lado com parallax e Ken Burns, o texto entra a cada slide, autoplay de 7 s com barra de progresso e pausa, setas no desktop, arrastar no celular, gesto lateral no trackpad e ← → no teclado. Links como "Anunciar" levam direto ao slide certo.
 - Header que reage à rolagem, menu hambúrguer no mobile, botão flutuante do Sam.
 - Coleção com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), cards com zoom, favoritos e "Ver fotos".
 - Modal de detalhe do imóvel (specs, descrição, **Agendar visita** via WhatsApp, Ver fotos, Perguntar ao Sam).
@@ -33,7 +33,7 @@ Enquanto um arquivo não existe, a página não quebra:
 
 ## O que é demonstração
 
-- **Imóveis**: 9 imóveis demo no formato do `/api/vitrine`. Servida por http(s), a página tenta `GET /api/vitrine` e, se responder JSON, substitui os dados demo (grade, painéis de destaque e galeria). Aceita um array ou `{imoveis|data|items: [...]}`.
+- **Imóveis**: 9 imóveis demo no formato do `/api/vitrine`. Servida por http(s), a página tenta `GET /api/vitrine` e, se responder JSON, substitui os dados demo (grade, slides de destaque e galeria). Aceita um array ou `{imoveis|data|items: [...]}`.
 - **Sam**: offline, segue um fluxo guiado (morar/investir/alugar → bairro → faixa de valor → indispensáveis → sugestões + WhatsApp). Servida por http(s), chama `POST /api/sam-web` com `{messages:[{role,content}]}` e espera `{reply, sugestoes}`. Se a API falhar, volta para o fluxo guiado.
 - **Formulários de lead** (Anunciar imóvel / Ser parceiro): validam e mostram sucesso, mas não enviam nada. Para enviar, defina `CONFIG.leadUrl` no script (POST JSON).
 - **Fotos de imóveis, bairros e depoimentos**: URLs do Unsplash, só ilustrativas.
@@ -47,7 +47,7 @@ Enquanto um arquivo não existe, a página não quebra:
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-5Dd8MkhpC2GVn5Cr08UMQWdNCMpQuKBRGeVrSOvUU+M=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-aGxhg2ItIJZASrUvabAIC2IBiV3yQaMr5ULT2KiTsXE=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;

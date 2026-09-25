@@ -66,9 +66,7 @@
 /* ---------- Base ---------- */
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;scroll-snap-type:y proximity;background:var(--night)}
-/* snap obrigatório só em desktop com mouse e engines modernas (lidam bem com áreas maiores que a tela) */
-@supports (scroll-snap-stop:always){@media (pointer:fine) and (min-width:900px) and (min-height:560px){html{scroll-snap-type:y mandatory}}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;background:var(--night)}
 html.lock{overflow:hidden}
 body{margin:0;font-family:var(--font);font-size:16px;line-height:1.55;color:var(--white);background:var(--night);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-feature-settings:"cv11","ss01"}
 img{display:block;max-width:100%}
@@ -156,18 +154,18 @@ p{text-wrap:pretty}
 .menu-actions{display:grid;gap:12px;margin-top:auto;padding-top:32px}
 .menu-actions .btn{width:100%}
 
-/* ---------- Painéis cinematográficos ---------- */
-.panels{position:relative}
-.panel{position:relative;height:100vh;height:100svh;min-height:540px;overflow:hidden;isolation:isolate;scroll-snap-align:start;scroll-snap-stop:always;background:var(--night)}
-.panel-media{position:absolute;inset:-12% 0;z-index:-2;will-change:transform}
-.panel-media img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 2.4s var(--ease)}
+/* ---------- Banner: carrossel horizontal de tela cheia ---------- */
+.hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;isolation:isolate;background:var(--night);touch-action:pan-y;--py:0px}
+.hero-track{position:absolute;inset:0}
+.panel{position:absolute;inset:0;overflow:hidden;isolation:isolate;background:var(--night);visibility:hidden;will-change:transform}
+.panel--hero{visibility:visible}
+.panel-media{position:absolute;inset:0;z-index:-2;will-change:transform}
+.panel-media img{width:100%;height:100%;object-fit:cover;translate:0 var(--py);transform:scale(1.12);transition:transform 2.4s var(--ease)}
 .panel.is-active .panel-media img{transform:scale(1);transition:transform 16s cubic-bezier(.12,.6,.24,1)}
-.panel-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(6,19,38,.74) 0%,rgba(6,19,38,.34) 24%,rgba(6,19,38,0) 46%,rgba(6,19,38,.14) 62%,rgba(6,19,38,.86) 100%)}
+.panel-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(6,19,38,.74) 0%,rgba(6,19,38,.34) 24%,rgba(6,19,38,0) 46%,rgba(6,19,38,.14) 62%,rgba(6,19,38,.88) 100%)}
 .panel--dim .panel-shade{background:radial-gradient(90% 70% at 50% 40%,rgba(6,19,38,.45),rgba(6,19,38,.88)),linear-gradient(180deg,rgba(6,19,38,.5),rgba(6,19,38,.9))}
 .panel--dim .panel-media img{filter:saturate(.8)}
-.panel-inner{height:100%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:calc(var(--header-h) + 7vh) 20px calc(40px + 7vh)}
-.panel--hero .panel-inner{padding-bottom:calc(76px + 5vh)}
-.panel--center .panel-inner{justify-content:center;gap:clamp(36px,7vh,72px)}
+.panel-inner{height:100%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:calc(var(--header-h) + 7vh) 20px calc(84px + 4vh)}
 .panel-copy{max-width:900px;display:flex;flex-direction:column;align-items:center}
 .eyebrow{margin:0 0 18px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
 .panel-title{margin:0;font-size:clamp(42px,6.4vw,92px);font-weight:700;line-height:.95;letter-spacing:-.06em}
@@ -182,37 +180,57 @@ p{text-wrap:pretty}
 .sam-intro{display:inline-flex;align-items:center;gap:12px;margin-bottom:26px;padding:6px 16px 6px 6px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:500}
 .sam-intro .avatar{width:40px;height:40px}
 .sam-intro .online{border-color:#18283c}
-.scroll-hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:grid;justify-items:center;gap:2px;min-height:44px;padding:4px 14px;font-size:10.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.72)}
-.scroll-hint .i{width:18px;height:18px;animation:bob 1.9s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
-/* entrada do texto do painel ativo */
+/* entrada do texto do slide ativo */
 .js .panel .reveal{opacity:0;transform:translateY(28px);transition:opacity .45s ease,transform .6s var(--ease)}
-.js .panel.is-active .reveal{opacity:1;transform:none;transition:opacity 1s ease calc(var(--d,0) * 120ms + 120ms),transform 1.2s var(--ease-out) calc(var(--d,0) * 120ms + 120ms)}
+.js .panel.is-active .reveal{opacity:1;transform:none;transition:opacity 1s ease calc(var(--d,0) * 120ms + 320ms),transform 1.2s var(--ease-out) calc(var(--d,0) * 120ms + 320ms)}
 .d1{--d:1}.d2{--d:2}.d3{--d:3}.d4{--d:4}
 
+/* controles do carrossel */
+.hero-arrow{position:absolute;top:50%;z-index:5;width:52px;height:52px;margin-top:-26px;display:grid;place-items:center;padding:0;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;opacity:.7;transition:opacity .3s ease,background-color .25s ease,border-color .25s ease,transform .3s var(--ease)}
+.hero:hover .hero-arrow,.hero-arrow:focus-visible{opacity:1}
+.hero-arrow:hover{background:rgba(255,255,255,.22);border-color:#fff}
+.hero-arrow .i{width:22px;height:22px}
+.hero-prev{left:clamp(16px,2.4vw,36px)}
+.hero-next{right:clamp(16px,2.4vw,36px)}
+.hero-prev:hover{transform:translateX(-3px)}
+.hero-next:hover{transform:translateX(3px)}
+.hero-controls{position:absolute;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;transform:translateX(-50%);display:flex;align-items:center}
+.hero-dots{display:flex}
+.hero-dot{position:relative;width:48px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none}
+.hero-dot .bar{position:relative;display:block;width:26px;height:3px;border-radius:3px;background:rgba(255,255,255,.35);overflow:hidden;transition:width .45s var(--ease),background-color .3s ease}
+.hero-dot:hover .bar{background:rgba(255,255,255,.6)}
+.hero-dot[aria-current="true"] .bar{width:40px}
+.hero-dot .bar::after{content:"";position:absolute;inset:0;background:#fff;transform:scaleX(0);transform-origin:left center}
+.hero-dot[aria-current="true"] .bar::after{animation:fill 7s linear forwards}
+.hero.is-paused .hero-dot[aria-current="true"] .bar::after{animation-play-state:paused}
+.hero.no-auto .hero-dot[aria-current="true"] .bar::after{animation:none;transform:none}
+.hero-dot .dot-label{position:absolute;left:50%;bottom:42px;transform:translate(-50%,6px);white-space:nowrap;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(6,19,38,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s var(--ease)}
+.hero-dot:hover .dot-label,.hero-dot:focus-visible .dot-label{opacity:1;transform:translate(-50%,0)}
+.hero-pause{width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:rgba(255,255,255,.8);transition:background-color .2s ease,color .2s ease}
+.hero-pause:hover{background:rgba(255,255,255,.12);color:#fff}
+.hero-pause .i{width:16px;height:16px}
+.hero-count{position:absolute;right:clamp(16px,2.4vw,36px);bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;margin:0;min-height:44px;display:flex;align-items:center;font-size:12px;font-weight:600;letter-spacing:.16em;color:rgba(255,255,255,.75);font-variant-numeric:tabular-nums}
+.scroll-hint{position:absolute;left:clamp(16px,2.4vw,36px);bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;display:flex;align-items:center;gap:8px;min-height:44px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.75);transition:color .2s ease}
+.scroll-hint:hover{color:#fff}
+.scroll-hint .i{width:16px;height:16px;animation:bob 1.9s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media (min-width:900px){.panel-inner{padding-inline:104px}}
+@media (max-width:899px){.hero-arrow{display:none}}
+@media (max-width:1100px){.scroll-hint,.hero-count{display:none}}
+
 @media (max-width:640px){
-  .panel-inner{padding:calc(var(--header-h) + 6vh) var(--gutter) calc(28px + 4vh)}
-  .panel--hero .panel-inner{padding-bottom:calc(64px + 3vh)}
+  .panel-inner{padding:calc(var(--header-h) + 5vh) var(--gutter) calc(64px + 2vh)}
   .panel-actions{flex-direction:column;align-items:stretch;width:100%;max-width:340px;gap:12px}
   .panel .btn{width:100%}
   .panel-meta{font-size:13.5px}
   .panel-meta span{padding:0 10px}
+  .hero-dot{width:38px}
+  .hero-dot .bar{width:20px}
+  .hero-dot[aria-current="true"] .bar{width:30px}
 }
 
-/* pontos de navegação */
-.dots{position:fixed;right:clamp(8px,1.6vw,24px);top:50%;z-index:40;transform:translateY(-50%);display:flex;flex-direction:column;gap:2px;transition:opacity .45s ease,visibility 0s linear 0s}
-.dots.is-hidden{opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
-.dot{position:relative;width:44px;height:30px;display:grid;place-items:center;padding:0;border:0;background:none}
-.dot::before{content:"";width:6px;height:6px;border-radius:6px;background:rgba(255,255,255,.45);box-shadow:0 0 0 1px rgba(6,19,38,.2);transition:height .45s var(--ease),background-color .3s ease}
-.dot:hover::before{background:rgba(255,255,255,.8)}
-.dot[aria-current="true"]::before{height:24px;background:#fff}
-.dot-label{position:absolute;right:42px;top:50%;transform:translate(6px,-50%);white-space:nowrap;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(6,19,38,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s var(--ease)}
-.dot:hover .dot-label,.dot:focus-visible .dot-label{opacity:1;transform:translate(0,-50%)}
-@media (max-width:640px){.dots{display:none}}
-
 /* ---------- Seções de conteúdo ---------- */
-.content{scroll-snap-align:start}
 .section{position:relative;padding:clamp(88px,11vw,150px) 0}
 .section[id]{scroll-margin-top:var(--header-h)}
 .section-light{background:var(--ice);color:var(--ink);color-scheme:light}
@@ -512,7 +530,7 @@ p{text-wrap:pretty}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
   .js .panel .reveal,.js [data-reveal]{opacity:1;transform:none}
   .panel-media img{transform:none!important}
-  .car-dot .bar::after{animation:none!important}
+  .car-dot .bar::after,.hero-dot .bar::after{animation:none!important}
 }
 </style>
 </head>
@@ -580,10 +598,12 @@ p{text-wrap:pretty}
   </div>
 </div>
 
-<!-- ============ PAINÉIS CINEMATOGRÁFICOS ============ -->
-<div class="panels" id="panels" role="region" aria-label="Destaques">
+<!-- ============ BANNER: CARROSSEL HORIZONTAL ============ -->
+<section class="hero" id="hero" aria-roledescription="carrossel" aria-label="Destaques">
+  <h1 class="sr-only">AI Logic Hub — imóveis com curadoria em São Paulo</h1>
+  <div class="hero-track" id="hero-track" aria-live="off">
 
-    <section class="panel panel--hero" id="inicio" data-label="Início" aria-label="Apresentação">
+    <div class="panel panel--hero" role="group" aria-roledescription="slide" id="inicio" data-label="Início" aria-label="Apresentação">
       <div class="panel-media media" aria-hidden="true">
         <img src="assets/hero-1.webp" data-alt-src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
       </div>
@@ -591,7 +611,7 @@ p{text-wrap:pretty}
       <div class="panel-inner">
         <div class="panel-copy">
           <p class="eyebrow reveal">Inteligência imobiliária</p>
-          <h1 class="panel-title reveal d1">Encontre o imóvel certo para você.</h1>
+          <h2 class="panel-title reveal d1">Encontre o imóvel certo para você.</h2>
           <p class="panel-sub reveal d2">Imóveis de alto padrão em São Paulo, escolhidos por quem conhece cada rua. E o Sam, que responde na hora — inclusive às onze da noite.</p>
         </div>
         <div class="panel-actions reveal d3">
@@ -599,13 +619,9 @@ p{text-wrap:pretty}
           <button class="btn btn-glass" type="button" data-action="sam">Falar com o Sam</button>
         </div>
       </div>
-      <a class="scroll-hint" href="#destaque-1" aria-label="Rolar para o primeiro destaque">
-        <span>Role</span>
-        <svg class="i" aria-hidden="true"><use href="#i-chev-d"/></svg>
-      </a>
-    </section>
+    </div>
 
-    <section class="panel" id="destaque-1" data-label="Casa Lagoa" data-feature="0" aria-label="Imóvel em destaque">
+    <div class="panel" role="group" aria-roledescription="slide" id="destaque-1" data-label="Casa Lagoa" data-feature="0" aria-label="Imóvel em destaque">
       <div class="panel-media media" aria-hidden="true">
         <img src="assets/hero-2.webp" data-alt-src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" loading="lazy" decoding="async" data-f="img">
       </div>
@@ -622,9 +638,9 @@ p{text-wrap:pretty}
           <button class="btn btn-glass" type="button" data-action="gallery" data-id="al-101">Ver fotos</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="panel" id="destaque-2" data-label="Cobertura Ibirapuera" data-feature="1" aria-label="Imóvel em destaque">
+    <div class="panel" role="group" aria-roledescription="slide" id="destaque-2" data-label="Cobertura Ibirapuera" data-feature="1" aria-label="Imóvel em destaque">
       <div class="panel-media media" aria-hidden="true">
         <img src="assets/hero-3.webp" data-alt-src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" loading="lazy" decoding="async" data-f="img">
       </div>
@@ -641,9 +657,9 @@ p{text-wrap:pretty}
           <button class="btn btn-glass" type="button" data-action="gallery" data-id="al-102">Ver fotos</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="panel" id="destaque-3" data-label="Apartamento Horizonte" data-feature="2" aria-label="Imóvel em destaque">
+    <div class="panel" role="group" aria-roledescription="slide" id="destaque-3" data-label="Apartamento Horizonte" data-feature="2" aria-label="Imóvel em destaque">
       <div class="panel-media media" aria-hidden="true">
         <img src="assets/hero-4.webp" data-alt-src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" loading="lazy" decoding="async" data-f="img">
       </div>
@@ -660,9 +676,9 @@ p{text-wrap:pretty}
           <button class="btn btn-glass" type="button" data-action="gallery" data-id="al-103">Ver fotos</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="panel panel--dim panel--center" id="sam-painel" data-label="Converse com o Sam" aria-label="Converse com o Sam">
+    <div class="panel panel--dim" role="group" aria-roledescription="slide" id="sam-painel" data-label="Converse com o Sam" aria-label="Converse com o Sam">
       <div class="panel-media media" aria-hidden="true">
         <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" loading="lazy" decoding="async">
       </div>
@@ -682,9 +698,9 @@ p{text-wrap:pretty}
           <a class="btn btn-glass" href="#como-funciona">Como funciona</a>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="panel" id="anunciar" data-label="Anunciar" aria-label="Anuncie com a gente">
+    <div class="panel" role="group" aria-roledescription="slide" id="anunciar" data-label="Anunciar" aria-label="Anuncie com a gente">
       <div class="panel-media media" aria-hidden="true">
         <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" loading="lazy" decoding="async">
       </div>
@@ -700,12 +716,20 @@ p{text-wrap:pretty}
           <button class="btn btn-glass" type="button" data-action="lead" data-tab="parceiro">Ser parceiro</button>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 
-<!-- ============ CONTEÚDO + RODAPÉ ============
-     Um único wrapper com scroll-snap-align:start: o snap acontece só entre os painéis;
-     daqui até o fim do rodapé a rolagem é livre. -->
+  <button class="hero-arrow hero-prev" type="button" data-hero="prev" aria-label="Destaque anterior"><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg></button>
+  <button class="hero-arrow hero-next" type="button" data-hero="next" aria-label="Próximo destaque"><svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+  <div class="hero-controls">
+    <div class="hero-dots" id="hero-dots" role="group" aria-label="Escolher destaque"></div>
+    <button class="hero-pause" type="button" data-hero="toggle" aria-label="Pausar destaques"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
+  </div>
+  <p class="hero-count" id="hero-count" aria-hidden="true">01 / 06</p>
+  <a class="scroll-hint" href="#imoveis">Role para ver a coleção <svg class="i" aria-hidden="true"><use href="#i-chev-d"/></svg></a>
+</section>
+
+<!-- ============ CONTEÚDO + RODAPÉ ============ -->
 <div class="content" id="conteudo">
 <main id="main">
 
@@ -889,9 +913,6 @@ p{text-wrap:pretty}
   </div>
 </footer>
 </div>
-
-<!-- navegação por pontos (gerada a partir dos painéis) -->
-<nav class="dots" id="dots" aria-label="Destaques"></nav>
 
 <!-- ============ SAM ============ -->
 <button class="sam-fab" id="sam-fab" type="button" data-action="sam" aria-label="Falar com o Sam">
@@ -1212,6 +1233,7 @@ p{text-wrap:pretty}
     el.setAttribute('aria-modal', String(modal));
     if (modal) document.documentElement.classList.add('lock');
     requestAnimationFrame(() => { const f = focus || focusables(el)[0] || el; f.focus({ preventScroll: true }); });
+    onStackChange();
   }
   function closeDialog(el, { restoreFocus = true } = {}) {
     const i = stack.findIndex(d => d.el === el);
@@ -1221,6 +1243,7 @@ p{text-wrap:pretty}
     if (!stack.some(x => x.modal)) document.documentElement.classList.remove('lock');
     const cb = onClose.get(el); if (cb) cb();
     if (restoreFocus && d.opener && document.contains(d.opener) && d.opener.getClientRects().length) d.opener.focus({ preventScroll: true });
+    onStackChange();
   }
   document.addEventListener('keydown', e => {
     const top = stack[stack.length - 1];
@@ -1243,26 +1266,173 @@ p{text-wrap:pretty}
     toastTimer = setTimeout(() => t.classList.remove('is-on'), 2200);
   }
 
-  /* ================= PAINÉIS ================= */
+  /* ================= BANNER: CARROSSEL HORIZONTAL ================= */
   const header = $('#header');
-  const panelsWrap = $('#panels');
-  const panels = $$('.panel', panelsWrap);
-  const medias = panels.map(p => $('.panel-media', p));
-  const dotsNav = $('#dots');
+  const hero = $('#hero');
+  const track = $('#hero-track');
+  const allSlides = $$('.panel', track);
+  const heroDots = $('#hero-dots');
+  const heroCount = $('#hero-count');
   const fab = $('#sam-fab');
   const stepsWrap = $('#steps');
   const steps = $$('.step', stepsWrap);
+  const SLIDE_MS = 1000;
+  const SLIDE_EASE = 'cubic-bezier(.77,0,.18,1)';
+  const pad2 = n => String(n).padStart(2, '0');
 
-  function buildDots() {
-    dotsNav.innerHTML = panels.map((p, i) =>
-      `<button class="dot" type="button" data-go="${i}" aria-label="${esc(p.dataset.label)}"><span class="dot-label" aria-hidden="true">${esc(p.dataset.label)}</span></button>`).join('');
-  }
-  dotsNav.addEventListener('click', e => {
-    const b = e.target.closest('[data-go]'); if (!b) return;
-    panels[+b.dataset.go].scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+  const Hero = {
+    cur: 0, userPaused: false, inView: true, dragging: false, settleTimer: 0,
+    list() { return allSlides.filter(sl => !sl.hidden); },
+    /** Posiciona um slide (o = -1 à esquerda, 0 no centro, 1 à direita); a foto anda menos que o slide (parallax). */
+    place(sl, o, ms = 0, ease = SLIDE_EASE) {
+      const media = $('.panel-media', sl);
+      const t = ms ? `transform ${ms}ms ${ease}` : 'none';
+      sl.style.transition = t; media.style.transition = t;
+      sl.style.transform = `translate3d(${(o * 100).toFixed(3)}%,0,0)`;
+      media.style.transform = `translate3d(${(o * -30).toFixed(3)}%,0,0)`;
+      sl.style.visibility = 'visible';
+    },
+    hide(sl) { sl.style.transition = 'none'; sl.style.visibility = 'hidden'; },
+    build() {
+      const L = this.list();
+      this.cur = clamp(this.cur, 0, L.length - 1);
+      heroDots.innerHTML = L.map((sl, i) =>
+        `<button class="hero-dot" type="button" data-slide-to="${i}" aria-label="${esc(sl.dataset.label)}"><span class="bar"></span><span class="dot-label" aria-hidden="true">${esc(sl.dataset.label)}</span></button>`).join('');
+      L.forEach((sl, i) => { if (i === this.cur) this.place(sl, 0); else this.hide(sl); });
+      this.mark();
+    },
+    mark() {
+      const L = this.list();
+      L.forEach((sl, i) => {
+        const on = i === this.cur;
+        sl.classList.toggle('is-active', on);
+        sl.setAttribute('aria-label', `${i + 1} de ${L.length}: ${sl.dataset.label}`);
+        sl.setAttribute('aria-hidden', String(!on));
+        sl.inert = !on;
+      });
+      $$('.hero-dot', heroDots).forEach((d, i) => d.setAttribute('aria-current', String(i === this.cur)));
+      heroCount.textContent = `${pad2(this.cur + 1)} / ${pad2(L.length)}`;
+    },
+    go(to, dir, opts = {}) {
+      const L = this.list(), n = L.length;
+      if (n < 2) return;
+      to = ((to % n) + n) % n;
+      if (to === this.cur) return;
+      dir = dir || (to > this.cur ? 1 : -1);
+      const from = L[this.cur], target = L[to];
+      const ms = reduceMotion.matches || opts.instant ? 0 : (opts.ms || SLIDE_MS);
+      L.forEach(sl => { if (sl !== from && sl !== target) this.hide(sl); });
+      if (!opts.fromDrag) { this.place(target, dir); void target.offsetWidth; }
+      this.place(from, -dir, ms, opts.ease);
+      this.place(target, 0, ms, opts.ease);
+      this.cur = to;
+      this.mark();
+      clearTimeout(this.settleTimer);
+      this.settleTimer = setTimeout(() => { if (this.list()[this.cur] !== from) this.hide(from); }, ms + 60);
+    },
+    next() { this.go(this.cur + 1, 1); },
+    prev() { this.go(this.cur - 1, -1); },
+    /** Vai até um slide a partir de um link (#anunciar, #inicio...), subindo a página se preciso. */
+    show(sl) {
+      const i = this.list().indexOf(sl);
+      if (i < 0) return;
+      if (window.scrollY > 4) window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      this.go(i);
+      this.sync();
+    },
+    sync() {
+      const a = document.activeElement;
+      const kbFocus = !!a && hero.contains(a) && a.matches(':focus-visible');
+      const auto = !reduceMotion.matches && !this.userPaused;
+      hero.classList.toggle('no-auto', !auto);
+      hero.classList.toggle('is-paused', !this.inView || this.dragging || stack.length > 0 || kbFocus || document.hidden);
+      track.setAttribute('aria-live', auto ? 'off' : 'polite');
+      const t = $('[data-hero="toggle"]', hero);
+      t.setAttribute('aria-label', this.userPaused ? 'Retomar destaques' : 'Pausar destaques');
+      $('use', t).setAttribute('href', this.userPaused ? '#i-play' : '#i-pause');
+      t.hidden = reduceMotion.matches;
+    }
+  };
+  function onStackChange() { Hero.sync(); }
+
+  heroDots.addEventListener('click', e => { const b = e.target.closest('[data-slide-to]'); if (b) Hero.go(+b.dataset.slideTo); });
+  // a barra de progresso do ponto ativo dita o ritmo do autoplay: terminou, avança
+  heroDots.addEventListener('animationend', e => { if (e.target.closest('.hero-dot')?.getAttribute('aria-current') === 'true') Hero.next(); }, true);
+  hero.addEventListener('click', e => {
+    const b = e.target.closest('[data-hero]'); if (!b) return;
+    if (b.dataset.hero === 'next') Hero.next();
+    else if (b.dataset.hero === 'prev') Hero.prev();
+    else { Hero.userPaused = !Hero.userPaused; Hero.sync(); }
+  });
+  hero.addEventListener('focusin', () => Hero.sync());
+  hero.addEventListener('focusout', () => setTimeout(() => Hero.sync()));
+  document.addEventListener('visibilitychange', () => Hero.sync());
+  if ('IntersectionObserver' in window) new IntersectionObserver(en => { Hero.inView = en[0].isIntersecting; Hero.sync(); }, { threshold: 0.5 }).observe(hero);
+
+  // teclado: ← → trocam o destaque enquanto o banner está na tela
+  document.addEventListener('keydown', e => {
+    if (stack.length || !Hero.inView || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable],.carousel')) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); Hero.next(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); Hero.prev(); }
   });
 
-  /** Preenche os 3 painéis de destaque a partir dos dados (demo ou /api/vitrine). */
+  // trackpad: gesto lateral troca o destaque (um por gesto)
+  let wAcc = 0, wLast = 0, wLocked = false;
+  hero.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    const now = performance.now();
+    if (now - wLast > 300) { wAcc = 0; wLocked = false; }
+    wLast = now;
+    if (wLocked) return;
+    wAcc += e.deltaX;
+    if (Math.abs(wAcc) > 40) { wLocked = true; if (wAcc > 0) Hero.next(); else Hero.prev(); }
+  }, { passive: false });
+
+  // toque: o slide acompanha o dedo; soltou depois de ~18% (ou num gesto rápido), troca
+  let drag = null, suppressClick = false;
+  hero.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' || Hero.list().length < 3) return;
+    drag = { x: e.clientX, y: e.clientY, t: performance.now(), dx: 0, active: false, id: e.pointerId };
+  });
+  hero.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.active) {
+      if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { drag = null; return; }
+      if (Math.abs(dx) < 10) return;
+      const L = Hero.list(), n = L.length;
+      Object.assign(drag, { active: true, cur: L[Hero.cur], prev: L[(Hero.cur - 1 + n) % n], next: L[(Hero.cur + 1) % n] });
+      L.forEach(sl => { if (sl !== drag.cur && sl !== drag.prev && sl !== drag.next) Hero.hide(sl); });
+      Hero.dragging = true; Hero.sync();
+      try { hero.setPointerCapture(e.pointerId); } catch {}
+    }
+    drag.dx = dx;
+    const f = dx / hero.clientWidth;
+    Hero.place(drag.cur, f); Hero.place(drag.prev, f - 1); Hero.place(drag.next, f + 1);
+  });
+  const endDrag = () => {
+    const g = drag; drag = null;
+    if (!g || !g.active) return;
+    Hero.dragging = false;
+    const f = g.dx / hero.clientWidth, v = g.dx / Math.max(1, performance.now() - g.t);
+    const ms = reduceMotion.matches ? 0 : 650, ease = 'cubic-bezier(.2,.7,.2,1)';
+    if (Math.abs(f) > 0.18 || Math.abs(v) > 0.45) {
+      const dir = f < 0 ? 1 : -1;
+      Hero.go(Hero.cur + dir, dir, { fromDrag: true, ms, ease });
+    } else {
+      Hero.place(g.cur, 0, ms, ease); Hero.place(g.prev, -1, ms, ease); Hero.place(g.next, 1, ms, ease);
+      setTimeout(() => { [g.prev, g.next].forEach(sl => { if (sl !== Hero.list()[Hero.cur]) Hero.hide(sl); }); }, ms + 60);
+    }
+    suppressClick = true; setTimeout(() => { suppressClick = false; }, 400);
+    Hero.sync();
+  };
+  hero.addEventListener('pointerup', endDrag);
+  hero.addEventListener('pointercancel', endDrag);
+  hero.addEventListener('click', e => { if (suppressClick) { e.preventDefault(); e.stopPropagation(); suppressClick = false; } }, true);
+
+  /** Preenche os 3 slides de destaque a partir dos dados (demo ou /api/vitrine). */
   function hydratePanels() {
     const feat = IMOVEIS.filter(i => i.destaque);
     const list = feat.concat(IMOVEIS.filter(i => !i.destaque)).slice(0, 3);
@@ -1288,23 +1458,11 @@ p{text-wrap:pretty}
       img.alt = '';
       $$('[data-id]', panel).forEach(b => { b.dataset.id = item.id; });
     });
-    buildDots();
-    setActive(activeIdx, true);
+    Hero.build();
   }
 
-  let activeIdx = -1, panelH = 0, panelsTop = 0, panelsEnd = 0, ticking = false;
-  function setActive(idx, force) {
-    if (idx === activeIdx && !force) return;
-    activeIdx = idx;
-    panels.forEach((p, i) => p.classList.toggle('is-active', i === idx));
-    $$('.dot', dotsNav).forEach((d, i) => d.setAttribute('aria-current', String(i === idx)));
-  }
-  function measure() {
-    const visible = panels.filter(p => !p.hidden);
-    panelH = (visible[0] || panels[0]).offsetHeight;
-    panelsTop = panelsWrap.offsetTop;
-    panelsEnd = panelsTop + panelsWrap.offsetHeight;
-  }
+  let heroH = 0, ticking = false;
+  function measure() { heroH = hero.offsetHeight; }
   function update() {
     ticking = false;
     const y = window.scrollY, vh = window.innerHeight;
@@ -1313,24 +1471,9 @@ p{text-wrap:pretty}
     const vertical = mqSteps.matches;
 
     header.classList.toggle('is-scrolled', y > 8);
-    const inPanels = y < panelsEnd - panelH * 0.5;
-    const visible = panels.filter(p => !p.hidden);
-    let idx = -1;
-    if (inPanels) {
-      let best = Infinity;
-      visible.forEach(p => { const d = Math.abs(panelsTop + p.offsetTop - y); if (d < best) { best = d; idx = panels.indexOf(p); } });
-    }
-    setActive(idx);
-    dotsNav.classList.toggle('is-hidden', !inPanels);
-    fab.classList.toggle('is-visible', !Sam.isOpen && y > panelH * 0.6 && (!mqMobile.matches || !inPanels));
-
-    if (!reduceMotion.matches) {
-      panels.forEach((p, i) => {
-        if (p.hidden) return;
-        const prog = (y - panelsTop - p.offsetTop) / panelH;
-        if (prog > -1.2 && prog < 1.2) medias[i].style.transform = `translate3d(0,${(prog * panelH * 0.1).toFixed(1)}px,0)`;
-      });
-    }
+    fab.classList.toggle('is-visible', !Sam.isOpen && y > heroH * (mqMobile.matches ? 0.85 : 0.6));
+    // parallax vertical sutil da foto do banner ao rolar a página
+    if (!reduceMotion.matches && y <= heroH) hero.style.setProperty('--py', `${(y * 0.35).toFixed(1)}px`);
 
     // linha de progresso do "Como funciona"
     const span = vertical ? stepsRect.height : vh * 0.45;
@@ -1916,6 +2059,15 @@ p{text-wrap:pretty}
   onClose.set(menu, () => burger.setAttribute('aria-expanded', 'false'));
 
   document.addEventListener('click', e => {
+    // links para um destaque (#anunciar, #inicio...) trocam o slide em vez de rolar
+    const link = e.target.closest('a[href^="#"]');
+    const slide = link && document.getElementById(decodeURIComponent(link.getAttribute('href').slice(1)));
+    if (slide && slide.classList.contains('panel')) {
+      e.preventDefault();
+      if (menu.classList.contains('is-open')) closeDialog(menu, { restoreFocus: false });
+      Hero.show(slide);
+      return;
+    }
     const a = e.target.closest('[data-action]');
     if (!a) {
       const card = e.target.closest('.card');
@@ -1942,8 +2094,15 @@ p{text-wrap:pretty}
   $('#year').textContent = String(new Date().getFullYear());
   renderGrid();
   hydratePanels();
+  const hashSlide = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (hashSlide && hashSlide.classList.contains('panel')) Hero.go(Hero.list().indexOf(hashSlide), 1, { instant: true });
+  // o primeiro slide entra animado depois da primeira pintura
+  const firstSlide = Hero.list()[Hero.cur];
+  firstSlide.classList.remove('is-active');
+  requestAnimationFrame(() => requestAnimationFrame(() => firstSlide.classList.add('is-active')));
+  Hero.sync();
   measure();
-  requestAnimationFrame(() => requestAnimationFrame(update));
+  requestAnimationFrame(update);
   loadVitrine();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); requestUpdate(); });
 })();
