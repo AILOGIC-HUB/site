@@ -253,6 +253,7 @@ p{text-wrap:pretty}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .chip .i{width:16px;height:16px;margin:-3px 6px 0 -4px;vertical-align:middle;fill:var(--heart);stroke:var(--heart)}
 .chip[hidden]{display:none}
+.demo-note{max-width:640px;margin:18px auto 0;padding:11px 16px;border:1px dashed var(--g300);border-radius:14px;text-align:center;font-size:13.5px;line-height:1.5;color:var(--g600)}
 .result-count{margin:18px 0 28px;text-align:center;font-size:13px;color:var(--g600);font-variant-numeric:tabular-nums}
 @media (max-width:640px){
   .filters{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:calc(-1 * var(--gutter));padding:2px var(--gutter);scrollbar-width:none}
@@ -329,27 +330,6 @@ p{text-wrap:pretty}
   .how-cta .btn{width:100%}
 }
 
-/* depoimentos */
-.carousel{max-width:940px;margin:0 auto;text-align:center}
-.car-track{display:grid;touch-action:pan-y}
-.slide{grid-area:1/1;margin:0;opacity:0;visibility:hidden;transform:translateY(16px);transition:opacity .7s ease,transform .9s var(--ease-out),visibility 0s linear .7s}
-.slide.is-current{opacity:1;visibility:visible;transform:none;transition:opacity .9s ease .15s,transform 1.1s var(--ease-out) .15s}
-.slide blockquote{margin:0;font-size:clamp(24px,3.2vw,42px);font-weight:600;line-height:1.18;letter-spacing:-.04em;color:var(--ink)}
-.slide figcaption{display:inline-flex;align-items:center;gap:14px;margin-top:34px;text-align:left}
-.person{position:relative;width:56px;height:56px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:linear-gradient(140deg,#0e3a6c,#061326);color:#fff;font-weight:700;font-size:16px}
-.person img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.slide figcaption strong{display:block;font-size:16px;letter-spacing:-.01em}
-.slide figcaption span.ctx{display:block;font-size:14px;color:var(--g600)}
-.car-controls{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:40px}
-.car-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-light);background:#fff;color:var(--ink);transition:background-color .25s ease,color .25s ease,border-color .25s ease}
-.car-btn:hover{background:var(--ink);border-color:var(--ink);color:#fff}
-.car-dots{display:flex;gap:0;margin:0 6px}
-.car-dot{width:40px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none}
-.car-dot .bar{position:relative;display:block;width:26px;height:3px;border-radius:3px;background:var(--line-light);overflow:hidden}
-.car-dot .bar::after{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left center}
-.car-dot[aria-current="true"] .bar::after{animation:fill 7s linear forwards}
-.carousel.is-paused .car-dot[aria-current="true"] .bar::after{animation-play-state:paused}
-.carousel.no-auto .car-dot[aria-current="true"] .bar::after{animation:none;transform:none}
 @keyframes fill{to{transform:none}}
 
 /* bairros */
@@ -749,18 +729,9 @@ p{text-wrap:pretty}
           <button class="chip" type="button" data-filter="lancamentos" aria-pressed="false">Lançamentos</button>
           <button class="chip" type="button" data-filter="salvos" aria-pressed="false" hidden><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg>Salvos</button>
         </div>
+        <p class="demo-note" id="demo-note">Imóveis de exemplo, para mostrar a experiência. A seleção real entra aqui quando a curadoria do Hub estiver ligada ao site. Para ver o que está disponível hoje, fale com o Sam ou com o time pelo WhatsApp.</p>
         <p class="result-count" id="result-count" aria-live="polite"></p>
         <div class="grid" id="grid"></div>
-      </div>
-    </section>
-
-    <!-- valores de demonstração: substituir pelos números reais -->
-    <section class="stats section-ink" aria-label="A AI Logic Hub em números">
-      <div class="wrap stats-grid" data-reveal>
-        <div class="stat"><p class="stat-num"><span data-count="1240">1.240</span></p><p class="stat-label">famílias atendidas</p></div>
-        <div class="stat"><p class="stat-num"><span data-count="97">97</span><span class="unit">%</span></p><p class="stat-label">recomendariam a um amigo</p></div>
-        <div class="stat"><p class="stat-num"><span data-count="48">48</span></p><p class="stat-label">bairros mapeados rua a rua</p></div>
-        <div class="stat"><p class="stat-num"><span data-count="100">100</span><span class="unit">%</span></p><p class="stat-label">dos imóveis visitados antes do anúncio</p></div>
       </div>
     </section>
 
@@ -784,42 +755,6 @@ p{text-wrap:pretty}
         <div class="how-cta" data-reveal>
           <button class="btn btn-light" type="button" data-action="sam">Começar pela conversa</button>
           <a class="btn btn-ghost" href="#imoveis">Ver a coleção</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- depoimentos de demonstração: substituir por depoimentos reais e autorizados -->
-    <section class="section section-light" id="depoimentos" aria-labelledby="depo-title">
-      <div class="wrap">
-        <header class="section-head" data-reveal>
-          <p class="eyebrow">Quem já mudou</p>
-          <h2 class="section-title" id="depo-title">Histórias de quem já tem a chave.</h2>
-        </header>
-        <div class="carousel" id="carousel" role="region" aria-roledescription="carrossel" aria-label="Depoimentos de clientes" data-reveal>
-          <div class="car-track" id="car-track" aria-live="off">
-            <figure class="slide is-current" role="group" aria-roledescription="slide" aria-label="1 de 4">
-              <blockquote>“Tínhamos visitado catorze apartamentos por conta própria. Com eles foram três — e o terceiro virou a nossa casa.”</blockquote>
-              <figcaption><span class="person" aria-hidden="true">MC<img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&h=160&q=70" alt="" width="56" height="56" loading="lazy" decoding="async"></span><span><strong>Mariana Couto</strong><span class="ctx">Comprou em Pinheiros</span></span></figcaption>
-            </figure>
-            <figure class="slide" role="group" aria-roledescription="slide" aria-label="2 de 4">
-              <blockquote>“Perguntei sobre o condomínio às onze da noite e o Sam respondeu na hora. No dia seguinte, o corretor já sabia de tudo o que eu queria.”</blockquote>
-              <figcaption><span class="person" aria-hidden="true">RN<img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&h=160&q=70" alt="" width="56" height="56" loading="lazy" decoding="async"></span><span><strong>Rafael Nogueira</strong><span class="ctx">Alugou no Itaim Bibi</span></span></figcaption>
-            </figure>
-            <figure class="slide" role="group" aria-roledescription="slide" aria-label="3 de 4">
-              <blockquote>“Moro fora do Brasil. Fizeram videochamada em cada visita e cuidaram da papelada até a entrega das chaves.”</blockquote>
-              <figcaption><span class="person" aria-hidden="true">HP<img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&h=160&q=70" alt="" width="56" height="56" loading="lazy" decoding="async"></span><span><strong>Helena Prado</strong><span class="ctx">Investiu na Vila Nova Conceição</span></span></figcaption>
-            </figure>
-            <figure class="slide" role="group" aria-roledescription="slide" aria-label="4 de 4">
-              <blockquote>“Foram honestos sobre o que não valia a pena. Foi isso que me fez confiar no que valia.”</blockquote>
-              <figcaption><span class="person" aria-hidden="true">CM<img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&h=160&q=70" alt="" width="56" height="56" loading="lazy" decoding="async"></span><span><strong>Carlos Menezes</strong><span class="ctx">Comprou em Moema</span></span></figcaption>
-            </figure>
-          </div>
-          <div class="car-controls">
-            <button class="car-btn" type="button" data-car="prev" aria-label="Depoimento anterior"><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg></button>
-            <div class="car-dots" id="car-dots"></div>
-            <button class="car-btn" type="button" data-car="next" aria-label="Próximo depoimento"><svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
-            <button class="car-btn" type="button" data-car="toggle" aria-label="Pausar depoimentos"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
-          </div>
         </div>
       </div>
     </section>
@@ -1010,6 +945,7 @@ p{text-wrap:pretty}
       <h2 class="lead-title" id="lead-success-title" tabindex="-1">Recebido.</h2>
       <p class="lead-sub" id="lead-success-text">Um especialista vai te chamar no WhatsApp em até 1 dia útil.</p>
       <div class="btns">
+        <a class="btn btn-wa" id="lead-wa" href="#" target="_blank" rel="noopener" hidden>Abrir o WhatsApp</a>
         <button class="btn btn-light" type="button" data-action="close">Fechar</button>
         <button class="btn btn-ghost" type="button" data-action="sam">Falar com o Sam agora</button>
       </div>
@@ -1147,6 +1083,11 @@ p{text-wrap:pretty}
   ];
 
   let IMOVEIS = DEMO;
+  // enquanto o site nao alcanca a vitrine do Hub, os imoveis sao exemplos e aparecem marcados assim
+  const ehExemplo = () => IMOVEIS === DEMO;
+  const pedidoVisita = i => ehExemplo()
+    ? `Olá! Vi no site o exemplo ${i.titulo} (${i.bairro}) e quero conhecer imóveis parecidos.`
+    : `Olá! Quero agendar uma visita: ${i.titulo} (cód. ${i.codigo}).`;
   const byId = id => IMOVEIS.find(i => String(i.id) === String(id));
 
   /** Categorias dos filtros, derivadas dos campos reais da vitrine (ou de `categorias`, se a API enviar). */
@@ -1214,6 +1155,7 @@ p{text-wrap:pretty}
       const data = normalize(await res.json());
       if (!data.length) return;
       IMOVEIS = data;
+      const nota = $('#demo-note'); if (nota) nota.hidden = true;
       hydratePanels();
       renderGrid();
     } catch { /* sem API: mantém os dados demo */ }
@@ -1372,7 +1314,7 @@ p{text-wrap:pretty}
   // teclado: ← → trocam o destaque enquanto o banner está na tela
   document.addEventListener('keydown', e => {
     if (stack.length || !Hero.inView || e.altKey || e.ctrlKey || e.metaKey) return;
-    if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable],.carousel')) return;
+    if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]')) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); Hero.next(); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); Hero.prev(); }
   });
@@ -1442,7 +1384,7 @@ p{text-wrap:pretty}
       panel.hidden = false;
       panel.dataset.label = item.titulo;
       const f = k => $(`[data-f="${k}"]`, panel);
-      f('eyebrow').textContent = `${tagOf(item)} · ${item.bairro}`;
+      f('eyebrow').textContent = `${tagOf(item)} · ${item.bairro}` + (ehExemplo() ? ' · Exemplo' : '');
       f('title').textContent = item.titulo;
       f('sub').textContent = firstSentence(item.descricao);
       const meta = f('meta'); meta.textContent = '';
@@ -1543,7 +1485,7 @@ p{text-wrap:pretty}
       <article class="card" data-id="${esc(i.id)}" style="--i:${k}">
         <div class="card-media media">
           <img src="${esc(img)}" ${alt ? `data-alt-src="${esc(sized(alt, 900))}"` : ''} alt="${esc(`${i.titulo}, ${i.bairro}`)}" width="900" height="675" loading="lazy" decoding="async">
-          <span class="tag">${esc(tagOf(i))}</span>
+          <span class="tag">${esc(tagOf(i))}${ehExemplo() ? ' · Exemplo' : ''}</span>
           <button class="fav" type="button" data-action="fav" data-id="${esc(i.id)}" aria-pressed="${faved}" aria-label="Salvar ${esc(i.titulo)}">${ico('heart')}</button>
           <button class="photos-btn" type="button" data-action="gallery" data-id="${esc(i.id)}">${ico('photos')} Ver fotos · ${fotos.length}</button>
         </div>
@@ -1601,22 +1543,23 @@ p{text-wrap:pretty}
       ['car', 'Vagas', item.vagas || '—'],
       ['tag', 'Código', item.codigo || '—']
     ];
-    const visita = `Olá! Vi no site e quero agendar uma visita: ${item.titulo} (cód. ${item.codigo}), ${item.bairro}.`;
+    const exemplo = ehExemplo();
+    const visita = exemplo ? pedidoVisita(item) : `Olá! Vi no site e quero agendar uma visita: ${item.titulo} (cód. ${item.codigo}), ${item.bairro}.`;
     $('#detail-body').innerHTML = `
       <div class="detail-media media">
         <img src="${esc(sized(item.foto || fotos[0], 1400))}" ${alt ? `data-alt-src="${esc(sized(alt, 1400))}"` : ''} alt="${esc(`${item.titulo}, ${item.bairro}`)}" width="1400" height="1050" decoding="async">
         <button class="photos-btn" type="button" data-action="gallery" data-id="${esc(item.id)}">${ico('photos')} Ver fotos · ${fotos.length}</button>
       </div>
       <div class="detail-body">
-        <p class="eyebrow">${esc(tagOf(item))}</p>
+        <p class="eyebrow">${esc(tagOf(item))}${exemplo ? ' · Exemplo' : ''}</p>
         <h2 id="detail-title">${esc(item.titulo)}</h2>
         <p class="detail-loc">${esc(item.bairro)}${item.cidade ? `, ${esc(item.cidade)}` : ''}${item.tipo ? ` · ${esc(item.tipo)}` : ''}</p>
         <p class="detail-price">${esc(priceOf(item))}</p>
         <dl class="specs">${specs.map(([ic, k, v]) => `<div><dt>${ico(ic)}${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
         <p class="detail-desc">${esc(item.descricao)}</p>
-        ${item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : ''}
+        ${exemplo ? '<p class="detail-by">Imóvel de exemplo, para mostrar a experiência. O time mostra os disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
         <div class="detail-actions">
-          <a class="btn btn-wa" href="${esc(waLink(visita))}" target="_blank" rel="noopener">${ico('wa')} Agendar visita</a>
+          <a class="btn btn-wa" href="${esc(waLink(visita))}" target="_blank" rel="noopener">${ico('wa')} ${exemplo ? 'Quero algo parecido' : 'Agendar visita'}</a>
           <button class="btn btn-ghost" type="button" data-action="gallery" data-id="${esc(item.id)}">Ver fotos</button>
           <button class="btn btn-ghost" type="button" data-action="ask" data-id="${esc(item.id)}">Perguntar ao Sam</button>
         </div>
@@ -1682,44 +1625,6 @@ p{text-wrap:pretty}
     });
     el.addEventListener('pointercancel', () => { x0 = null; });
   }
-
-  /* ================= DEPOIMENTOS ================= */
-  const car = $('#carousel');
-  const slides = $$('.slide', car);
-  const carDots = $('#car-dots');
-  let cur = 0, userPaused = false, hover = false, inView = false;
-  carDots.innerHTML = slides.map((_, k) => `<button class="car-dot" type="button" data-slide="${k}" aria-label="Depoimento ${k + 1}"><span class="bar"></span></button>`).join('');
-  const dotEls = $$('.car-dot', carDots);
-  function goSlide(i) {
-    cur = (i + slides.length) % slides.length;
-    slides.forEach((s, k) => { s.classList.toggle('is-current', k === cur); s.setAttribute('aria-hidden', String(k !== cur)); });
-    dotEls.forEach((d, k) => d.setAttribute('aria-current', String(k === cur)));
-  }
-  function syncPause() {
-    const auto = !reduceMotion.matches && !userPaused;
-    car.classList.toggle('no-auto', !auto);
-    car.classList.toggle('is-paused', hover || !inView);
-    const t = $('[data-car="toggle"]', car);
-    t.setAttribute('aria-label', userPaused ? 'Retomar depoimentos' : 'Pausar depoimentos');
-    $('use', t).setAttribute('href', userPaused ? '#i-play' : '#i-pause');
-    t.hidden = reduceMotion.matches;
-  }
-  // a barra de progresso do ponto ativo dita o ritmo: terminou, avança
-  carDots.addEventListener('animationend', e => { if (e.target.closest('.car-dot')?.getAttribute('aria-current') === 'true') goSlide(cur + 1); }, true);
-  car.addEventListener('click', e => {
-    const d = e.target.closest('[data-slide]'); if (d) { goSlide(+d.dataset.slide); return; }
-    const b = e.target.closest('[data-car]'); if (!b) return;
-    if (b.dataset.car === 'next') goSlide(cur + 1);
-    else if (b.dataset.car === 'prev') goSlide(cur - 1);
-    else { userPaused = !userPaused; syncPause(); }
-  });
-  car.addEventListener('mouseenter', () => { hover = true; syncPause(); });
-  car.addEventListener('mouseleave', () => { hover = false; syncPause(); });
-  car.addEventListener('focusin', () => { hover = true; syncPause(); });
-  car.addEventListener('focusout', e => { if (!car.contains(e.relatedTarget)) { hover = false; syncPause(); } });
-  if ('IntersectionObserver' in window) new IntersectionObserver(en => { inView = en[0].isIntersecting; syncPause(); }, { threshold: 0.35 }).observe(car);
-  swipe($('#car-track'), dir => goSlide(cur + dir));
-  goSlide(0); syncPause();
 
   /* ================= SAM ================= */
   const samEl = $('#sam'), log = $('#sam-log'), chipsEl = $('#sam-chips'), input = $('#sam-input'), statusEl = $('#sam-status');
@@ -1887,7 +1792,7 @@ p{text-wrap:pretty}
         s.imovel = meta.imovel; s.step = 'imovel';
         const i = meta.imovel;
         return { text: `Oi! Eu sou o Sam. Claro — ${i.titulo} tem ${listPt(specsOf(i))}, por ${priceOf(i)}.\nO que você quer saber?`,
-          chips: ['Qual o condomínio e o IPTU?', 'Aceita financiamento?', { label: 'Ver fotos', action: 'gallery' }, { label: 'Agendar visita', action: 'wa', text: `Olá! Quero agendar uma visita: ${i.titulo} (cód. ${i.codigo}).` }] };
+          chips: ['Qual o condomínio e o IPTU?', 'Aceita financiamento?', { label: 'Ver fotos', action: 'gallery' }, { label: ehExemplo() ? 'Quero algo parecido' : 'Agendar visita', action: 'wa', text: pedidoVisita(i) }] };
       }
       if (meta.bairro) {
         s.bairro = meta.bairro;
@@ -1937,7 +1842,7 @@ p{text-wrap:pretty}
           return { text: 'Anotei aqui. Se quiser, passo tudo para um corretor da equipe — ele te chama no WhatsApp, sem compromisso.', chips: this.endChips() };
       }
     },
-    imovelChips(i) { return [{ label: 'Agendar visita', action: 'wa', text: `Olá! Quero agendar uma visita: ${i.titulo} (cód. ${i.codigo}).` }, { label: 'Ver fotos', action: 'gallery' }, { label: 'Ver outros imóveis', action: 'all' }]; },
+    imovelChips(i) { return [{ label: ehExemplo() ? 'Quero algo parecido' : 'Agendar visita', action: 'wa', text: pedidoVisita(i) }, { label: 'Ver fotos', action: 'gallery' }, { label: 'Ver outros imóveis', action: 'all' }]; },
     askFaixa(prefix) {
       const opts = this.s.perfil === 'alugar' ? FAIXAS.aluguel : FAIXAS.compra;
       return { text: `${prefix}\nQual faixa de valor faz sentido para você?`, chips: opts.map(o => o.label) };
@@ -2031,18 +1936,29 @@ p{text-wrap:pretty}
       btn.disabled = true; btn.textContent = 'Enviando…';
       const data = Object.fromEntries(new FormData(form));
       data.tipoCadastro = form.dataset.kind;
+      const parceiro = form.dataset.kind === 'parceiro';
+      const nome = String(data.nome || '').trim().split(/\s+/)[0];
+      const waBtn = $('#lead-wa');
       try {
         if (CONFIG.leadUrl && CONFIG.online) {
           const res = await fetch(CONFIG.leadUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
           if (!res.ok) throw new Error(String(res.status));
+          $('#lead-success-title').textContent = nome ? `Recebido, ${nome}.` : 'Recebido.';
+          $('#lead-success-text').textContent = parceiro
+            ? 'Nossa equipe de parcerias te chama no WhatsApp em até 1 dia útil.'
+            : 'Um especialista vai te chamar no WhatsApp em até 1 dia útil para marcar a visita técnica.';
+          waBtn.hidden = true;
         } else {
-          await new Promise(r => setTimeout(r, 700)); // demo: sem backend
+          // sem servidor de cadastro: a mensagem segue pelo WhatsApp do Hub, ja preenchida, e so chega com o envio
+          const linhas = parceiro
+            ? ['Olá! Quero ser parceiro do AILogic Hub.', `Nome: ${data.nome}`, `Imobiliária: ${data.empresa}`, `CRECI: ${data.creci}`, `WhatsApp: ${data.whatsapp}`, `E-mail: ${data.email}`, `Cidade: ${data.cidade}`]
+            : ['Olá! Quero anunciar meu imóvel pelo AILogic Hub.', `Nome: ${data.nome}`, `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Tipo: ${data.tipo}`, `Quero: ${data.finalidade === 'locacao' ? 'alugar' : 'vender'}`, `Bairro: ${data.bairro}`, data.mensagem ? `Observações: ${data.mensagem}` : ''];
+          const url = waLink(linhas.filter(Boolean).join('\n'));
+          window.open(url, '_blank', 'noopener');
+          waBtn.href = url; waBtn.hidden = false;
+          $('#lead-success-title').textContent = nome ? `Falta um toque, ${nome}.` : 'Falta um toque.';
+          $('#lead-success-text').textContent = 'Abrimos o WhatsApp do Hub com a sua mensagem pronta. É só enviar por lá para ela chegar ao time. Se o WhatsApp não abriu, toque no botão abaixo.';
         }
-        const nome = String(data.nome || '').trim().split(/\s+/)[0];
-        $('#lead-success-title').textContent = nome ? `Recebido, ${nome}.` : 'Recebido.';
-        $('#lead-success-text').textContent = form.dataset.kind === 'parceiro'
-          ? 'Nossa equipe de parcerias te chama no WhatsApp em até 1 dia útil.'
-          : 'Um especialista vai te chamar no WhatsApp em até 1 dia útil para marcar a visita técnica.';
         form.reset();
         $('#lead-forms').hidden = true; $('#lead-success').hidden = false;
         $('#lead-success-title').focus();

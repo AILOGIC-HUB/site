@@ -33,12 +33,11 @@ Enquanto um arquivo não existe, a página não quebra:
 
 ## O que é demonstração
 
-- **Imóveis**: 9 imóveis demo no formato do `/api/vitrine`. Servida por http(s), a página tenta `GET /api/vitrine` e, se responder JSON, substitui os dados demo (grade, slides de destaque e galeria). Aceita um array ou `{imoveis|data|items: [...]}`.
+- **Imóveis**: 9 imóveis de exemplo no formato do `/api/vitrine`, marcados na tela como "Exemplo" (etiqueta nos cards, nos destaques do banner e no detalhe, mais um aviso na coleção). O botão do detalhe vira "Quero algo parecido" e a mensagem do WhatsApp não cita código inexistente. Servida por http(s), a página tenta `GET /api/vitrine` e, se responder JSON, troca os exemplos pelos imóveis reais e some com as marcações.
 - **Sam**: offline, segue um fluxo guiado (morar/investir/alugar → bairro → faixa de valor → indispensáveis → sugestões + WhatsApp). Servida por http(s), chama `POST /api/sam-web` com `{messages:[{role,content}]}` e espera `{reply, sugestoes}`. Se a API falhar, volta para o fluxo guiado.
-- **Formulários de lead** (Anunciar imóvel / Ser parceiro): validam e mostram sucesso, mas não enviam nada. Para enviar, defina `CONFIG.leadUrl` no script (POST JSON).
-- **Fotos de imóveis, bairros e depoimentos**: URLs do Unsplash, só ilustrativas.
-- **Depoimentos e números** ("1.240 famílias", "97%"...): textos de exemplo. **Troque por dados reais e depoimentos autorizados** antes de publicar.
-- **Links "Legal"** (Termos, Privacidade, Cookies): placeholders. Falta também o **número do CRECI** no rodapé.
+- **Formulários** (Anunciar imóvel / Ser parceiro): sem `CONFIG.leadUrl`, abrem o WhatsApp do Hub com a mensagem já preenchida (o contato só chega quando a pessoa envia). Com `CONFIG.leadUrl`, enviam por POST JSON.
+- **Fotos de imóveis e bairros**: URLs do Unsplash, só ilustrativas.
+- **Números e depoimentos**: foram retirados (eram exemplos). Voltam só com dados reais e depoimentos autorizados.
 
 ## Produção
 
