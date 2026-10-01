@@ -1,7 +1,7 @@
 # AI Logic Hub — landing page
 
 Um único `index.html` (HTML + CSS + JS inline, sem framework e sem build) + a pasta `assets/`.
-Abre com duplo-clique. São cerca de 135 KB (36 KB com gzip), sem contar as imagens.
+Abre com duplo-clique. São cerca de 173 KB (45 KB com gzip), sem contar as imagens.
 
 ## Antes de publicar: coloque os assets reais
 
@@ -14,20 +14,27 @@ A página usa os arquivos da marca pelos nomes abaixo. Eles **não estão neste 
 | `assets/favicon.png`, `assets/apple-touch-icon.png` | aba do navegador / iOS |
 | `assets/hero-1.webp` | primeiro slide do banner |
 | `assets/hero-2.webp`, `hero-3.webp`, `hero-4.webp` | os 3 slides de imóveis em destaque |
+| `assets/video-sam.mp4` | vídeo explicativo da conversa com o Sam (painel da coleção) |
+| `assets/video-sam-capa.jpg` | capa do vídeo |
 
 Enquanto um arquivo não existe, a página não quebra:
 - **hero-\*.webp**: cai para uma foto demo do Unsplash e, sem internet, para o gradiente azul→marinho da marca;
 - **logo**: mostra o nome em texto (fallback provisório, não é o design final);
-- **avatar do Sam**: mostra um "S" sobre o azul da marca.
+- **avatar do Sam**: mostra um "S" sobre o azul da marca;
+- **vídeo do Sam**: o play abre uma demonstração animada da conversa (marcada como "Demonstração");
+- **capa do vídeo**: usa uma foto demo do Unsplash.
 
 ## O que está pronto
 
 - Banner de abertura em carrossel horizontal de tela cheia (início, 3 imóveis em destaque, Sam e Anunciar): as fotos passam para o lado com parallax e Ken Burns, o texto entra a cada slide, autoplay de 7 s com barra de progresso e pausa, setas no desktop, arrastar no celular, gesto lateral no trackpad e ← → no teclado. Links como "Anunciar" levam direto ao slide certo.
-- Header que reage à rolagem, menu hambúrguer no mobile, botão flutuante do Sam.
-- Coleção com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), cards com zoom, favoritos e "Ver fotos".
+- Menu superior: **Parceiros** (abre Corretores, Imobiliárias e Indicadores de imóveis, cada um com o seu cadastro, e um "Já é parceiro? Entrar"), **Anuncie seu imóvel** (abre o cadastro do proprietário) e **Entrar** (acesso ao sistema do Hub). O botão "Falar com o Sam" continua no topo. No celular, os mesmos três acessos no menu hambúrguer.
+- Header que reage à rolagem e botão flutuante do Sam.
+- Coleção: painel "Três imóveis por vez. Só os que fazem sentido para você." com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), botões Ver imóveis / Falar com o Sam e o vídeo da conversa com o Sam ao lado.
+- Vitrine em duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar: a linha de cima anda para a esquerda e a de baixo para a direita. Pausa ao passar o mouse e no botão Pausar; setas nas pontas e arrastar no celular. A altura das fotos se ajusta para as duas linhas caberem na tela.
 - Modal de detalhe do imóvel (specs, descrição, **Agendar visita** via WhatsApp, Ver fotos, Perguntar ao Sam).
 - Galeria 2D (sem 3D/WebGL): setas, contador, miniaturas, teclado ← →, swipe, fecha no ×, ESC ou clique fora.
-- Números com contagem animada, "Como funciona" com linha de progresso, depoimentos em carrossel automático (pausa no hover/foco e botão de pausa), bairros que abrem o Sam já no contexto do bairro.
+- "Como funciona" com linha de progresso e cinco etapas: Curadoria → Visita → Documentação → Assinatura de contrato → Chave na mão.
+- Bairros que abrem o Sam já no contexto do bairro.
 - Acessibilidade: `lang="pt-BR"`, `alt`, `aria-label` nos botões de ícone, `role="dialog"` com foco preso e ESC, alvos de toque ≥ 44 px, `prefers-reduced-motion`.
 - Segurança: todo dado dinâmico passa por `esc()` antes de ir para o HTML, URLs de imagem passam por `safeUrl()`, nenhum `onclick` inline (delegação com `addEventListener`), e nada de PII no `localStorage` (só os IDs dos favoritos).
 
@@ -35,21 +42,26 @@ Enquanto um arquivo não existe, a página não quebra:
 
 - **Imóveis**: 9 imóveis de exemplo no formato do `/api/vitrine`, marcados na tela como "Exemplo" (etiqueta nos cards, nos destaques do banner e no detalhe, mais um aviso na coleção). O botão do detalhe vira "Quero algo parecido" e a mensagem do WhatsApp não cita código inexistente. Servida por http(s), a página tenta `GET /api/vitrine` e, se responder JSON, troca os exemplos pelos imóveis reais e some com as marcações.
 - **Sam**: offline, segue um fluxo guiado (morar/investir/alugar → bairro → faixa de valor → indispensáveis → sugestões + WhatsApp). Servida por http(s), chama `POST /api/sam-web` com `{messages:[{role,content}]}` e espera `{reply, sugestoes}`. Se a API falhar, volta para o fluxo guiado.
-- **Formulários** (Anunciar imóvel / Ser parceiro): sem `CONFIG.leadUrl`, abrem o WhatsApp do Hub com a mensagem já preenchida (o contato só chega quando a pessoa envia). Com `CONFIG.leadUrl`, enviam por POST JSON.
+- **Formulários** (Anunciar imóvel / Ser parceiro, este com o perfil Corretor, Imobiliária ou Indicador e campos próprios de cada um): sem `CONFIG.leadUrl`, abrem o WhatsApp do Hub com a mensagem já preenchida (o contato só chega quando a pessoa envia). Com `CONFIG.leadUrl`, enviam por POST JSON.
 - **Fotos de imóveis e bairros**: URLs do Unsplash, só ilustrativas.
 - **Números e depoimentos**: foram retirados (eram exemplos). Voltam só com dados reais e depoimentos autorizados.
 
 ## Produção
 
-- Configure tudo no objeto `CONFIG`, no início do `<script>` principal (`whatsapp`, `vitrineUrl`, `samUrl`, `leadUrl`).
+- Configure tudo no objeto `CONFIG`, no início do `<script>` principal:
+  - `whatsapp`, `vitrineUrl`, `samUrl`, `leadUrl`;
+  - `loginUrl`: destino do "Entrar". Hoje aponta para `https://ailogichub.app/` — **confirme o endereço do sistema**;
+  - `parceiros`: página própria de cada perfil (`corretor`, `imobiliaria`, `indicador`), se houver. Sem URL, o item abre o cadastro no próprio site;
+  - `videoSam`: caminho do vídeo (`assets/video-sam.mp4`).
 - A CSP hoje está em `report-only`; passe para **enforce** (cabeçalho `Content-Security-Policy`). Um ponto de partida para esta página:
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-aGxhg2ItIJZASrUvabAIC2IBiV3yQaMr5ULT2KiTsXE=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-vspCNI6RV78e7lD6VBeNfPptW8kCybpceo8JHWM+TK8=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
+  media-src 'self';
   connect-src 'self';
   object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
   ```
