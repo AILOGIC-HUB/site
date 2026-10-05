@@ -50,14 +50,14 @@ Enquanto um arquivo não existe, a página não quebra:
 
 - Configure tudo no objeto `CONFIG`, no início do `<script>` principal:
   - `whatsapp`, `vitrineUrl`, `samUrl`, `leadUrl`;
-  - `loginUrl`: destino do "Entrar" (acesso ao sistema do Hub): `https://plataforma-eta-three.vercel.app/`;
+  - `loginUrl`: destino do "Entrar" (acesso ao sistema do Hub): `https://www.ailogichuboficial.com/`;
   - `parceiros`: página própria de cada perfil (`corretor`, `imobiliaria`, `indicador`), se houver. Sem URL, o item abre o cadastro no próprio site;
   - `videoSam`: caminho do vídeo (`assets/video-sam.mp4`).
 - A CSP hoje está em `report-only`; passe para **enforce** (cabeçalho `Content-Security-Policy`). Um ponto de partida para esta página:
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-DJXcwa6Vb6J/oS2K85yGUMvDE/Jb+lKLReJaWUkzZRc=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-lLHTJpP20C0G3LOpYGlw5vebOQOIBPWc+Kil7I/Wz2Q=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
