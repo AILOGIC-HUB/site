@@ -277,40 +277,53 @@ p{text-wrap:pretty}
   .filters{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin-inline:calc(-1 * var(--gutter));padding:2px var(--gutter);scrollbar-width:none}
   .filters::-webkit-scrollbar{display:none}
 }
-.card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid #e3e8ee;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
-.card:hover{transform:translateY(-4px);box-shadow:0 28px 50px -28px rgba(7,17,31,.35)}
+.card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:var(--ch,320px);border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;isolation:isolate;cursor:pointer;color:#fff;background:var(--surface);box-shadow:0 24px 50px -30px rgba(0,0,0,.7);transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .4s ease}
+.card:hover{transform:translateY(-4px);border-color:rgba(76,198,255,.35);box-shadow:0 30px 60px -28px rgba(0,0,0,.85)}
 @keyframes cardIn{from{opacity:0;transform:translateY(26px)}}
-.card-media{position:relative;aspect-ratio:4/3;overflow:hidden}
-.card-media img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
-.card:hover .card-media img{transform:scale(1.06)}
-.tag{position:absolute;left:14px;top:14px;padding:7px 11px;border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(6,19,38,.66);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.fav{position:absolute;right:10px;top:8px;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:0;color:#fff;background:rgba(6,19,38,.45);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background-color .2s ease,transform .2s var(--ease)}
-.fav:hover{background:rgba(6,19,38,.7)}
+/* card da vitrine: foto inteira, informações por cima, ações na lateral */
+.card-photo{position:absolute;inset:0;z-index:-2}
+.card-photo img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.card:hover .card-photo img{transform:scale(1.06)}
+.card::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(6,19,38,.5) 0%,rgba(6,19,38,0) 26%,rgba(6,19,38,.1) 40%,rgba(6,19,38,.78) 64%,rgba(6,19,38,.96) 100%)}
+.card-pills{position:absolute;left:14px;top:14px;z-index:2;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 96px)}
+.pill{position:relative;display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 11px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(6,19,38,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.pill-match{border-color:rgba(76,198,255,.5);color:var(--cyan)}
+.pill-photos{padding:0 10px;font-size:12px;letter-spacing:0;text-transform:none;transition:background-color .2s ease,border-color .2s ease}
+.pill-photos::before{content:"";position:absolute;inset:-8px -4px}
+.pill-photos:hover{background:rgba(6,19,38,.9);border-color:#fff}
+.pill .i{width:15px;height:15px}
+.card-actions{position:absolute;right:6px;top:8px;z-index:2;display:flex;flex-direction:column;gap:2px}
+.act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:64px;min-height:44px;padding:4px 2px;border:0;border-radius:12px;background:transparent;color:#fff;font-size:10.5px;font-weight:500;line-height:1.15;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.65);transition:background-color .2s ease}
+.act:hover{background:rgba(6,19,38,.5)}
+.act .i{width:22px;height:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
 .fav[aria-pressed="true"] .i{fill:var(--heart);stroke:var(--heart)}
-.fav.pop{animation:pop .45s var(--ease)}
+.fav.pop .i{animation:pop .45s var(--ease)}
 @keyframes pop{40%{transform:scale(1.25)}}
+.card-info{display:flex;flex-direction:column;gap:3px;padding:0 16px 16px}
+.card-loc{display:flex;align-items:center;gap:5px;max-width:calc(100% - 64px);margin:0;font-size:12.5px;color:rgba(255,255,255,.88)}
+.card-loc span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-loc .i{width:14px;height:14px}
+.card-title{max-width:calc(100% - 64px);margin:0;font-size:20px;font-weight:600;line-height:1.2;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-title button{padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-align:left}
+/* o título cobre o card inteiro (alvo de toque grande); ações, selos e botões ficam por cima */
+.card-title button::after{content:"";position:absolute;inset:0;z-index:1}
+.card-specs{max-width:calc(100% - 64px);margin:0;font-size:13.5px;color:rgba(255,255,255,.86);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-price{margin:2px 0 0;font-size:21px;font-weight:700;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.card-cta{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 8px;border:1px solid transparent;border-radius:10px;font-size:13.5px;font-weight:500;white-space:nowrap;text-decoration:none;transition:background-color .2s ease,border-color .2s ease}
+.cta .i{width:17px;height:17px}
+.cta-ghost{border-color:rgba(255,255,255,.55);background:rgba(6,19,38,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff}
+.cta-ghost:hover{border-color:#fff;background:rgba(6,19,38,.6)}
+.cta-primary{background:var(--blue-deep);color:#fff}
+.cta-primary:hover{background:var(--blue)}
 .photos-btn{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.35);font-size:13px;font-weight:600;color:#fff;background:rgba(6,19,38,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background-color .2s ease,border-color .2s ease}
 .photos-btn:hover{background:rgba(6,19,38,.78);border-color:#fff}
 .photos-btn .i{width:18px;height:18px}
-.card-body{display:flex;flex-direction:column;gap:6px;flex:1;padding:20px 22px 20px}
-.card-loc{margin:0;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#5b6878}
-.card-title{margin:0;font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.035em}
-.card-title button{padding:0;border:0;background:none;text-align:left;font-weight:inherit;letter-spacing:inherit;color:inherit}
-/* o título cobre o card inteiro (alvo de toque grande); os botões internos ficam por cima */
-.card-title button::after{content:"";position:absolute;inset:0;z-index:1}
-.card .fav,.card .photos-btn,.card .arrow-btn{z-index:2}
-.card .arrow-btn{position:relative}
-.card-specs{margin:0;font-size:14px;color:var(--g600)}
-.card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid #edf1f5}
-.card-body .card-foot{margin-top:12px}
-.card-price{margin:0;font-size:18px;font-weight:700;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
-.arrow-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-light);background:#fff;color:var(--ink);transition:background-color .3s ease,color .3s ease,border-color .3s ease,transform .3s var(--ease)}
-.card:hover .arrow-btn{background:var(--ink);border-color:var(--ink);color:#fff;transform:translateX(2px)}
 .empty{padding:48px 20px;text-align:center;border:1px dashed var(--line-light);border-radius:16px;color:var(--g600)}
 .empty .btn{margin-top:18px}
 
 /* curadoria: painel com frase, filtros e vídeo */
-.colecao{background:#fff;padding-top:clamp(56px,7vw,96px)}
+.colecao{background:#fff;padding-block:clamp(56px,7vw,96px)}
 .curadoria{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:clamp(32px,5vw,72px);padding:clamp(24px,4.6vw,64px);border:1px solid #e7ecf1;border-radius:22px;background:var(--ice)}
 .curadoria-title{margin:0;font-size:clamp(32px,3.8vw,54px);font-weight:700;line-height:1.02;letter-spacing:-.055em;color:var(--ink)}
 .curadoria-title span{display:block;color:var(--blue-deep)}
@@ -339,39 +352,35 @@ p{text-wrap:pretty}
 @media (max-width:560px){.curadoria-actions .btn{flex-basis:100%}.play{width:64px;height:64px;margin:-32px 0 0 -32px}}
 
 /* vitrine: duas linhas de imóveis, três por vez, em carrossel contínuo */
-.vitrine{margin-top:clamp(40px,6vw,72px);scroll-margin-top:calc(var(--header-h) + 8px)}
-.vitrine-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;min-height:44px;margin-bottom:12px}
-.vitrine-bar .result-count{grid-column:2;margin:0}
-.vitrine-pause{grid-column:3;justify-self:end;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line-light);border-radius:999px;background:#fff;font-size:13px;font-weight:500;color:var(--ink);transition:border-color .2s ease}
-.vitrine-pause:hover{border-color:var(--ink)}
+.section-vitrine{position:relative;padding:32px 0 clamp(56px,7vw,88px);scroll-margin-top:var(--header-h);color:#fff;background:radial-gradient(70% 60% at 15% 0%,rgba(15,139,255,.16),transparent 60%),radial-gradient(60% 50% at 95% 100%,rgba(76,198,255,.08),transparent 60%),var(--ink)}
+.vitrine-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:50px;margin-bottom:12px}
+.vitrine-title{margin:0;font-size:clamp(19px,1.8vw,24px);font-weight:700;line-height:1.2;letter-spacing:-.03em}
+.vitrine-title span{color:var(--cyan)}
+.vitrine-bar .result-count{margin:2px 0 0;text-align:left;color:var(--g300)}
+.vitrine-pause{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06);font-size:13px;font-weight:500;color:#fff;transition:border-color .2s ease,background-color .2s ease}
+.vitrine-pause:hover{border-color:#fff;background:rgba(255,255,255,.1)}
 .vitrine-pause .i{width:15px;height:15px}
-/* altura da foto calculada para as duas linhas caberem na tela (card ≈ foto + 164px de texto) */
-.vrows{--per:3;--vgap:20px;--ph:clamp(130px,calc((100vh - var(--header-h) - 96px) / 2 - 164px),300px);display:grid;gap:var(--vgap)}
-@supports (height:100svh){.vrows{--ph:clamp(130px,calc((100svh - var(--header-h) - 96px) / 2 - 164px),300px)}}
+/* altura do card calculada para as duas linhas caberem na tela */
+.vrows{--per:3;--vgap:20px;--ch:clamp(280px,calc((100vh - var(--header-h) - 112px - var(--vgap)) / 2),420px);display:grid;gap:var(--vgap)}
+@supports (height:100svh){.vrows{--ch:clamp(280px,calc((100svh - var(--header-h) - 112px - var(--vgap)) / 2),420px)}}
 @media (max-width:1024px){.vrows{--per:2}}
-@media (max-width:640px){.vrows{--per:1;--vgap:14px;--ph:clamp(120px,calc((100svh - var(--header-h) - 86px) / 2 - 164px),240px)}.vitrine-pause span{display:none}.vitrine-pause{padding:0;width:44px;justify-content:center}}
+@media (max-width:640px){.section-vitrine{padding-top:20px}.vrows{--per:1;--vgap:14px;--ch:clamp(272px,calc((100svh - var(--header-h) - 104px - var(--vgap)) / 2),380px)}.vitrine-pause span{display:none}.vitrine-pause{padding:0;width:44px;justify-content:center}}
 .vrows{grid-template-columns:minmax(0,1fr)}
 .vrow{position:relative;min-width:0}
 .vrow-viewport{overflow:hidden;padding:8px 0 22px;margin:-8px 0 -22px;touch-action:pan-y}
 .vrow-track{display:flex;gap:var(--vgap);will-change:transform}
 .vrow-track > .card{flex:0 0 calc((100% - (var(--per) - 1) * var(--vgap)) / var(--per));min-width:0}
-.vrow-nav{position:absolute;top:calc(var(--ph) / 2);z-index:3;width:44px;height:44px;margin-top:-22px;display:grid;place-items:center;padding:0;border:1px solid var(--line-light);border-radius:50%;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 8px 24px -8px rgba(7,17,31,.35);opacity:0;transition:opacity .25s ease,background-color .2s ease}
+.vrow-nav{position:absolute;top:calc(var(--ch) / 2);z-index:3;width:44px;height:44px;margin-top:-22px;display:grid;place-items:center;padding:0;border:1px solid var(--line-light);border-radius:50%;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 8px 24px -8px rgba(7,17,31,.35);opacity:0;transition:opacity .25s ease,background-color .2s ease}
 .vrow-nav:hover{background:#fff}
 .vrow-prev{left:-14px}
 .vrow-next{right:-14px}
 .vrow:hover .vrow-nav,.vrow-nav:focus-visible{opacity:1}
 .vrow.is-static .vrow-nav{display:none}
 @media (hover:none){.vrow-nav{display:none}}
-.vrows .card-media{aspect-ratio:auto;height:var(--ph)}
-.vrows .card-body{gap:4px;padding:14px 18px}
-.vrows .card-title{font-size:18px}
-.vrows .card-loc,.vrows .card-title,.vrows .card-specs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vrows .card-specs{font-size:13.5px}
-.vrows .card-body .card-foot{margin-top:8px;padding-top:8px}
-.vrows .card-price{font-size:17px}
 .js .vrows:not(.is-in) .card{opacity:0}
 .vrows.is-in:not(.settled) .card{animation:cardIn .8s var(--ease-out) backwards;animation-delay:calc(var(--i,0) * 70ms)}
-.vitrine .demo-note{margin-top:28px}
+.section-vitrine .demo-note{margin-top:28px;border-color:rgba(255,255,255,.2);color:var(--g300)}
+.section-vitrine .empty{border-color:rgba(255,255,255,.2);color:var(--g300)}
 
 /* números */
 .stats{padding:clamp(64px,8vw,104px) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -666,6 +675,10 @@ p{text-wrap:pretty}
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5l11 6.5-11 6.5z"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/></symbol>
   <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4h7A1.5 1.5 0 0 1 14 5.5V21M14 10h4.5a1.5 1.5 0 0 1 1.5 1.5V21M3 21h18M7.5 8h3M7.5 12h3M7.5 16h3"/></symbol>
+  <symbol id="i-forward" viewBox="0 0 24 24"><path d="M14 5l6 6-6 6"/><path d="M20 11h-8.5A6.5 6.5 0 0 0 5 17.5V19"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M12 3.5v17M9.5 12h.01M14.5 12h.01"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2"/></symbol>
   <symbol id="i-share" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10M19.5 4.5L11 13M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
 </svg>
 
@@ -883,15 +896,20 @@ p{text-wrap:pretty}
             <figcaption><strong>Conheça a curadoria do Hub</strong><span>Veja como funciona a conversa com o Sam</span></figcaption>
           </figure>
         </div>
+      </div>
+    </section>
 
-        <div class="vitrine" id="vitrine">
+    <section class="section-vitrine" id="vitrine" aria-labelledby="vitrine-title">
+      <div class="wrap">
           <div class="vitrine-bar">
-            <p class="result-count" id="result-count" aria-live="polite"></p>
+            <div>
+              <h2 class="vitrine-title" id="vitrine-title">Imóveis selecionados <span>para você</span></h2>
+              <p class="result-count" id="result-count" aria-live="polite"></p>
+            </div>
             <button class="vitrine-pause" type="button" id="vitrine-pause" aria-label="Pausar a vitrine"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausar</span></button>
           </div>
           <div class="vrows" id="grid" role="region" aria-roledescription="carrossel" aria-label="Vitrine de imóveis"></div>
           <p class="demo-note" id="demo-note">Imóveis de exemplo, para mostrar a experiência. A seleção real entra aqui quando a curadoria do Hub estiver ligada ao site. Para ver o que está disponível hoje, fale com o Sam ou com o time pelo WhatsApp.</p>
-        </div>
       </div>
     </section>
 
@@ -1294,6 +1312,10 @@ p{text-wrap:pretty}
   const pedidoVisita = i => ehExemplo()
     ? `Olá! Vi no site o exemplo ${i.titulo} (${i.bairro}) e quero conhecer imóveis parecidos.`
     : `Olá! Quero agendar uma visita: ${i.titulo} (cód. ${i.codigo}).`;
+  const pedidoProposta = i => ehExemplo()
+    ? `Olá! Vi no site o exemplo ${i.titulo} (${i.bairro}) e quero conversar sobre uma proposta em um imóvel parecido.`
+    : `Olá! Quero fazer uma proposta para ${i.titulo} (cód. ${i.codigo}).`;
+  const fitsFaixa = (i, f) => !f || ((f.min === undefined || i.preco >= f.min * 0.9) && (f.max === undefined || i.preco <= f.max * 1.1));
   const byId = id => IMOVEIS.find(i => String(i.id) === String(id));
 
   /** Categorias dos filtros, derivadas dos campos reais da vitrine (ou de `categorias`, se a API enviar). */
@@ -1346,7 +1368,8 @@ p{text-wrap:pretty}
         preco: n(r.preco), area: n(r.area), quartos: n(r.quartos), suites: n(r.suites), banheiros: n(r.banheiros), vagas: n(r.vagas),
         bairro: String(r.bairro || ''), cidade: String(r.cidade || ''), descricao: String(r.descricao || ''),
         destaque: !!r.destaque, foto, fotos: fotos.length ? fotos : (foto ? [foto] : []),
-        imobiliaria: String(r.imobiliaria || ''), categorias: Array.isArray(r.categorias) ? r.categorias : undefined
+        imobiliaria: String(r.imobiliaria || ''), categorias: Array.isArray(r.categorias) ? r.categorias : undefined,
+        match: r.match === undefined || r.match === null || r.match === '' ? undefined : Number(r.match)
       };
     });
   }
@@ -1364,6 +1387,7 @@ p{text-wrap:pretty}
       const nota = $('#demo-note'); if (nota) nota.hidden = true;
       hydratePanels();
       renderGrid();
+      openFromHash();
     } catch { /* sem API: mantém os dados demo */ }
     finally { clearTimeout(t); }
   }
@@ -1422,6 +1446,7 @@ p{text-wrap:pretty}
   const heroDots = $('#hero-dots');
   const heroCount = $('#hero-count');
   const fab = $('#sam-fab');
+  const vitrineSec = $('#vitrine');
   const stepsWrap = $('#steps');
   const steps = $$('.step', stepsWrap);
   const SLIDE_MS = 1000;
@@ -1616,10 +1641,13 @@ p{text-wrap:pretty}
     const y = window.scrollY, vh = window.innerHeight;
     // leituras primeiro
     const stepsRect = stepsWrap.getBoundingClientRect();
+    const vitRect = vitrineSec.getBoundingClientRect();
     const vertical = mqSteps.matches;
 
     header.classList.toggle('is-scrolled', y > 8);
-    fab.classList.toggle('is-visible', !Sam.isOpen && y > heroH * (mqMobile.matches ? 0.85 : 0.6));
+    // o botão flutuante some enquanto a vitrine está atrás dele (não cobre "Fazer proposta")
+    const overVitrine = vitRect.top < vh - 90 && vitRect.bottom > vh - 10;
+    fab.classList.toggle('is-visible', !Sam.isOpen && !overVitrine && y > heroH * (mqMobile.matches ? 0.85 : 0.6));
     // parallax vertical sutil da foto do banner ao rolar a página
     if (!reduceMotion.matches && y <= heroH) hero.style.setProperty('--py', `${(y * 0.35).toFixed(1)}px`);
 
@@ -1688,24 +1716,67 @@ p{text-wrap:pretty}
     const img = sized(i.foto || fotos[0], 900);
     const alt = fotos.find(u => u !== i.foto);
     const faved = favs.has(String(i.id));
+    const id = esc(i.id), t = esc(i.titulo), m = matchLabel(i);
     return `
-      <article class="card" data-id="${esc(i.id)}" style="--i:${k}">
-        <div class="card-media media">
-          <img src="${esc(img)}" ${alt ? `data-alt-src="${esc(sized(alt, 900))}"` : ''} alt="${esc(`${i.titulo}, ${i.bairro}`)}" width="900" height="675" loading="lazy" decoding="async">
-          <span class="tag">${esc(tagOf(i))}${ehExemplo() ? ' · Exemplo' : ''}</span>
-          <button class="fav" type="button" data-action="fav" data-id="${esc(i.id)}" aria-pressed="${faved}" aria-label="Salvar ${esc(i.titulo)}">${ico('heart')}</button>
-          <button class="photos-btn" type="button" data-action="gallery" data-id="${esc(i.id)}">${ico('photos')} Ver fotos · ${fotos.length}</button>
+      <article class="card" data-id="${id}" style="--i:${k}">
+        <div class="card-photo media"><img src="${esc(img)}" ${alt ? `data-alt-src="${esc(sized(alt, 900))}"` : ''} alt="${esc(`${i.titulo}, ${i.bairro}`)}" width="900" height="1100" loading="lazy" decoding="async"></div>
+        <div class="card-pills">
+          <span class="pill pill-match"${m ? '' : ' hidden'}>${esc(m)}</span>
+          <span class="pill">${esc(tagOf(i))}${ehExemplo() ? ' · Exemplo' : ''}</span>
+          <button class="pill pill-photos" type="button" data-action="gallery" data-id="${id}" aria-label="Ver as ${fotos.length} fotos de ${t}">${ico('photos')}${fotos.length}</button>
         </div>
-        <div class="card-body">
-          <p class="card-loc">${esc(i.bairro)}${i.cidade ? ` · ${esc(i.cidade)}` : ''}</p>
-          <h3 class="card-title"><button type="button" data-action="details" data-id="${esc(i.id)}">${esc(i.titulo)}</button></h3>
-          <p class="card-specs">${esc(specsOf(i).join(' · '))}</p>
-          <div class="card-foot">
-            <p class="card-price">${esc(priceOf(i))}</p>
-            <button class="arrow-btn" type="button" data-action="details" data-id="${esc(i.id)}" aria-label="Ver detalhes de ${esc(i.titulo)}">${ico('arrow')}</button>
+        <div class="card-actions">
+          <button class="act fav" type="button" data-action="fav" data-id="${id}" aria-pressed="${faved}" aria-label="Salvar ${t}">${ico('heart')}<span aria-hidden="true">Salvar</span></button>
+          <button class="act" type="button" data-action="ask" data-id="${id}" aria-label="Perguntar ao Sam sobre ${t}">${ico('chat')}<span aria-hidden="true">Perguntar<br>ao Sam</span></button>
+          <button class="act" type="button" data-action="share" data-id="${id}" aria-label="Compartilhar ${t}">${ico('forward')}<span aria-hidden="true">Compartilhar</span></button>
+          <button class="act" type="button" data-action="details" data-id="${id}" aria-label="Ver detalhes de ${t}">${ico('doc')}<span aria-hidden="true">Detalhes</span></button>
+        </div>
+        <div class="card-info">
+          <p class="card-loc">${ico('pin')}<span>${esc(i.bairro)}${i.cidade ? ` • ${esc(i.cidade)}` : ''}</span></p>
+          <h3 class="card-title"><button type="button" data-action="details" data-id="${id}">${t}</button></h3>
+          <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
+          <p class="card-price">${esc(priceOf(i))}</p>
+          <div class="card-cta">
+            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(i)))}" target="_blank" rel="noopener">${ico('calendar')}Agendar visita</a>
+            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener">Fazer proposta</a>
           </div>
         </div>
       </article>`;
+  }
+  /** Selo de afinidade: percentual quando a vitrine do sistema envia `match`;
+      sem ele, "Combina com você" só depois que o Sam conhece o perfil (finalidade + bairro ou faixa). */
+  function matchLabel(i) {
+    if (Number.isFinite(i.match) && i.match > 0) return `${Math.round(i.match)}% match`;
+    const s = Sam.s;
+    if (!s.perfil || !(s.bairro || s.faixa)) return '';
+    const cat = s.perfil === 'alugar' ? 'alugar' : s.perfil === 'investir' ? 'investir' : 'morar';
+    if (!catsOf(i).has(cat)) return '';
+    if (s.bairro && norm(i.bairro) !== norm(s.bairro)) return '';
+    if (!fitsFaixa(i, s.faixa)) return '';
+    return 'Combina com você';
+  }
+  function refreshMatches() {
+    $$('.card', grid).forEach(c => {
+      const it = byId(c.dataset.id), pill = $('.pill-match', c);
+      if (!it || !pill) return;
+      const m = matchLabel(it);
+      pill.textContent = m; pill.hidden = !m;
+    });
+  }
+  async function shareImovel(item) {
+    if (!item) return;
+    const url = `${location.href.split('#')[0]}#imovel-${encodeURIComponent(item.id)}`;
+    try {
+      if (navigator.share) { await navigator.share({ title: `${item.titulo} · AI Logic Hub`, text: `${item.titulo}, ${item.bairro} — ${priceOf(item)}`, url }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url); toast('Link do imóvel copiado'); }
+    catch { toast('Não deu para copiar o link agora'); }
+  }
+  /** Link compartilhado (#imovel-<id>) abre o detalhe do imóvel. */
+  function openFromHash() {
+    const m = /^#imovel-(.+)$/.exec(location.hash);
+    const item = m && byId(decodeURIComponent(m[1]));
+    if (item && !detail.classList.contains('is-open')) openDetail(item);
   }
   /* Vitrine: duas linhas, três imóveis por vez em cada uma (2 no tablet, 1 no celular), girando sem parar.
      A linha de cima anda para a esquerda e a de baixo para a direita, em tempos alternados. */
@@ -1777,7 +1848,8 @@ p{text-wrap:pretty}
     V.tick++;
     const row = V.rows[V.tick % 2];
     if (!row || V.paused || reduceMotion.matches || !V.inView || document.hidden || stack.length) return;
-    if (row.hover || row.el.matches(':focus-within')) return;
+    const a = document.activeElement;
+    if (row.hover || (row.el.contains(a) && a.matches(':focus-visible'))) return; // pausa só com foco de teclado
     stepRow(row, row.dir);
   }, 2400);
   grid.addEventListener('click', e => {
@@ -2029,6 +2101,7 @@ p{text-wrap:pretty}
           if (r.text) { this.bubble(r.text, 'sam'); this.messages.push({ role: 'assistant', content: r.text }); }
           if (r.cards) this.cards(r.cards);
           this.setChips(r.chips);
+          refreshMatches();
           res();
         }, reduceMotion.matches ? 150 : wait);
       });
@@ -2154,7 +2227,7 @@ p{text-wrap:pretty}
       const s = this.s;
       const cat = s.perfil === 'alugar' ? 'alugar' : s.perfil === 'investir' ? 'investir' : 'morar';
       const pool = IMOVEIS.filter(i => catsOf(i).has(cat));
-      const inF = i => !s.faixa || ((s.faixa.min === undefined || i.preco >= s.faixa.min * 0.9) && (s.faixa.max === undefined || i.preco <= s.faixa.max * 1.1));
+      const inF = i => fitsFaixa(i, s.faixa);
       const inB = i => !s.bairro || norm(i.bairro) === norm(s.bairro);
       let m = pool.filter(i => inB(i) && inF(i)), note = '';
       if (!m.length && s.bairro) { m = pool.filter(inF); if (m.length) note = `Em ${s.bairro} não tenho nada nessa faixa agora, mas estes chegam perto do que você descreveu:`; }
@@ -2407,6 +2480,7 @@ p{text-wrap:pretty}
       case 'details': openDetail(byId(id)); break;
       case 'gallery': openGallery(byId(id)); break;
       case 'fav': toggleFav(id, a); break;
+      case 'share': shareImovel(byId(id)); break;
       case 'lead': closeDrop(); closeMenu(); openLead(a.dataset.tab); break;
       case 'parceiro': closeDrop(); closeMenu(); openLead('parceiro', a.dataset.perfil); break;
       case 'video': openVideo(); break;
@@ -2433,6 +2507,7 @@ p{text-wrap:pretty}
   hydratePanels();
   const hashSlide = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
   if (hashSlide && hashSlide.classList.contains('panel')) Hero.go(Hero.list().indexOf(hashSlide), 1, { instant: true });
+  openFromHash();
   // o primeiro slide entra animado depois da primeira pintura
   const firstSlide = Hero.list()[Hero.cur];
   firstSlide.classList.remove('is-active');

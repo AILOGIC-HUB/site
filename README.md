@@ -1,7 +1,7 @@
 # AI Logic Hub — landing page
 
 Um único `index.html` (HTML + CSS + JS inline, sem framework e sem build) + a pasta `assets/`.
-Abre com duplo-clique. São cerca de 173 KB (45 KB com gzip), sem contar as imagens.
+Abre com duplo-clique. São cerca de 179 KB (47 KB com gzip), sem contar as imagens.
 
 ## Antes de publicar: coloque os assets reais
 
@@ -30,7 +30,9 @@ Enquanto um arquivo não existe, a página não quebra:
 - Menu superior: **Parceiros** (abre Corretores, Imobiliárias e Indicadores de imóveis, cada um com o seu cadastro, e um "Já é parceiro? Entrar"), **Anuncie seu imóvel** (abre o cadastro do proprietário) e **Entrar** (acesso ao sistema do Hub). O botão "Falar com o Sam" continua no topo. No celular, os mesmos três acessos no menu hambúrguer.
 - Header que reage à rolagem e botão flutuante do Sam.
 - Coleção: painel "Três imóveis por vez. Só os que fazem sentido para você." com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), botões Ver imóveis / Falar com o Sam e o vídeo da conversa com o Sam ao lado.
-- Vitrine em duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar: a linha de cima anda para a esquerda e a de baixo para a direita. Pausa ao passar o mouse e no botão Pausar; setas nas pontas e arrastar no celular. A altura das fotos se ajusta para as duas linhas caberem na tela.
+- Vitrine "Imóveis selecionados para você" numa faixa escura: duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar (a linha de cima anda para a esquerda e a de baixo para a direita). Pausa ao passar o mouse, com foco de teclado e no botão Pausar; setas nas pontas e arrastar no celular. A altura dos cards se ajusta para as duas linhas caberem na tela.
+- Cards com a foto inteira e as informações por cima: selo da categoria e contador de fotos; ações na lateral (Salvar, Perguntar ao Sam, Compartilhar, Detalhes); localização, título, medidas e preço; botões **Agendar visita** e **Fazer proposta** pelo WhatsApp. Compartilhar usa o compartilhamento do celular ou copia o link, e o link (`#imovel-<id>`) abre o detalhe do imóvel.
+- Selo de afinidade: "Combina com você" aparece depois que o Sam conhece o perfil (finalidade + bairro ou faixa); se a vitrine do sistema enviar o campo `match`, o selo mostra o percentual ("94% match").
 - Modal de detalhe do imóvel (specs, descrição, **Agendar visita** via WhatsApp, Ver fotos, Perguntar ao Sam).
 - Galeria 2D (sem 3D/WebGL): setas, contador, miniaturas, teclado ← →, swipe, fecha no ×, ESC ou clique fora.
 - "Como funciona" com linha de progresso e cinco etapas: Conversa → Curadoria → Visita → Documentação e contrato → Chave na mão, cada uma com uma frase de destaque e um texto de apoio.
@@ -57,7 +59,7 @@ Enquanto um arquivo não existe, a página não quebra:
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-lLHTJpP20C0G3LOpYGlw5vebOQOIBPWc+Kil7I/Wz2Q=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-H+2awtvGlYcmYJocp9ySA3szIhcIt2eEmBmnVRtHgsQ=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
