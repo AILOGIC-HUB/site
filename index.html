@@ -396,11 +396,12 @@ p{text-wrap:pretty}
 .step.is-done .step-num{border-color:var(--cyan);color:#fff;background:#0b2340;box-shadow:0 0 0 6px rgba(76,198,255,.08)}
 .step h3{margin:0 0 8px;font-size:20px;font-weight:700;letter-spacing:-.035em}
 .step p{margin:0;font-size:15px;color:var(--g300)}
+.step .step-lead{margin:0 0 6px;font-size:15.5px;font-weight:600;line-height:1.4;color:#fff}
 .how-cta{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:clamp(48px,6vw,72px)}
 @media (max-width:860px){
   .steps{grid-template-columns:minmax(0,1fr);gap:36px}
   .step{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:20px;text-align:left;padding:0}
-  .step-num{grid-row:span 2;margin:0}
+  .step-num{grid-row:span 3;margin:0}
   .step h3{margin:14px 0 6px}
   .steps-line{left:27px;right:auto;top:28px;bottom:28px;width:2px;height:auto}
   .steps-fill{transform-origin:center top;transform:scaleY(var(--p))}
@@ -904,11 +905,11 @@ p{text-wrap:pretty}
         <div class="steps-wrap" id="steps">
           <div class="steps-line" aria-hidden="true"><span class="steps-fill"></span></div>
           <ol class="steps">
-            <li class="step"><span class="step-num">01</span><h3>Curadoria</h3><p>Você conta como vive, não só quantos quartos precisa. Separamos poucos imóveis, e bons.</p></li>
-            <li class="step"><span class="step-num">02</span><h3>Visita</h3><p>No seu horário. Vamos junto e contamos o que o anúncio não conta.</p></li>
-            <li class="step"><span class="step-num">03</span><h3>Documentação</h3><p>Documentação do imóvel conferida antes de qualquer proposta.</p></li>
-            <li class="step"><span class="step-num">04</span><h3>Assinatura de contrato</h3><p>Documentos conferidos, pagamentos feitos e contrato assinado.</p></li>
-            <li class="step"><span class="step-num">05</span><h3>Chave na mão</h3><p>Entrega das chaves e conclusão do processo.</p></li>
+            <li class="step"><span class="step-num">01</span><h3>Conversa</h3><p class="step-lead">Tudo começa com uma boa conversa.</p><p>Conte ao Sam como você vive e do que não abre mão. Sem formulários, sem filtros.</p></li>
+            <li class="step"><span class="step-num">02</span><h3>Curadoria</h3><p class="step-lead">Menos opções. As certas.</p><p>O Sam seleciona apenas os imóveis que fazem sentido para a sua vida.</p></li>
+            <li class="step"><span class="step-num">03</span><h3>Visita</h3><p class="step-lead">Veja além do anúncio.</p><p>Você escolhe o dia. Um corretor especialista revela o que nenhuma foto entrega.</p></li>
+            <li class="step"><span class="step-num">04</span><h3>Documentação e contrato</h3><p class="step-lead">Documentos conferidos. Contrato assinado.</p><p>Analisamos a documentação e conduzimos o contrato até a assinatura, sem surpresas pelo caminho.</p></li>
+            <li class="step"><span class="step-num">05</span><h3>Chave na mão</h3><p class="step-lead">Agora, é só começar a viver.</p><p>Cuidamos de cada detalhe final. A você, cabe escolher o dia da mudança.</p></li>
           </ol>
         </div>
         <div class="how-cta" data-reveal>

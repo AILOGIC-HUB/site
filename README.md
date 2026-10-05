@@ -33,7 +33,7 @@ Enquanto um arquivo não existe, a página não quebra:
 - Vitrine em duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar: a linha de cima anda para a esquerda e a de baixo para a direita. Pausa ao passar o mouse e no botão Pausar; setas nas pontas e arrastar no celular. A altura das fotos se ajusta para as duas linhas caberem na tela.
 - Modal de detalhe do imóvel (specs, descrição, **Agendar visita** via WhatsApp, Ver fotos, Perguntar ao Sam).
 - Galeria 2D (sem 3D/WebGL): setas, contador, miniaturas, teclado ← →, swipe, fecha no ×, ESC ou clique fora.
-- "Como funciona" com linha de progresso e cinco etapas: Curadoria → Visita → Documentação → Assinatura de contrato → Chave na mão.
+- "Como funciona" com linha de progresso e cinco etapas: Conversa → Curadoria → Visita → Documentação e contrato → Chave na mão, cada uma com uma frase de destaque e um texto de apoio.
 - Bairros que abrem o Sam já no contexto do bairro.
 - Acessibilidade: `lang="pt-BR"`, `alt`, `aria-label` nos botões de ícone, `role="dialog"` com foco preso e ESC, alvos de toque ≥ 44 px, `prefers-reduced-motion`.
 - Segurança: todo dado dinâmico passa por `esc()` antes de ir para o HTML, URLs de imagem passam por `safeUrl()`, nenhum `onclick` inline (delegação com `addEventListener`), e nada de PII no `localStorage` (só os IDs dos favoritos).
