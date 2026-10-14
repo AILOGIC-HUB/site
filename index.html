@@ -194,6 +194,23 @@ p{text-wrap:pretty}
 .panel-meta span + span::before{content:"";position:absolute;left:0;top:50%;width:1px;height:12px;margin-top:-6px;background:rgba(255,255,255,.4)}
 .panel-meta .price{font-weight:700}
 .panel-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+/* Sam no centro do banner: campo grande, estilo conversa (pedido da diretoria, 13/10/2026) */
+.sam-ask{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;gap:14px}
+.sam-ask-box{width:100%;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 14px;border-radius:999px;background:rgba(6,19,38,.55);border:1px solid rgba(255,255,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);transition:border-color .25s ease,background-color .25s ease}
+.sam-ask-box:focus-within{border-color:rgba(76,198,255,.75);background:rgba(6,19,38,.72)}
+.sam-ask-box .avatar{width:40px;height:40px}
+.sam-ask-box .avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.sam-ask-box input{flex:1;min-width:0;height:48px;border:0;background:none;color:#fff;font:inherit;font-size:clamp(16px,1.5vw,18px)}
+.sam-ask-box input::placeholder{color:rgba(255,255,255,.72)}
+.sam-ask-box input:focus{outline:none}
+.sam-ask-send{flex:none;width:52px;height:52px;border:0;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;cursor:pointer;transition:background-color .2s ease,transform .15s ease}
+.sam-ask-send:hover{background:var(--blue-deep)}
+.sam-ask-send:active{transform:scale(.94)}
+.sam-ask-send .i{width:20px;height:20px}
+.sam-ask-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.sam-ask-chips button,.sam-ask-chips a{min-height:38px;padding:0 16px;border-radius:999px;display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:13.5px;font-weight:500;text-decoration:none;cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background-color .2s ease}
+.sam-ask-chips button:hover,.sam-ask-chips a:hover{background:rgba(255,255,255,.22)}
+.sam-ask-chips a{border-color:transparent;background:none;text-decoration:underline;text-underline-offset:3px}
 .panel .btn{width:256px}
 .sam-intro{display:inline-flex;align-items:center;gap:12px;margin-bottom:26px;padding:6px 16px 6px 6px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:500}
 .sam-intro .avatar{width:40px;height:40px}
@@ -241,6 +258,11 @@ p{text-wrap:pretty}
   .panel-inner{padding:calc(var(--header-h) + 5vh) var(--gutter) calc(64px + 2vh)}
   .panel-actions{flex-direction:column;align-items:stretch;width:100%;max-width:340px;gap:12px}
   .panel .btn{width:100%}
+  .sam-ask-box{padding:8px 8px 8px 10px;gap:8px}
+  .sam-ask-box .avatar{width:34px;height:34px}
+  .sam-ask-box input{height:44px}
+  .sam-ask-send{width:46px;height:46px}
+  .sam-ask-chips button:nth-child(3){display:none}
   .panel-meta{font-size:13.5px}
   .panel-meta span{padding:0 10px}
   .hero-dot{width:38px}
@@ -562,6 +584,11 @@ p{text-wrap:pretty}
 .perfil-opts input:checked + span{border-color:var(--cyan);background:rgba(76,198,255,.12);color:#fff}
 .perfil-opts input:focus-visible + span{outline:2px solid var(--cyan);outline-offset:2px}
 .opt{text-transform:none;letter-spacing:0;font-weight:400}
+.consent{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;margin-top:16px;font-size:13px;line-height:1.45;color:var(--g200);cursor:pointer}
+.consent input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--blue)}
+.consent a{color:var(--cyan)}
+.consent .field-error{grid-column:2}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
 .form-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:22px}
 .form-foot small{flex:1;min-width:200px;font-size:12.5px;color:var(--g400)}
 @media (max-width:560px){.fields{grid-template-columns:1fr}.form-foot .btn{width:100%}}
@@ -748,10 +775,20 @@ p{text-wrap:pretty}
           <h2 class="panel-title reveal d1">Encontre o imóvel certo para você.</h2>
           <p class="panel-sub reveal d2">Imóveis de alto padrão em São Paulo, escolhidos por quem conhece cada rua. E o Sam, que responde na hora — inclusive às onze da noite.</p>
         </div>
-        <div class="panel-actions reveal d3">
-          <a class="btn btn-light" href="#imoveis">Ver detalhes</a>
-          <button class="btn btn-glass" type="button" data-action="sam">Falar com o Sam</button>
-        </div>
+        <form class="sam-ask reveal d3" id="sam-ask" role="search" aria-label="Pergunte ao Sam">
+          <div class="sam-ask-box">
+            <span class="avatar" aria-hidden="true"><img src="assets/sam-avatar.png" alt="" width="64" height="64" data-fallback="avatar"><i class="online"></i></span>
+            <label class="sr-only" for="sam-ask-input">Conte ao Sam o que você procura</label>
+            <input id="sam-ask-input" name="q" type="text" autocomplete="off" maxlength="600" enterkeyhint="send" placeholder="Conte ao Sam o que você procura…">
+            <button class="sam-ask-send" type="submit" aria-label="Enviar para o Sam"><svg class="i" aria-hidden="true"><use href="#i-send"/></svg></button>
+          </div>
+          <div class="sam-ask-chips">
+            <button type="button" data-ask="Procuro um apartamento de 3 quartos para morar">3 quartos para morar</button>
+            <button type="button" data-ask="Quero alugar um apartamento perto do metrô">Alugar perto do metrô</button>
+            <button type="button" data-ask="Quero investir em um imóvel">Quero investir</button>
+            <a href="#imoveis">Ver a coleção</a>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -1094,6 +1131,8 @@ p{text-wrap:pretty}
           <div class="field full"><label for="a-bairro">Bairro</label><input id="a-bairro" name="bairro" autocomplete="address-level3" required maxlength="60" data-msg="Em qual bairro fica?"><p class="field-error" aria-live="polite"></p></div>
           <div class="field full"><label for="a-msg">Algo que devemos saber?</label><textarea id="a-msg" name="mensagem" maxlength="600" placeholder="Metragem, andar, se está ocupado…"></textarea></div>
         </div>
+        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre este anúncio. <a href="https://www.ailogichuboficial.com/privacidade" target="_blank" rel="noopener">Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
+        <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-foot">
           <small>Usamos seus dados só para falar sobre este anúncio.</small>
           <button class="btn btn-primary" type="submit">Enviar</button>
@@ -1120,6 +1159,8 @@ p{text-wrap:pretty}
           <div class="field"><label for="p-cidade">Cidade</label><input id="p-cidade" name="cidade" autocomplete="address-level2" required maxlength="60" data-msg="Em qual cidade?"><p class="field-error" aria-live="polite"></p></div>
           <div class="field full" data-perfis="indicador" data-req="indicador"><label for="p-indica" data-label="Qual imóvel você quer indicar?">Qual imóvel você quer indicar?</label><textarea id="p-indica" name="indicacao" maxlength="600" data-msg="Conte qual imóvel você quer indicar." placeholder="Bairro ou endereço, tipo do imóvel, se o dono já sabe…"></textarea><p class="field-error" aria-live="polite"></p></div>
         </div>
+        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre esta parceria. <a href="https://www.ailogichuboficial.com/privacidade" target="_blank" rel="noopener">Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
+        <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-foot">
           <small>Retornamos em até 1 dia útil.</small>
           <button class="btn btn-primary" type="submit" id="p-submit">Quero ser parceiro</button>
@@ -1199,13 +1240,16 @@ p{text-wrap:pretty}
   'use strict';
 
   /* ================= CONFIG ================= */
+  // Sistema do Hub: imóveis reais, Sam e contatos. Na prévia local (localhost) as chamadas vão para /api do próprio servidor.
+  const HUB = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '' : 'https://www.ailogichuboficial.com';
   const CONFIG = {
     whatsapp: '5511936238387',
-    vitrineUrl: '/api/vitrine',   // produção: substitui os dados demo automaticamente
-    samUrl: '/api/sam-web',       // produção: POST {messages:[{role,content}]} -> {reply, sugestoes}
-    leadUrl: null,                // produção: defina o endpoint de leads (ex.: '/api/leads')
+    vitrineUrl: HUB + '/api/vitrine',   // imóveis publicados no Hub; enquanto não houver nenhum, ficam os exemplos
+    samUrl: HUB + '/api/sam-web',       // POST {messages:[{role,content}]} -> {reply, sugestoes}; a conversa vira lead no Hub
+    leadUrl: HUB + '/api/proposta?action=lead_site', // formulários: o contato entra em Leads no Hub; se falhar, segue pelo WhatsApp
     loginUrl: 'https://www.ailogichuboficial.com/', // menu "Entrar": acesso ao sistema do Hub
-    parceiros: { corretor: null, imobiliaria: null, indicador: null }, // página própria de cada perfil, se houver; sem URL abre o cadastro no site
+    // corretor e imobiliária criam o acesso no cadastro do Hub (aprovado pela diretoria); indicador usa o formulário do site
+    parceiros: { corretor: 'https://www.ailogichuboficial.com/cadastro?perfil=corretor', imobiliaria: 'https://www.ailogichuboficial.com/cadastro?perfil=imobiliaria', indicador: null },
     videoSam: 'assets/video-sam.mp4',      // vídeo "como funciona a conversa com o Sam"; sem o arquivo, mostra a demonstração animada
     online: /^https?:$/.test(location.protocol)
   };
@@ -1518,7 +1562,9 @@ p{text-wrap:pretty}
       const kbFocus = !!a && hero.contains(a) && a.matches(':focus-visible');
       const auto = !reduceMotion.matches && !this.userPaused;
       hero.classList.toggle('no-auto', !auto);
-      hero.classList.toggle('is-paused', !this.inView || this.dragging || stack.length > 0 || kbFocus || document.hidden);
+      const ask = document.getElementById('sam-ask-input');
+      const escrevendo = !!ask && (ask === a || ask.value.trim() !== '');   // não troca de slide com a pessoa digitando para o Sam
+      hero.classList.toggle('is-paused', !this.inView || this.dragging || stack.length > 0 || kbFocus || escrevendo || document.hidden);
       track.setAttribute('aria-live', auto ? 'off' : 'polite');
       const t = $('[data-hero="toggle"]', hero);
       t.setAttribute('aria-label', this.userPaused ? 'Retomar destaques' : 'Pausar destaques');
@@ -2009,8 +2055,9 @@ p{text-wrap:pretty}
       if (ctx.fromMenu) closeDialog($('#menu'), { restoreFocus: false });
       if (!this.started) {
         this.started = true;
-        if (!ctx.imovel && !ctx.bairro) this.say({ text: 'Oi! Eu sou o Sam, da AI Logic Hub.\nVocê está procurando um imóvel para morar, investir ou alugar?', chips: chipsPerfil }, 350);
+        if (!ctx.imovel && !ctx.bairro && !ctx.pergunta) this.say({ text: 'Oi! Eu sou o Sam, da AI Logic Hub.\nVocê está procurando um imóvel para morar, investir ou alugar?', chips: chipsPerfil }, 350);
       }
+      if (ctx.pergunta) this.user(ctx.pergunta);
       if (ctx.imovel) this.user(`Tenho uma dúvida sobre ${ctx.imovel.titulo} (cód. ${ctx.imovel.codigo}).`, { imovel: ctx.imovel });
       if (ctx.bairro) this.user(`Quero conhecer imóveis em ${ctx.bairro}.`, { bairro: ctx.bairro });
       this.isOpen = true;
@@ -2241,6 +2288,12 @@ p{text-wrap:pretty}
   };
   onClose.set(samEl, () => { Sam.isOpen = false; samEl.classList.remove('is-open'); requestUpdate(); });
 
+  const askForm = $('#sam-ask'), askInput = $('#sam-ask-input');
+  if (window.matchMedia('(max-width:640px)').matches) askInput.placeholder = 'Diga ao Sam o que procura…';
+  function perguntar(t) { askInput.value = ''; Hero.sync(); Sam.open(t ? { pergunta: t } : {}); }
+  askForm.addEventListener('submit', e => { e.preventDefault(); perguntar(askInput.value.trim()); });
+  askForm.addEventListener('click', e => { const b = e.target.closest('[data-ask]'); if (b) perguntar(b.dataset.ask); });
+  askInput.addEventListener('input', () => Hero.sync());
   $('#sam-form').addEventListener('submit', e => { e.preventDefault(); const v = input.value; input.value = ''; autosize(); Sam.user(v); });
   input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#sam-form').requestSubmit(); } });
   function autosize() { input.style.height = 'auto'; input.style.height = `${Math.min(120, input.scrollHeight)}px`; }
@@ -2324,21 +2377,33 @@ p{text-wrap:pretty}
       const parceiro = form.dataset.kind === 'parceiro';
       const nome = String(data.nome || '').trim().split(/\s+/)[0];
       const waBtn = $('#lead-wa');
+      const linhas = (parceiro
+        ? [data.perfil === 'indicador' ? 'Olá! Quero indicar um imóvel para o AILogic Hub.' : 'Olá! Quero ser parceiro do AILogic Hub.', `Perfil: ${(PERFIS[data.perfil] || PERFIS.corretor).nome}`, `Nome: ${data.nome}`, data.empresa ? `Imobiliária: ${data.empresa}` : '', data.creci ? `CRECI: ${data.creci}` : '', `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Cidade: ${data.cidade}`, data.indicacao ? `Imóvel indicado: ${data.indicacao}` : '']
+        : ['Olá! Quero anunciar meu imóvel pelo AILogic Hub.', `Nome: ${data.nome}`, `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Tipo: ${data.tipo}`, `Quero: ${data.finalidade === 'locacao' ? 'alugar' : 'vender'}`, `Bairro: ${data.bairro}`, data.mensagem ? `Observações: ${data.mensagem}` : '']).filter(Boolean);
       try {
+        // 1º: o contato entra direto em Leads no Hub; sem resposta do Hub, segue pelo WhatsApp (nada se perde)
+        let noHub = false;
         if (CONFIG.leadUrl && CONFIG.online) {
-          const res = await fetch(CONFIG.leadUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-          if (!res.ok) throw new Error(String(res.status));
+          try {
+            const res = await fetch(CONFIG.leadUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+              nome: String(data.nome || '').trim(), whatsapp: String(data.whatsapp || ''), email: String(data.email || '').trim(),
+              tipo: parceiro ? (data.perfil === 'indicador' ? 'indicador' : 'parceiro') : 'proprietario', origem: 'site-formulario',
+              mensagem: linhas.slice(1).filter(l => !/^(Nome|WhatsApp|E-mail):/.test(l)).join(' · ').slice(0, 500),
+              aceite: data.aceite === 'on', hp: String(data.hp || '') }) });
+            const j = await res.json().catch(() => ({}));
+            if (res.status === 400 && j.error) { toast(j.error); return; }
+            noHub = res.ok && j.ok !== false;
+          } catch { noHub = false; }
+        }
+        if (noHub) {
           $('#lead-success-title').textContent = nome ? `Recebido, ${nome}.` : 'Recebido.';
           $('#lead-success-text').textContent = parceiro
             ? 'Nossa equipe de parcerias te chama no WhatsApp em até 1 dia útil.'
             : 'Um especialista vai te chamar no WhatsApp em até 1 dia útil para marcar a visita técnica.';
           waBtn.hidden = true;
         } else {
-          // sem servidor de cadastro: a mensagem segue pelo WhatsApp do Hub, ja preenchida, e so chega com o envio
-          const linhas = parceiro
-            ? [data.perfil === 'indicador' ? 'Olá! Quero indicar um imóvel para o AILogic Hub.' : 'Olá! Quero ser parceiro do AILogic Hub.', `Perfil: ${(PERFIS[data.perfil] || PERFIS.corretor).nome}`, `Nome: ${data.nome}`, data.empresa ? `Imobiliária: ${data.empresa}` : '', data.creci ? `CRECI: ${data.creci}` : '', `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Cidade: ${data.cidade}`, data.indicacao ? `Imóvel indicado: ${data.indicacao}` : '']
-            : ['Olá! Quero anunciar meu imóvel pelo AILogic Hub.', `Nome: ${data.nome}`, `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Tipo: ${data.tipo}`, `Quero: ${data.finalidade === 'locacao' ? 'alugar' : 'vender'}`, `Bairro: ${data.bairro}`, data.mensagem ? `Observações: ${data.mensagem}` : ''];
-          const url = waLink(linhas.filter(Boolean).join('\n'));
+          // sem o Hub: a mensagem segue pelo WhatsApp do Hub, ja preenchida, e so chega com o envio
+          const url = waLink(linhas.join('\n'));
           window.open(url, '_blank', 'noopener');
           waBtn.href = url; waBtn.hidden = false;
           $('#lead-success-title').textContent = nome ? `Falta um toque, ${nome}.` : 'Falta um toque.';

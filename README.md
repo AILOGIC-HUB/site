@@ -3,9 +3,9 @@
 Um único `index.html` (HTML + CSS + JS inline, sem framework e sem build) + a pasta `assets/`.
 Abre com duplo-clique. São cerca de 179 KB (47 KB com gzip), sem contar as imagens.
 
-## Antes de publicar: coloque os assets reais
+## Assets da marca
 
-A página usa os arquivos da marca pelos nomes abaixo. Eles **não estão neste repositório**: copie-os para `assets/`.
+Os arquivos da marca ficam em `assets/` (os mesmos do sistema do Hub). Só o vídeo do Sam ainda não existe.
 
 | Arquivo | Onde aparece |
 |---|---|
@@ -27,7 +27,8 @@ Enquanto um arquivo não existe, a página não quebra:
 ## O que está pronto
 
 - Banner de abertura em carrossel horizontal de tela cheia (início, 3 imóveis em destaque, Sam e Anunciar): as fotos passam para o lado com parallax e Ken Burns, o texto entra a cada slide, autoplay de 7 s com barra de progresso e pausa, setas no desktop, arrastar no celular, gesto lateral no trackpad e ← → no teclado. Links como "Anunciar" levam direto ao slide certo.
-- Menu superior: **Parceiros** (abre Corretores, Imobiliárias e Indicadores de imóveis, cada um com o seu cadastro, e um "Já é parceiro? Entrar"), **Anuncie seu imóvel** (abre o cadastro do proprietário) e **Entrar** (acesso ao sistema do Hub). O botão "Falar com o Sam" continua no topo. No celular, os mesmos três acessos no menu hambúrguer.
+- **Sam no centro do banner** (primeiro slide): campo grande no estilo de conversa, com três sugestões prontas. A pergunta abre o painel do Sam já respondendo, e o carrossel não troca de slide enquanto a pessoa digita.
+- Menu superior: **Parceiros** (Corretores e Imobiliárias vão para o cadastro do Hub, com aprovação da diretoria; Indicadores usam o formulário do site; e um "Já é parceiro? Entrar"), **Anuncie seu imóvel** (abre o cadastro do proprietário) e **Entrar** (acesso ao sistema do Hub). O botão "Falar com o Sam" continua no topo. No celular, os mesmos três acessos no menu hambúrguer.
 - Header que reage à rolagem e botão flutuante do Sam.
 - Coleção: painel "Três imóveis por vez. Só os que fazem sentido para você." com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), botões Ver imóveis / Falar com o Sam e o vídeo da conversa com o Sam ao lado.
 - Vitrine "Imóveis selecionados para você" numa faixa escura: duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar (a linha de cima anda para a esquerda e a de baixo para a direita). Pausa ao passar o mouse, com foco de teclado e no botão Pausar; setas nas pontas e arrastar no celular. A altura dos cards se ajusta para as duas linhas caberem na tela.
@@ -40,11 +41,18 @@ Enquanto um arquivo não existe, a página não quebra:
 - Acessibilidade: `lang="pt-BR"`, `alt`, `aria-label` nos botões de ícone, `role="dialog"` com foco preso e ESC, alvos de toque ≥ 44 px, `prefers-reduced-motion`.
 - Segurança: todo dado dinâmico passa por `esc()` antes de ir para o HTML, URLs de imagem passam por `safeUrl()`, nenhum `onclick` inline (delegação com `addEventListener`), e nada de PII no `localStorage` (só os IDs dos favoritos).
 
+## Ligação com o sistema do Hub
+
+O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; na prévia em `localhost` as chamadas vão para `/api` do próprio servidor):
+- **Vitrine**: `GET /api/vitrine`. Enquanto o Hub não tiver imóvel disponível publicado, o site mantém os exemplos marcados.
+- **Sam**: `POST /api/sam-web`. A conversa usa a mesma IA do atendimento e, quando a pessoa deixa contato, vira lead no Hub. Se o Hub não responder, o Sam segue no fluxo guiado.
+- **Formulários** (Anunciar e Ser parceiro): `POST /api/proposta?action=lead_site`, com a autorização de contato marcada. O contato entra em Comercial › Leads. Se o Hub não responder, a mensagem segue pelo WhatsApp, como antes.
+- O Hub só aceita essas chamadas de origens conhecidas (CORS). Ao ligar um domínio novo no site, acrescente-o em `SITE_ORIGINS` na Vercel do Hub (separado por vírgula).
+
 ## O que é demonstração
 
-- **Imóveis**: 9 imóveis de exemplo no formato do `/api/vitrine`, marcados na tela como "Exemplo" (etiqueta nos cards, nos destaques do banner e no detalhe, mais um aviso na coleção). O botão do detalhe vira "Quero algo parecido" e a mensagem do WhatsApp não cita código inexistente. Servida por http(s), a página tenta `GET /api/vitrine` e, se responder JSON, troca os exemplos pelos imóveis reais e some com as marcações.
-- **Sam**: offline, segue um fluxo guiado (morar/investir/alugar → bairro → faixa de valor → indispensáveis → sugestões + WhatsApp). Servida por http(s), chama `POST /api/sam-web` com `{messages:[{role,content}]}` e espera `{reply, sugestoes}`. Se a API falhar, volta para o fluxo guiado.
-- **Formulários** (Anunciar imóvel / Ser parceiro, este com o perfil Corretor, Imobiliária ou Indicador e campos próprios de cada um): sem `CONFIG.leadUrl`, abrem o WhatsApp do Hub com a mensagem já preenchida (o contato só chega quando a pessoa envia). Com `CONFIG.leadUrl`, enviam por POST JSON.
+- **Imóveis**: 9 imóveis de exemplo no formato do `/api/vitrine`, marcados na tela como "Exemplo" (etiqueta nos cards, nos destaques do banner e no detalhe, mais um aviso na coleção). Somem sozinhos quando o Hub publicar imóveis reais.
+- **Sam aberto como arquivo** (duplo-clique, sem servidor): segue um fluxo guiado (morar/investir/alugar → bairro → faixa de valor → indispensáveis → sugestões + WhatsApp).
 - **Fotos de imóveis e bairros**: URLs do Unsplash, só ilustrativas.
 - **Números e depoimentos**: foram retirados (eram exemplos). Voltam só com dados reais e depoimentos autorizados.
 
