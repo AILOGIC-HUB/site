@@ -183,7 +183,7 @@ p{text-wrap:pretty}
 .panel-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(6,19,38,.74) 0%,rgba(6,19,38,.34) 24%,rgba(6,19,38,0) 46%,rgba(6,19,38,.14) 62%,rgba(6,19,38,.88) 100%)}
 .panel--dim .panel-shade{background:radial-gradient(90% 70% at 50% 40%,rgba(6,19,38,.45),rgba(6,19,38,.88)),linear-gradient(180deg,rgba(6,19,38,.5),rgba(6,19,38,.9))}
 .panel--dim .panel-media img{filter:saturate(.8)}
-.panel-inner{height:100%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:calc(var(--header-h) + 7vh) 20px calc(84px + 4vh)}
+.panel-inner{height:100%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:calc(var(--header-h) + 7vh) 20px calc(204px + 2vh)}
 .panel-copy{max-width:900px;display:flex;flex-direction:column;align-items:center}
 .eyebrow{margin:0 0 18px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
 .panel-title{margin:0;font-size:clamp(42px,6.4vw,92px);font-weight:700;line-height:.95;letter-spacing:-.06em}
@@ -194,8 +194,12 @@ p{text-wrap:pretty}
 .panel-meta span + span::before{content:"";position:absolute;left:0;top:50%;width:1px;height:12px;margin-top:-6px;background:rgba(255,255,255,.4)}
 .panel-meta .price{font-weight:700}
 .panel-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
-/* Sam no centro do banner: campo grande, estilo conversa (pedido da diretoria, 13/10/2026) */
-.sam-ask{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;gap:14px}
+/* Sam no banner: campo grande, estilo conversa (pedido da diretoria, 13/10/2026).
+   Fica fixo por cima de todos os slides; as fotos passam por trás. */
+.sam-ask{position:absolute;left:50%;bottom:calc(64px + env(safe-area-inset-bottom));z-index:6;transform:translateX(-50%);width:min(760px,calc(100% - 2 * var(--gutter)));display:flex;flex-direction:column;align-items:center;gap:12px;animation:askIn .9s var(--ease-out) .4s backwards}
+@keyframes askIn{from{opacity:0;transform:translate(-50%,16px)}}
+/* celular baixo (ex.: 375×667): o selo "Sam · online agora" sai para o texto não encostar nos botões */
+@media (max-width:640px) and (max-height:700px){.panel .sam-intro{display:none}}
 .sam-ask-box{width:100%;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 14px;border-radius:999px;background:rgba(6,19,38,.55);border:1px solid rgba(255,255,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);transition:border-color .25s ease,background-color .25s ease}
 .sam-ask-box:focus-within{border-color:rgba(76,198,255,.75);background:rgba(6,19,38,.72)}
 .sam-ask-box .avatar{width:40px;height:40px}
@@ -255,14 +259,15 @@ p{text-wrap:pretty}
 @media (max-width:1100px){.scroll-hint,.hero-count{display:none}}
 
 @media (max-width:640px){
-  .panel-inner{padding:calc(var(--header-h) + 5vh) var(--gutter) calc(64px + 2vh)}
+  .panel-inner{padding:calc(var(--header-h) + 5vh) var(--gutter) calc(136px + 1vh)}
   .panel-actions{flex-direction:column;align-items:stretch;width:100%;max-width:340px;gap:12px}
   .panel .btn{width:100%}
   .sam-ask-box{padding:8px 8px 8px 10px;gap:8px}
   .sam-ask-box .avatar{width:34px;height:34px}
   .sam-ask-box input{height:44px}
   .sam-ask-send{width:46px;height:46px}
-  .sam-ask-chips button:nth-child(3){display:none}
+  .sam-ask{bottom:calc(62px + env(safe-area-inset-bottom))}
+  .sam-ask-chips{display:none}
   .panel-meta{font-size:13.5px}
   .panel-meta span{padding:0 10px}
   .hero-dot{width:38px}
@@ -775,20 +780,10 @@ p{text-wrap:pretty}
           <h2 class="panel-title reveal d1">Encontre o imóvel certo para você.</h2>
           <p class="panel-sub reveal d2">Imóveis de alto padrão em São Paulo, escolhidos por quem conhece cada rua. E o Sam, que responde na hora — inclusive às onze da noite.</p>
         </div>
-        <form class="sam-ask reveal d3" id="sam-ask" role="search" aria-label="Pergunte ao Sam">
-          <div class="sam-ask-box">
-            <span class="avatar" aria-hidden="true"><img src="assets/sam-avatar.png" alt="" width="64" height="64" data-fallback="avatar"><i class="online"></i></span>
-            <label class="sr-only" for="sam-ask-input">Conte ao Sam o que você procura</label>
-            <input id="sam-ask-input" name="q" type="text" autocomplete="off" maxlength="600" enterkeyhint="send" placeholder="Conte ao Sam o que você procura…">
-            <button class="sam-ask-send" type="submit" aria-label="Enviar para o Sam"><svg class="i" aria-hidden="true"><use href="#i-send"/></svg></button>
-          </div>
-          <div class="sam-ask-chips">
-            <button type="button" data-ask="Procuro um apartamento de 3 quartos para morar">3 quartos para morar</button>
-            <button type="button" data-ask="Quero alugar um apartamento perto do metrô">Alugar perto do metrô</button>
-            <button type="button" data-ask="Quero investir em um imóvel">Quero investir</button>
-            <a href="#imoveis">Ver a coleção</a>
-          </div>
-        </form>
+        <div class="panel-actions reveal d3">
+          <a class="btn btn-light" href="#imoveis">Ver detalhes</a>
+          <button class="btn btn-glass" type="button" data-action="sam">Falar com o Sam</button>
+        </div>
       </div>
     </div>
 
@@ -896,6 +891,21 @@ p{text-wrap:pretty}
     <div class="hero-dots" id="hero-dots" role="group" aria-label="Escolher destaque"></div>
     <button class="hero-pause" type="button" data-hero="toggle" aria-label="Pausar destaques"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
   </div>
+  <!-- campo do Sam fixo no banner: aparece em todos os slides -->
+  <form class="sam-ask" id="sam-ask" role="search" aria-label="Pergunte ao Sam">
+    <div class="sam-ask-box">
+      <span class="avatar" aria-hidden="true"><img src="assets/sam-avatar.png" alt="" width="64" height="64" data-fallback="avatar"><i class="online"></i></span>
+      <label class="sr-only" for="sam-ask-input">Conte ao Sam o que você procura</label>
+      <input id="sam-ask-input" name="q" type="text" autocomplete="off" maxlength="600" enterkeyhint="send" placeholder="Conte ao Sam o que você procura…">
+      <button class="sam-ask-send" type="submit" aria-label="Enviar para o Sam"><svg class="i" aria-hidden="true"><use href="#i-send"/></svg></button>
+    </div>
+    <div class="sam-ask-chips">
+      <button type="button" data-ask="Procuro um apartamento de 3 quartos para morar">3 quartos para morar</button>
+      <button type="button" data-ask="Quero alugar um apartamento perto do metrô">Alugar perto do metrô</button>
+      <button type="button" data-ask="Quero investir em um imóvel">Quero investir</button>
+      <a href="#imoveis">Ver a coleção</a>
+    </div>
+  </form>
   <p class="hero-count" id="hero-count" aria-hidden="true">01 / 06</p>
   <a class="scroll-hint" href="#imoveis">Role para ver a coleção <svg class="i" aria-hidden="true"><use href="#i-chev-d"/></svg></a>
 </section>
@@ -1612,7 +1622,7 @@ p{text-wrap:pretty}
   // toque: o slide acompanha o dedo; soltou depois de ~18% (ou num gesto rápido), troca
   let drag = null, suppressClick = false;
   hero.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse' || Hero.list().length < 3) return;
+    if (e.pointerType === 'mouse' || Hero.list().length < 3 || e.target.closest('.sam-ask')) return;
     drag = { x: e.clientX, y: e.clientY, t: performance.now(), dx: 0, active: false, id: e.pointerId };
   });
   hero.addEventListener('pointermove', e => {
@@ -2207,6 +2217,9 @@ p{text-wrap:pretty}
       switch (s.step) {
         case 'perfil': {
           const p = /alug|locac/.test(t) ? 'alugar' : /invest|renda|valoriz/.test(t) ? 'investir' : /morar|compr|famil|casa|apart|mudar/.test(t) ? 'morar' : null;
+          // se a pessoa já citou um bairro conhecido ("apartamento em Pinheiros"), o Sam não pergunta de novo
+          const bairroDito = HOOD_NAMES.find(h => t.includes(norm(h)));
+          if (bairroDito && !s.bairro) s.bairro = bairroDito;
           if (!p) return { text: 'Me conta um pouco mais: a ideia é morar, investir ou alugar?', chips: chipsPerfil };
           s.perfil = p;
           const ack = { morar: 'Perfeito, para morar.', investir: 'Boa. Para investir, localização e liquidez contam mais que acabamento.', alugar: 'Certo, para alugar.' }[p];

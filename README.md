@@ -1,7 +1,7 @@
 # AI Logic Hub — landing page
 
 Um único `index.html` (HTML + CSS + JS inline, sem framework e sem build) + a pasta `assets/`.
-Abre com duplo-clique. São cerca de 179 KB (47 KB com gzip), sem contar as imagens.
+Abre com duplo-clique. São cerca de 187 KB (48 KB com gzip), sem contar as imagens.
 
 ## Assets da marca
 
@@ -27,7 +27,7 @@ Enquanto um arquivo não existe, a página não quebra:
 ## O que está pronto
 
 - Banner de abertura em carrossel horizontal de tela cheia (início, 3 imóveis em destaque, Sam e Anunciar): as fotos passam para o lado com parallax e Ken Burns, o texto entra a cada slide, autoplay de 7 s com barra de progresso e pausa, setas no desktop, arrastar no celular, gesto lateral no trackpad e ← → no teclado. Links como "Anunciar" levam direto ao slide certo.
-- **Sam no centro do banner** (primeiro slide): campo grande no estilo de conversa, com três sugestões prontas. A pergunta abre o painel do Sam já respondendo, e o carrossel não troca de slide enquanto a pessoa digita.
+- **Campo do Sam fixo no banner**: aparece em todos os slides (as fotos passam por trás), no estilo de conversa, com três sugestões prontas no computador. A pergunta abre o painel do Sam já respondendo, e o carrossel não troca de slide enquanto a pessoa digita. Acima dele, todos os slides têm os botões "Ver detalhes" e "Falar com o Sam".
 - Menu superior: **Parceiros** (Corretores e Imobiliárias vão para o cadastro do Hub, com aprovação da diretoria; Indicadores usam o formulário do site; e um "Já é parceiro? Entrar"), **Anuncie seu imóvel** (abre o cadastro do proprietário) e **Entrar** (acesso ao sistema do Hub). O botão "Falar com o Sam" continua no topo. No celular, os mesmos três acessos no menu hambúrguer.
 - Header que reage à rolagem e botão flutuante do Sam.
 - Coleção: painel "Três imóveis por vez. Só os que fazem sentido para você." com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), botões Ver imóveis / Falar com o Sam e o vídeo da conversa com o Sam ao lado.
@@ -67,7 +67,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-H+2awtvGlYcmYJocp9ySA3szIhcIt2eEmBmnVRtHgsQ=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-19hDWa0T3ZcxZoO0ANIdTY8LpP5VQ32cE2w4qHgGZOE=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
