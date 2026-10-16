@@ -1,7 +1,7 @@
 # AI Logic Hub — landing page
 
 Um único `index.html` (HTML + CSS + JS inline, sem framework e sem build) + a pasta `assets/`.
-Abre com duplo-clique. São cerca de 187 KB (48 KB com gzip), sem contar as imagens.
+Abre com duplo-clique. A pasta `api/` (com `package.json` e `vercel.json`) só gera a prévia de cada imóvel nas redes; o site não depende dela. São cerca de 187 KB (48 KB com gzip), sem contar as imagens.
 
 ## Assets da marca
 
@@ -33,7 +33,7 @@ Enquanto um arquivo não existe, a página não quebra:
 - Header que reage à rolagem e botão flutuante do Sam.
 - Coleção: painel "Três imóveis por vez. Só os que fazem sentido para você." com filtros (Todos, Morar, Alugar, Investir, Alto padrão, Lançamentos + "Salvos" quando há favoritos), botões Ver imóveis / Falar com o Sam e o vídeo da conversa com o Sam ao lado.
 - Vitrine "Imóveis selecionados para você" numa faixa escura: duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar (a linha de cima anda para a esquerda e a de baixo para a direita). Pausa ao passar o mouse, com foco de teclado e no botão Pausar; setas nas pontas e arrastar no celular. A altura dos cards se ajusta para as duas linhas caberem na tela.
-- Cards com a foto inteira e as informações por cima: selo da categoria e contador de fotos; ações na lateral (Salvar, Perguntar ao Sam, Compartilhar, Detalhes); localização, título, medidas e preço; botões **Agendar visita** e **Fazer proposta** pelo WhatsApp. Compartilhar usa o compartilhamento do celular ou copia o link, e o link (`#imovel-<id>`) abre o detalhe do imóvel.
+- Cards com a foto inteira e as informações por cima: selo da categoria e contador de fotos; ações na lateral (Salvar, Perguntar ao Sam, Compartilhar, Detalhes); localização, título, medidas e preço; botões **Agendar visita** e **Fazer proposta** pelo WhatsApp. Compartilhar usa o compartilhamento do celular ou copia o link (`/imovel/<id>`), que abre o detalhe do imóvel e, no Instagram e no WhatsApp, mostra o card daquele imóvel na prévia (ver "Prévia de cada imóvel").
 - Selo de afinidade: "Combina com você" aparece depois que o Sam conhece o perfil (finalidade + bairro ou faixa); se a vitrine do sistema enviar o campo `match`, o selo mostra o percentual ("94% match").
 - Modal de detalhe do imóvel (specs, descrição, **Agendar visita** via WhatsApp, Ver fotos, Perguntar ao Sam).
 - Galeria 2D (sem 3D/WebGL): setas, contador, miniaturas, teclado ← →, swipe, fecha no ×, ESC ou clique fora.
@@ -68,7 +68,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-19hDWa0T3ZcxZoO0ANIdTY8LpP5VQ32cE2w4qHgGZOE=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-lEI1Qq+mBw29iEVfKe6amK+a8gJEOyNwtvX7vmkAKAI=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
@@ -79,4 +79,18 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   Os dois hashes são dos `<script>` inline **desta versão**: qualquer edição no script muda o hash (ou mova o JS para um arquivo `.js` e use `'self'`). Acrescente em `img-src` o domínio onde ficam as fotos da vitrine.
 - A fonte Inter é carregada de verdade pelo Google Fonts (400/500/600/700/800).
-- **Prévia do link** (`og:image` no `<head>`): aponta para `https://site-orpin-two-16.vercel.app/assets/og-image.jpg`. Instagram e WhatsApp só aceitam endereço completo, em JPG ou PNG; sem isso, pegam qualquer foto da página. Ao ligar um domínio próprio, troque o endereço nas três tags de imagem. As redes guardam a prévia antiga por um tempo: para atualizar na hora, cole o link em developers.facebook.com/tools/debug e clique em "Scrape Again" (coletar de novo; vale para Instagram e WhatsApp). O link de um imóvel (`#imovel-<id>`) mostra esta mesma prévia, porque as redes não leem o que vem depois do `#`.
+- **Prévia do link** (`og:image` no `<head>`): aponta para `https://site-orpin-two-16.vercel.app/assets/og-image.jpg`. Instagram e WhatsApp só aceitam endereço completo, em JPG ou PNG; sem isso, pegam qualquer foto da página. Ao ligar um domínio próprio, troque o endereço nas três tags de imagem. As redes guardam a prévia antiga por um tempo: para atualizar na hora, cole o link em developers.facebook.com/tools/debug e clique em "Scrape Again" (coletar de novo; vale para Instagram e WhatsApp). Os links de imóvel têm prévia própria (abaixo).
+
+## Prévia de cada imóvel
+
+O botão **Compartilhar** gera `https://<site>/imovel/<id>`. As redes não rodam o JavaScript da página, então a prévia de cada imóvel vem de duas funções na Vercel:
+
+- `vercel.json`: quem abre o link no navegador é levado direto ao site (`/?imovel=<id>`, que abre o detalhe), sem passar pelas funções. Só os robôs das redes (Instagram/Facebook, WhatsApp, X, LinkedIn, Telegram, iMessage...) seguem para as funções.
+- `api/imovel.js`: devolve aos robôs o título, a descrição (bairro, medidas e preço) e a imagem do imóvel.
+- `api/og.js`: desenha a imagem (1200×630, JPG) no visual do card da vitrine: foto, selo, contador de fotos, ações na lateral, localização, título, medidas, preço, os botões Agendar visita / Fazer proposta e a marca. Fica guardada no CDN por um dia.
+- Os dados vêm do `GET /api/vitrine` do Hub, com a mesma regra do site: havendo imóveis publicados, só eles valem; sem nenhum, valem os exemplos de `api/_lib/demo.js` (cópia do `DEMO` do `index.html`), marcados como "Exemplo" no selo e no título.
+- Se o imóvel não existir ou algo falhar, a prévia volta para a geral (`assets/og-image.jpg`) e o link continua abrindo o site.
+- Fotos em JPG ou PNG. WebP não entra na imagem: as fotos do banner têm cópia em JPG em `api/_img/`; foto do Hub em WebP faz a função tentar a próxima foto do imóvel e, sem nenhuma, usar o fundo azul da marca.
+- Dependências (`package.json`): `satori`, `@resvg/resvg-js` e `jpeg-js`, com versões fixas. A Vercel instala sozinha no deploy; o site continua sem build.
+- Se os exemplos do `index.html` mudarem, gere de novo `api/_lib/demo.js` (são os mesmos campos do `DEMO`).
+- Para testar: cole um link de imóvel em developers.facebook.com/tools/debug. Fora da Vercel (ou abrindo o arquivo direto), o Compartilhar volta ao link com `#imovel-<id>`.

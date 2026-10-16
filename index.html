@@ -1272,6 +1272,8 @@ p{text-wrap:pretty}
     // corretor e imobiliária criam o acesso no cadastro do Hub (aprovado pela diretoria); indicador usa o formulário do site
     parceiros: { corretor: 'https://www.ailogichuboficial.com/cadastro?perfil=corretor', imobiliaria: 'https://www.ailogichuboficial.com/cadastro?perfil=imobiliaria', indicador: null },
     videoSam: 'assets/video-sam.mp4',      // vídeo "como funciona a conversa com o Sam"; sem o arquivo, mostra a demonstração animada
+    // link de cada imóvel com prévia própria no Instagram/WhatsApp (funções em api/, na Vercel); '' = link com #imovel-<id>
+    linkImovel: /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '/imovel/' : '',
     online: /^https?:$/.test(location.protocol)
   };
 
@@ -1832,17 +1834,21 @@ p{text-wrap:pretty}
   }
   async function shareImovel(item) {
     if (!item) return;
-    const url = `${location.href.split('#')[0]}#imovel-${encodeURIComponent(item.id)}`;
+    const url = CONFIG.linkImovel
+      ? new URL(CONFIG.linkImovel + encodeURIComponent(item.id), location.origin).href
+      : `${location.href.split('#')[0]}#imovel-${encodeURIComponent(item.id)}`;
     try {
       if (navigator.share) { await navigator.share({ title: `${item.titulo} · AI Logic Hub`, text: `${item.titulo}, ${item.bairro} — ${priceOf(item)}`, url }); return; }
     } catch (e) { if (e && e.name === 'AbortError') return; }
     try { await navigator.clipboard.writeText(url); toast('Link do imóvel copiado'); }
     catch { toast('Não deu para copiar o link agora'); }
   }
-  /** Link compartilhado (#imovel-<id>) abre o detalhe do imóvel. */
+  /** Link compartilhado abre o detalhe do imóvel: /imovel/<id> chega como ?imovel=<id>; o formato antigo é #imovel-<id>. */
   function openFromHash() {
     const m = /^#imovel-(.+)$/.exec(location.hash);
-    const item = m && byId(decodeURIComponent(m[1]));
+    let id = new URLSearchParams(location.search).get('imovel');
+    try { if (!id && m) id = decodeURIComponent(m[1]); } catch {}
+    const item = id && byId(id);
     if (item && !detail.classList.contains('is-open')) openDetail(item);
   }
   /* Vitrine: duas linhas, três imóveis por vez em cada uma (2 no tablet, 1 no celular), girando sem parar.

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/imovel/:id",
+      "missing": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot|Pinterest|SkypeUriPreview|redditbot|Embedly|Iframely|vkShare|Googlebot|bingbot|Applebot).*"
+        }
+      ],
+      "destination": "/?imovel=:id",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    { "source": "/imovel/:id/foto.jpg", "destination": "/api/og?id=:id" },
+    { "source": "/imovel/:id", "destination": "/api/imovel?id=:id" }
+  ],
+  "functions": {
+    "api/og.js": {
+      "includeFiles": "{api/_fonts/**,api/_img/**,assets/logo-horizontal.png}"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "ailogichub-site",
+  "private": true,
+  "description": "Landing page do AI Logic Hub. O site é estático (index.html); as dependências servem só às funções de prévia em api/.",
+  "type": "module",
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "jpeg-js": "0.4.4",
+    "satori": "0.26.0"
+  }
+}
