@@ -16,6 +16,7 @@ Os arquivos da marca ficam em `assets/` (os mesmos do sistema do Hub). Só o ví
 | `assets/hero-2.webp`, `hero-3.webp`, `hero-4.webp` | os 3 slides de imóveis em destaque |
 | `assets/video-sam.mp4` | vídeo explicativo da conversa com o Sam (painel da coleção) |
 | `assets/video-sam-capa.jpg` | capa do vídeo |
+| `assets/og-image.jpg` (1200×630) | prévia do link ao compartilhar o site (Instagram, WhatsApp, Facebook, LinkedIn), no mesmo visual dos cards |
 
 Enquanto um arquivo não existe, a página não quebra:
 - **hero-\*.webp**: cai para uma foto demo do Unsplash e, sem internet, para o gradiente azul→marinho da marca;
@@ -78,3 +79,4 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   Os dois hashes são dos `<script>` inline **desta versão**: qualquer edição no script muda o hash (ou mova o JS para um arquivo `.js` e use `'self'`). Acrescente em `img-src` o domínio onde ficam as fotos da vitrine.
 - A fonte Inter é carregada de verdade pelo Google Fonts (400/500/600/700/800).
+- **Prévia do link** (`og:image` no `<head>`): aponta para `https://site-orpin-two-16.vercel.app/assets/og-image.jpg`. Instagram e WhatsApp só aceitam endereço completo, em JPG ou PNG; sem isso, pegam qualquer foto da página. Ao ligar um domínio próprio, troque o endereço nas três tags de imagem. As redes guardam a prévia antiga por um tempo: para atualizar na hora, cole o link em developers.facebook.com/tools/debug e clique em "Coletar novamente" (vale para Instagram e WhatsApp). O link de um imóvel (`#imovel-<id>`) mostra esta mesma prévia, porque as redes não leem o que vem depois do `#`.
