@@ -550,10 +550,13 @@ p{text-wrap:pretty}
 .modal.is-open .modal-card{transform:none}
 .modal-x{position:absolute;top:12px;right:12px;z-index:3;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid rgba(255,255,255,.16);border-radius:50%;background:rgba(6,19,38,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;transition:background-color .2s ease}
 .modal-x:hover{background:rgba(6,19,38,.9)}
-.detail{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
-.detail-media{position:relative;min-height:560px}
+/* detalhe: foto à esquerda; à direita o texto rola e o rodapé com as ações e os botões fica sempre à vista */
+.modal-card--detail{height:min(760px,calc(100vh - 2 * clamp(12px,3vw,32px)));overflow:hidden}
+.detail{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100%}
+.detail-media{position:relative;min-height:0}
 .detail-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.detail-body{padding:clamp(24px,3.6vw,44px)}
+.detail-body{--dpad:clamp(24px,3.6vw,44px);display:flex;flex-direction:column;min-height:0;overflow:auto;overscroll-behavior:contain;padding:var(--dpad) var(--dpad) 0}
+.detail-body > *{flex-shrink:0}
 .detail-body h2{margin:0;font-size:clamp(30px,3.2vw,42px);font-weight:700;line-height:1;letter-spacing:-.05em}
 .detail-loc{margin:12px 0 0;font-size:14px;color:var(--g300)}
 .detail-price{margin:20px 0 0;font-size:28px;font-weight:700;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
@@ -562,18 +565,25 @@ p{text-wrap:pretty}
 .specs dt{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--g400)}
 .specs dt .i{width:15px;height:15px}
 .specs dd{margin:6px 0 0;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
-.detail-desc{margin:0;font-size:15.5px;color:var(--g200)}
-.detail-by{margin:16px 0 0;font-size:13px;color:var(--g400)}
-.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:28px}
-.detail-actions .btn{padding:0 14px}
-.detail-actions .btn-wa{grid-column:1/-1}
+.detail-desc{margin:0 0 24px;font-size:15.5px;color:var(--g200)}
+.detail-by{margin:-8px 0 24px;font-size:13px;color:var(--g400)}
+.detail-actions{position:sticky;bottom:0;z-index:2;display:flex;flex-direction:column;gap:12px;margin:auto calc(var(--dpad) * -1) 0;padding:14px var(--dpad) calc(18px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
+.detail-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.detail-quick .act{width:auto;min-height:52px;font-size:11.5px;text-shadow:none}
+.detail-quick .act:hover{background:rgba(255,255,255,.06)}
+.detail-quick .act .i{width:21px;height:21px;filter:none}
+.detail-cta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-cta .cta{min-height:48px;font-size:14.5px}
+.detail-cta .cta-ghost{-webkit-backdrop-filter:none;backdrop-filter:none;background:transparent}
 @media (max-width:860px){
   .modal{padding:0;place-items:end center}
   .modal-card{max-height:94vh;max-height:94dvh;border-radius:18px 18px 0 0;border-bottom:0}
-  .detail{grid-template-columns:minmax(0,1fr)}
-  .detail-media{min-height:0;aspect-ratio:4/3}
+  .modal-card--detail{height:auto;overflow:auto}
+  .detail{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;height:auto}
+  .detail-media{aspect-ratio:4/3}
+  .detail-body{overflow:visible}
 }
-@media (max-width:420px){.specs{grid-template-columns:repeat(2,minmax(0,1fr))}.detail-actions{grid-template-columns:1fr}}
+@media (max-width:420px){.specs{grid-template-columns:repeat(2,minmax(0,1fr))}.detail-cta .cta{font-size:13.5px;padding:0 6px}}
 
 /* formulários de lead */
 .modal-card--form{width:min(600px,100%);padding:clamp(24px,4vw,40px)}
@@ -1117,7 +1127,7 @@ p{text-wrap:pretty}
 <!-- ============ DETALHE DO IMÓVEL ============ -->
 <div class="modal" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
   <div class="modal-backdrop" data-action="close"></div>
-  <div class="modal-card">
+  <div class="modal-card modal-card--detail">
     <button class="modal-x" type="button" data-action="close" aria-label="Fechar detalhes"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
     <div class="detail" id="detail-body"></div>
   </div>
@@ -1970,7 +1980,7 @@ p{text-wrap:pretty}
       ['tag', 'Código', item.codigo || '—']
     ];
     const exemplo = ehExemplo();
-    const visita = exemplo ? pedidoVisita(item) : `Olá! Vi no site e quero agendar uma visita: ${item.titulo} (cód. ${item.codigo}), ${item.bairro}.`;
+    const id = esc(item.id), t = esc(item.titulo);
     $('#detail-body').innerHTML = `
       <div class="detail-media media">
         <img src="${esc(sized(item.foto || fotos[0], 1400))}" ${alt ? `data-alt-src="${esc(sized(alt, 1400))}"` : ''} alt="${esc(`${item.titulo}, ${item.bairro}`)}" width="1400" height="1050" decoding="async">
@@ -1985,12 +1995,20 @@ p{text-wrap:pretty}
         <p class="detail-desc">${esc(item.descricao)}</p>
         ${exemplo ? '<p class="detail-by">Imóvel de exemplo, para mostrar a experiência. O time mostra os disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
         <div class="detail-actions">
-          <a class="btn btn-wa" href="${esc(waLink(visita))}" target="_blank" rel="noopener">${ico('wa')} ${exemplo ? 'Quero algo parecido' : 'Agendar visita'}</a>
-          <button class="btn btn-ghost" type="button" data-action="gallery" data-id="${esc(item.id)}">Ver fotos</button>
-          <button class="btn btn-ghost" type="button" data-action="ask" data-id="${esc(item.id)}">Perguntar ao Sam</button>
+          <div class="detail-quick">
+            <button class="act fav" type="button" data-action="fav" data-id="${id}" aria-pressed="${favs.has(String(item.id))}" aria-label="Salvar ${t}">${ico('heart')}<span aria-hidden="true">Salvar</span></button>
+            <button class="act" type="button" data-action="ask" data-id="${id}" aria-label="Perguntar ao Sam sobre ${t}">${ico('chat')}<span aria-hidden="true">Perguntar ao Sam</span></button>
+            <button class="act" type="button" data-action="share" data-id="${id}" aria-label="Compartilhar ${t}">${ico('forward')}<span aria-hidden="true">Compartilhar</span></button>
+            <button class="act" type="button" data-action="gallery" data-id="${id}" aria-label="Ver as ${fotos.length} fotos de ${t}">${ico('photos')}<span aria-hidden="true">Ver fotos</span></button>
+          </div>
+          <div class="detail-cta">
+            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(item)))}" target="_blank" rel="noopener">${ico('calendar')}Agendar visita</a>
+            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(item)))}" target="_blank" rel="noopener">Fazer proposta</a>
+          </div>
         </div>
       </div>`;
     $('.modal-card', detail).scrollTop = 0;
+    const corpo = $('.detail-body', detail); if (corpo) corpo.scrollTop = 0;
     openDialog(detail, { focus: $('.modal-x', detail) });
   }
 

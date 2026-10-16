@@ -35,7 +35,7 @@ Enquanto um arquivo não existe, a página não quebra:
 - Vitrine "Imóveis selecionados para você" numa faixa escura: duas linhas de três imóveis (duas no tablet, uma no celular), seis fotos diferentes na tela, girando sem parar (a linha de cima anda para a esquerda e a de baixo para a direita). Pausa ao passar o mouse, com foco de teclado e no botão Pausar; setas nas pontas e arrastar no celular. A altura dos cards se ajusta para as duas linhas caberem na tela.
 - Cards com a foto inteira e as informações por cima: selo da categoria e contador de fotos; ações na lateral (Salvar, Perguntar ao Sam, Compartilhar, Detalhes); localização, título, medidas e preço; botões **Agendar visita** e **Fazer proposta** pelo WhatsApp. Compartilhar usa o compartilhamento do celular ou copia o link (`/imovel/<id>`), que abre o detalhe do imóvel e, no Instagram e no WhatsApp, mostra o card daquele imóvel na prévia (ver "Prévia de cada imóvel").
 - Selo de afinidade: "Combina com você" aparece depois que o Sam conhece o perfil (finalidade + bairro ou faixa); se a vitrine do sistema enviar o campo `match`, o selo mostra o percentual ("94% match").
-- Modal de detalhe do imóvel (specs, descrição, **Agendar visita** via WhatsApp, Ver fotos, Perguntar ao Sam).
+- Modal de detalhe do imóvel (specs e descrição) com o mesmo rodapé do card, sempre à vista, mesmo em telas baixas: Salvar, Perguntar ao Sam, Compartilhar e Ver fotos, mais os botões **Agendar visita** e **Fazer proposta** pelo WhatsApp.
 - Galeria 2D (sem 3D/WebGL): setas, contador, miniaturas, teclado ← →, swipe, fecha no ×, ESC ou clique fora.
 - "Como funciona" com linha de progresso e cinco etapas: Conversa → Curadoria → Visita → Documentação e contrato → Chave na mão, cada uma com uma frase de destaque e um texto de apoio.
 - Bairros que abrem o Sam já no contexto do bairro.
@@ -68,7 +68,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-lEI1Qq+mBw29iEVfKe6amK+a8gJEOyNwtvX7vmkAKAI=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-3Tfjx9uXQer2uTT4a2Ai0Wqqys00gHa4keGaKog2FjE=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
