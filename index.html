@@ -433,25 +433,48 @@ p{text-wrap:pretty}
   .stat:nth-child(3){border-left:0}
 }
 
-/* como funciona */
-.steps-wrap{position:relative;--p:0}
-.steps-line{position:absolute;left:10%;right:10%;top:27px;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
-.steps-fill{position:absolute;inset:0;transform-origin:left center;transform:scaleX(var(--p));background:linear-gradient(90deg,var(--blue),var(--cyan))}
-.steps{position:relative;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
-.step{text-align:center;padding:0 4px}
-.step-num{position:relative;z-index:1;width:56px;height:56px;margin:0 auto 24px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--night);font-size:14px;font-weight:700;color:var(--g400);font-variant-numeric:tabular-nums;transition:border-color .5s ease,color .5s ease,background-color .5s ease,box-shadow .5s ease}
-.step.is-done .step-num{border-color:var(--cyan);color:#fff;background:#0b2340;box-shadow:0 0 0 6px rgba(76,198,255,.08)}
-.step h3{margin:0 0 8px;font-size:20px;font-weight:700;letter-spacing:-.035em}
-.step p{margin:0;font-size:15px;color:var(--g300)}
-.step .step-lead{margin:0 0 6px;font-size:15.5px;font-weight:600;line-height:1.4;color:#fff}
+/* como funciona: uma foto por etapa; o título fica sempre à vista e a descrição sobe por cima da foto ao passar o mouse (no toque, fica visível) */
+.journey{--jh:clamp(400px,40vw,540px);list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.jstep{position:relative;height:var(--jh);border-radius:16px;overflow:hidden;isolation:isolate;background:#0c1c30;color:#fff;outline:none}
+/* as fotos têm uma faixa escura de até 5 px nas laterais: 3% de cada lado ficam fora do quadro */
+.jstep img{position:absolute;top:0;left:-3%;z-index:-3;width:106%;height:100%;max-width:none;object-fit:cover;object-position:50% 35%;transition:transform 1.2s var(--ease),filter .5s ease}
+.jstep::before,.jstep::after{content:"";position:absolute;inset:0;pointer-events:none}
+.jstep::before{z-index:-2;background:linear-gradient(180deg,rgba(6,19,38,0) 50%,rgba(6,19,38,.88) 100%)}
+.jstep::after{z-index:-1;background:linear-gradient(180deg,rgba(6,19,38,0) 22%,rgba(6,19,38,.55) 52%,rgba(6,19,38,.94) 100%);opacity:0;transition:opacity .45s ease}
+.jstep-cap{position:absolute;left:0;right:0;bottom:0;padding:18px 16px 20px}
+.jstep-n{display:block;font-size:12px;font-weight:700;letter-spacing:.18em;color:var(--cyan);font-variant-numeric:tabular-nums}
+.jstep-title{margin:6px 0 0;font-size:17px;font-weight:700;line-height:1.2;letter-spacing:-.025em;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.jstep-more{display:grid;grid-template-rows:1fr}
+.jstep-desc{min-height:0;overflow:hidden;margin:0;padding-top:8px;font-size:14px;line-height:1.5;color:rgba(255,255,255,.88)}
+.jstep:focus-visible{box-shadow:inset 0 0 0 2px var(--cyan)}
+.journey-note{margin:14px 0 0;font-size:12px;color:var(--g400)}
+/* com mouse: descrição escondida até passar o mouse (ou focar pelo teclado); as outras fotos escurecem um pouco */
+@media (hover:hover) and (pointer:fine){
+  .jstep .jstep-more{grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease-out)}
+  .jstep .jstep-desc{opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .5s var(--ease-out)}
+  .jstep:hover .jstep-more,.jstep:focus-visible .jstep-more{grid-template-rows:1fr}
+  .jstep:hover .jstep-desc,.jstep:focus-visible .jstep-desc{opacity:1;transform:none;transition-delay:.06s}
+  .jstep:hover::after,.jstep:focus-visible::after{opacity:1}
+  .jstep:hover img,.jstep:focus-visible img{transform:scale(1.05)}
+  .journey:hover .jstep:not(:hover) img{filter:brightness(.62) saturate(.85)}
+}
+/* sem mouse: descrição sempre visível, com a sombra mais forte embaixo */
+@media (hover:none),(pointer:coarse){
+  .jstep::after{opacity:1}
+}
+/* tablet e celular: as fotos passam de lado, com encaixe */
+@media (max-width:1024px){
+  .journey{--jh:clamp(400px,62vh,520px);display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);margin-inline:calc(var(--gutter) * -1);padding:0 var(--gutter) 6px;scrollbar-width:none;overscroll-behavior-x:contain}
+  .journey::-webkit-scrollbar{display:none}
+  .jstep{flex:0 0 clamp(220px,34vw,280px);scroll-snap-align:start}
+}
+@media (max-width:640px){
+  .jstep{flex-basis:68vw}
+  .jstep-title{font-size:18px}
+  .jstep-desc{font-size:14.5px}
+}
 .how-cta{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:clamp(48px,6vw,72px)}
 @media (max-width:860px){
-  .steps{grid-template-columns:minmax(0,1fr);gap:36px}
-  .step{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:20px;text-align:left;padding:0}
-  .step-num{grid-row:span 3;margin:0}
-  .step h3{margin:14px 0 6px}
-  .steps-line{left:27px;right:auto;top:28px;bottom:28px;width:2px;height:auto}
-  .steps-fill{transform-origin:center top;transform:scaleY(var(--p))}
   .how-cta .btn{width:100%}
 }
 
@@ -986,18 +1009,35 @@ p{text-wrap:pretty}
         <header class="section-head" data-reveal>
           <p class="eyebrow">Como funciona</p>
           <h2 class="section-title" id="como-title">Do primeiro oi à entrega das chaves.</h2>
-          <p class="section-sub">Cinco passos, sempre com a mesma pessoa do outro lado. O Sam cuida das respostas rápidas; o corretor, do resto.</p>
+          <p class="section-sub">Seis etapas, e o Sam acompanha você em todas.</p>
         </header>
-        <div class="steps-wrap" id="steps">
-          <div class="steps-line" aria-hidden="true"><span class="steps-fill"></span></div>
-          <ol class="steps">
-            <li class="step"><span class="step-num">01</span><h3>Conversa</h3><p class="step-lead">Tudo começa com uma boa conversa.</p><p>Conte ao Sam como você vive e do que não abre mão. Sem formulários, sem filtros.</p></li>
-            <li class="step"><span class="step-num">02</span><h3>Curadoria</h3><p class="step-lead">Menos opções. As certas.</p><p>O Sam seleciona apenas os imóveis que fazem sentido para a sua vida.</p></li>
-            <li class="step"><span class="step-num">03</span><h3>Visita</h3><p class="step-lead">Veja além do anúncio.</p><p>Você escolhe o dia. Um corretor especialista revela o que nenhuma foto entrega.</p></li>
-            <li class="step"><span class="step-num">04</span><h3>Documentação e contrato</h3><p class="step-lead">Documentos conferidos. Contrato assinado.</p><p>Analisamos a documentação e conduzimos o contrato até a assinatura, sem surpresas pelo caminho.</p></li>
-            <li class="step"><span class="step-num">05</span><h3>Chave na mão</h3><p class="step-lead">Agora, é só começar a viver.</p><p>Cuidamos de cada detalhe final. A você, cabe escolher o dia da mudança.</p></li>
-          </ol>
-        </div>
+        <ol class="journey" data-reveal data-stagger>
+          <li class="jstep" tabindex="0">
+            <img src="assets/como-funciona/01-conversa.jpg" alt="Mão segurando um celular com uma conversa aberta" width="256" height="1024" loading="lazy" decoding="async">
+            <div class="jstep-cap"><span class="jstep-n">01</span><h3 class="jstep-title">Converse com o Sam</h3><div class="jstep-more"><p class="jstep-desc">Conte o que você procura, onde deseja morar e o que é importante para você.</p></div></div>
+          </li>
+          <li class="jstep" tabindex="0">
+            <img src="assets/como-funciona/02-curadoria.jpg" alt="Casa com piscina iluminada ao entardecer" width="256" height="1024" loading="lazy" decoding="async">
+            <div class="jstep-cap"><span class="jstep-n">02</span><h3 class="jstep-title">Curadoria inteligente</h3><div class="jstep-more"><p class="jstep-desc">O Sam apresenta até três opções por vez, de acordo com seu perfil e suas preferências.</p></div></div>
+          </li>
+          <li class="jstep" tabindex="0">
+            <img src="assets/como-funciona/03-visita.jpg" alt="Corretor apresentando um imóvel a um casal" width="256" height="1024" loading="lazy" decoding="async">
+            <div class="jstep-cap"><span class="jstep-n">03</span><h3 class="jstep-title">Visite o imóvel</h3><div class="jstep-more"><p class="jstep-desc">Escolha o imóvel que despertou seu interesse e solicite uma visita. O agendamento será confirmado.</p></div></div>
+          </li>
+          <li class="jstep" tabindex="0">
+            <img src="assets/como-funciona/04-proposta.jpg" alt="Pessoas vendo fotos de imóveis num tablet" width="256" height="1024" loading="lazy" decoding="async">
+            <div class="jstep-cap"><span class="jstep-n">04</span><h3 class="jstep-title">Proposta e negociação</h3><div class="jstep-more"><p class="jstep-desc">Apresente sua proposta e acompanhe a negociação das condições com o profissional responsável.</p></div></div>
+          </li>
+          <li class="jstep" tabindex="0">
+            <img src="assets/como-funciona/05-assinatura.jpg" alt="Mão assinando um documento num tablet" width="256" height="1024" loading="lazy" decoding="async">
+            <div class="jstep-cap"><span class="jstep-n">05</span><h3 class="jstep-title">Documentos e assinatura</h3><div class="jstep-more"><p class="jstep-desc">Reúna os documentos, acompanhe a análise e assine o contrato digitalmente.</p></div></div>
+          </li>
+          <li class="jstep" tabindex="0">
+            <img src="assets/como-funciona/06-chaves.jpg" alt="Entrega das chaves de um imóvel" width="256" height="1024" loading="lazy" decoding="async">
+            <div class="jstep-cap"><span class="jstep-n">06</span><h3 class="jstep-title">Entrega das chaves</h3><div class="jstep-more"><p class="jstep-desc">Cumpridas as condições combinadas, é hora de receber as chaves e começar uma nova história.</p></div></div>
+          </li>
+        </ol>
+        <p class="journey-note">Imagens ilustrativas. Visitas e condições sujeitas à confirmação.</p>
         <div class="how-cta" data-reveal>
           <button class="btn btn-light" type="button" data-action="sam">Começar pela conversa</button>
           <a class="btn btn-ghost" href="#imoveis">Ver a coleção</a>
@@ -1293,7 +1333,6 @@ p{text-wrap:pretty}
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const mqMobile = matchMedia('(max-width: 640px)');
-  const mqSteps = matchMedia('(max-width: 860px)');
   const mqFine = matchMedia('(pointer: fine)');
 
   const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' };
@@ -1524,8 +1563,7 @@ p{text-wrap:pretty}
   const heroCount = $('#hero-count');
   const fab = $('#sam-fab');
   const vitrineSec = $('#vitrine');
-  const stepsWrap = $('#steps');
-  const steps = $$('.step', stepsWrap);
+  const journey = $('.journey');
   const SLIDE_MS = 1000;
   const SLIDE_EASE = 'cubic-bezier(.77,0,.18,1)';
   const pad2 = n => String(n).padStart(2, '0');
@@ -1719,22 +1757,16 @@ p{text-wrap:pretty}
     ticking = false;
     const y = window.scrollY, vh = window.innerHeight;
     // leituras primeiro
-    const stepsRect = stepsWrap.getBoundingClientRect();
     const vitRect = vitrineSec.getBoundingClientRect();
-    const vertical = mqSteps.matches;
+    const jRect = journey.getBoundingClientRect();
 
     header.classList.toggle('is-scrolled', y > 8);
-    // o botão flutuante some enquanto a vitrine está atrás dele (não cobre "Fazer proposta")
-    const overVitrine = vitRect.top < vh - 90 && vitRect.bottom > vh - 10;
-    fab.classList.toggle('is-visible', !Sam.isOpen && !overVitrine && y > heroH * (mqMobile.matches ? 0.85 : 0.6));
+    // o botão flutuante some enquanto a vitrine ou as fotos do "Como funciona" estão atrás dele (não cobre botões nem títulos)
+    const behind = r => r.top < vh - 90 && r.bottom > vh - 10;
+    const overContent = behind(vitRect) || behind(jRect);
+    fab.classList.toggle('is-visible', !Sam.isOpen && !overContent && y > heroH * (mqMobile.matches ? 0.85 : 0.6));
     // parallax vertical sutil da foto do banner ao rolar a página
     if (!reduceMotion.matches && y <= heroH) hero.style.setProperty('--py', `${(y * 0.35).toFixed(1)}px`);
-
-    // linha de progresso do "Como funciona"
-    const span = vertical ? stepsRect.height : vh * 0.45;
-    const p = clamp((vh * (vertical ? 0.7 : 0.85) - stepsRect.top) / (span || 1), 0, 1);
-    stepsWrap.style.setProperty('--p', p.toFixed(3));
-    steps.forEach((s, k) => s.classList.toggle('is-done', p > 0.01 && p >= (k / (steps.length - 1)) * 0.999));
   }
   const requestUpdate = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   window.addEventListener('scroll', requestUpdate, { passive: true });

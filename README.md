@@ -37,7 +37,7 @@ Enquanto um arquivo não existe, a página não quebra:
 - Selo de afinidade: "Combina com você" aparece depois que o Sam conhece o perfil (finalidade + bairro ou faixa); se a vitrine do sistema enviar o campo `match`, o selo mostra o percentual ("94% match").
 - Modal de detalhe do imóvel (specs e descrição) com o mesmo rodapé do card, sempre à vista, mesmo em telas baixas: Salvar, Perguntar ao Sam, Compartilhar e Ver fotos, mais os botões **Agendar visita** e **Fazer proposta** pelo WhatsApp.
 - Galeria 2D (sem 3D/WebGL): setas, contador, miniaturas, teclado ← →, swipe, fecha no ×, ESC ou clique fora.
-- "Como funciona" com linha de progresso e cinco etapas: Conversa → Curadoria → Visita → Documentação e contrato → Chave na mão, cada uma com uma frase de destaque e um texto de apoio.
+- "Como funciona": seis fotos lado a lado, uma por etapa (Converse com o Sam → Curadoria → Visita → Proposta e negociação → Documentos e assinatura → Entrega das chaves). O número e o título ficam sempre à vista; ao passar o mouse, a descrição sobe por cima da foto, que continua aparecendo, e as outras fotos escurecem um pouco. No celular e no tablet as fotos passam de lado e a descrição fica sempre visível. As fotos estão em `assets/como-funciona/` (256×1024).
 - Bairros que abrem o Sam já no contexto do bairro.
 - Acessibilidade: `lang="pt-BR"`, `alt`, `aria-label` nos botões de ícone, `role="dialog"` com foco preso e ESC, alvos de toque ≥ 44 px, `prefers-reduced-motion`.
 - Segurança: todo dado dinâmico passa por `esc()` antes de ir para o HTML, URLs de imagem passam por `safeUrl()`, nenhum `onclick` inline (delegação com `addEventListener`), e nada de PII no `localStorage` (só os IDs dos favoritos).
@@ -68,7 +68,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-3Tfjx9uXQer2uTT4a2Ai0Wqqys00gHa4keGaKog2FjE=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-5aUeqV3kINnZ+9wupZ4BntZ/PwWcrzDWYN8gnXdXrnY=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
