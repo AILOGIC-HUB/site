@@ -45,10 +45,33 @@ Enquanto um arquivo não existe, a página não quebra:
 ## Privacidade e cookies
 
 - **Política de Privacidade** (versão 2.0, de 30/10/2026, do pacote de publicação): fica em `politica-de-privacidade.html`, uma página própria com o texto integral. O site abre o mesmo texto numa janela (lê a página), pelos links do rodapé, do aviso de cookies, dos formulários e do painel do Sam. Aberto como arquivo, sem servidor, o link abre a página. Para atualizar a política, troque só o bloco `<section id="politica">` da página.
-- **Aviso de cookies**, na primeira visita, com o texto aprovado e três saídas de um clique: **Somente essenciais**, **Aceitar todos** e **Preferências** (Essenciais sempre ativos; Análise de navegação e Personalização desligados até a pessoa ligar). A escolha fica em `localStorage` (`alh:consent`, sem dado pessoal) e pode ser revista em "Preferências de cookies", no rodapé. Para perguntar de novo a todos, suba `COOKIES_V` no script.
-- **Hoje o site não usa nenhum cookie opcional.** Qualquer ferramenta de análise ou publicidade (Google Analytics, Meta Pixel...) só pode carregar quando `window.alhConsent.analise` (ou `.personalizacao`) for `true`; cada escolha dispara o evento `alh:consent` no `document`.
+- **Aviso de cookies**, na primeira visita, com o texto aprovado e três saídas de um clique: **Somente essenciais**, **Aceitar todos** e **Preferências** (Essenciais sempre ativos; Análise de navegação, Personalização e Publicidade desligados até a pessoa ligar). Cada categoria mostra quais ferramentas estão em uso nela. A escolha fica em `localStorage` (`alh:consent`, sem dado pessoal) e pode ser revista em "Preferências de cookies", no rodapé. Para perguntar de novo a todos, suba `COOKIES_V` no script.
+- Qualquer ferramenta opcional só pode carregar quando `window.alhConsent.analise` (ou `.personalizacao`, `.publicidade`) for `true`; cada escolha dispara o evento `alh:consent` no `document`. O Google Analytics e o Pixel da Meta já seguem essa regra (abaixo).
 - Rodapé com a razão social e o CNPJ (AILOGIC HUB NEGOCIOS IMOBILIARIOS LTDA, 68.449.833/0001-78). O painel do Sam avisa que ele é um assistente virtual.
 - Pendências do pacote, antes de considerar a política publicada: conferir o endereço com o cartão CNPJ oficial; criar um canal eletrônico de privacidade (e-mail dedicado) e atualizar a seção 17; aprovação do jurídico.
+
+## Métricas e anúncios (Google Analytics 4 e Pixel da Meta)
+
+- **Como ligar**: preencha no `CONFIG` o `ga4` (ID de métricas do GA4, `G-XXXXXXXXXX`, em Administrador › Fluxos de dados) e o `metaPixel` (só os números do ID, no Gerenciador de Eventos da Meta). Vazio, nada carrega.
+- **Só com autorização**: o GA4 carrega quando a pessoa liga **Análise de navegação**; o Pixel, quando liga **Publicidade**. Antes da escolha, ou com "Somente essenciais", nenhuma chamada sai para o Google ou a Meta. Se a pessoa desligar depois, a ferramenta para de enviar e os cookies dela neste domínio (`_ga*`, `_fbp`, `_fbc`) são apagados.
+- **Nenhum dado pessoal sai do site**: nome, WhatsApp, e-mail e o texto das conversas com o Sam nunca entram nos eventos. Vão só dados do imóvel (código, tipo, bairro, finalidade, preço) e da ação (de onde veio o clique, qual filtro). O GA4 roda com os sinais de anúncio negados (`ad_storage`, `ad_user_data`, `ad_personalization`).
+- **Eventos**:
+
+  | Ação no site | GA4 | Pixel da Meta |
+  |---|---|---|
+  | Abrir o detalhe de um imóvel (inclusive por link compartilhado) | `view_item` | `ViewContent` |
+  | Salvar imóvel | `add_to_wishlist` | `AddToWishlist` |
+  | Compartilhar imóvel | `share` | — |
+  | Agendar visita (card ou detalhe) | `agendar_visita` | `Schedule` |
+  | Fazer proposta (card ou detalhe) | `fazer_proposta` | `Contact` |
+  | Outros botões de WhatsApp (topo, rodapé, Sam, formulário) | `whatsapp_click` | `Contact` |
+  | Enviar formulário (Anunciar ou Ser parceiro) | `generate_lead` | `Lead` |
+  | Abrir o Sam / mandar mensagem ao Sam | `sam_abrir` / `sam_mensagem` | `ConversaSam` (personalizado, só ao abrir) |
+  | Filtro da vitrine, vídeo do Sam, Entrar | `filtro_vitrine`, `video_sam`, `entrar_click` | — |
+
+  No GA4, marque `generate_lead`, `agendar_visita` e `fazer_proposta` como **eventos principais** (conversões). Para filtrar por imóvel nos relatórios, crie as dimensões personalizadas `imovel_codigo`, `imovel_bairro`, `imovel_tipo` e `origem`.
+- **Para conferir**: com o ID preenchido, aceite os cookies e abra o DebugView do GA4 e a extensão Meta Pixel Helper.
+- Ao ligar outra ferramenta (Google Ads, TikTok...), inclua-a em `FERRAMENTAS` e em `EVENTOS` no script, na categoria certa, e suba `COOKIES_V` se a pergunta do aviso mudar.
 
 ## Ligação com o sistema do Hub
 
@@ -71,21 +94,22 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
   - `whatsapp`, `vitrineUrl`, `samUrl`, `leadUrl`;
   - `loginUrl`: destino do "Entrar" (acesso ao sistema do Hub): `https://www.ailogichuboficial.com/`;
   - `parceiros`: página própria de cada perfil (`corretor`, `imobiliaria`, `indicador`), se houver. Sem URL, o item abre o cadastro no próprio site;
-  - `videoSam`: caminho do vídeo (`assets/video-sam.mp4`).
+  - `videoSam`: caminho do vídeo (`assets/video-sam.mp4`);
+  - `ga4` e `metaPixel`: IDs do Google Analytics 4 e do Pixel da Meta (veja "Métricas e anúncios").
 - A CSP hoje está em `report-only`; passe para **enforce** (cabeçalho `Content-Security-Policy`). Um ponto de partida para esta página:
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-+SpTmgMsvm0YPiHpz1WSDT4mPc87vGcYuIVgehXoDsU=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-slo1O0DQGdTo9Pk20y/+9/YkzPXADz8B4B/hOglNIoI=' https://www.googletagmanager.com https://connect.facebook.net;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
-  img-src 'self' data: https://images.unsplash.com;
+  img-src 'self' data: https://images.unsplash.com https://www.googletagmanager.com https://*.google-analytics.com https://www.facebook.com;
   media-src 'self';
-  connect-src 'self';
+  connect-src 'self' https://www.ailogichuboficial.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net;
   object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
   ```
 
-  Os dois hashes são dos `<script>` inline **desta versão**: qualquer edição no script muda o hash (ou mova o JS para um arquivo `.js` e use `'self'`). Acrescente em `img-src` o domínio onde ficam as fotos da vitrine.
+  Os dois hashes são dos `<script>` inline **desta versão**: qualquer edição no script muda o hash (ou mova o JS para um arquivo `.js` e use `'self'`). Os domínios do Google e da Meta são do GA4 e do Pixel; o do Hub é o da vitrine, do Sam e dos formulários. Acrescente em `img-src` o domínio onde ficam as fotos da vitrine.
 - A fonte Inter é carregada de verdade pelo Google Fonts (400/500/600/700/800).
 - **Prévia do link** (`og:image` no `<head>`): aponta para `https://site-orpin-two-16.vercel.app/assets/og-image.jpg`. Instagram e WhatsApp só aceitam endereço completo, em JPG ou PNG; sem isso, pegam qualquer foto da página. Ao ligar um domínio próprio, troque o endereço nas três tags de imagem. As redes guardam a prévia antiga por um tempo: para atualizar na hora, cole o link em developers.facebook.com/tools/debug e clique em "Scrape Again" (coletar de novo; vale para Instagram e WhatsApp). Os links de imóvel têm prévia própria (abaixo).
 

@@ -508,6 +508,7 @@ p{text-wrap:pretty}
 .ck-item + .ck-item{border-top:1px solid var(--line)}
 .ck-item h3{margin:0 0 4px;font-size:15.5px;font-weight:700;color:#fff}
 .ck-item p{margin:0;font-size:13.5px;line-height:1.5;color:var(--g300)}
+.ck-item .ck-tools{margin:7px 0 0;font-size:12.5px;line-height:1.45;color:var(--g400)}
 .ck-always{font-size:12px;font-weight:600;white-space:nowrap;color:var(--cyan)}
 .switch{position:relative;display:inline-block;width:48px;height:28px;flex:none}
 .switch input{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
@@ -1200,8 +1201,9 @@ p{text-wrap:pretty}
     <p class="lead-sub">Escolha o que o site pode usar. Dá para mudar quando quiser, em "Preferências de cookies", no rodapé.</p>
     <ul class="ck-list">
       <li class="ck-item"><div><h3>Essenciais</h3><p>Fazem o site funcionar com segurança e guardam suas escolhas, como os imóveis salvos e esta preferência.</p></div><span class="ck-always">Sempre ativos</span></li>
-      <li class="ck-item"><div><h3 id="ck-analise">Análise de navegação</h3><p>Mostram, de forma agregada, como o site é usado, para melhorá-lo.</p></div><span class="switch"><input type="checkbox" role="switch" name="analise" aria-labelledby="ck-analise"><span></span></span></li>
-      <li class="ck-item"><div><h3 id="ck-personal">Personalização</h3><p>Lembram o que você procura para sugerir imóveis mais próximos do seu perfil.</p></div><span class="switch"><input type="checkbox" role="switch" name="personalizacao" aria-labelledby="ck-personal"><span></span></span></li>
+      <li class="ck-item"><div><h3 id="ck-analise">Análise de navegação</h3><p>Mostram, de forma agregada, como o site é usado, para melhorá-lo.</p><p class="ck-tools" data-tools="analise"></p></div><span class="switch"><input type="checkbox" role="switch" name="analise" aria-labelledby="ck-analise"><span></span></span></li>
+      <li class="ck-item"><div><h3 id="ck-personal">Personalização</h3><p>Lembram o que você procura para sugerir imóveis mais próximos do seu perfil.</p><p class="ck-tools" data-tools="personalizacao"></p></div><span class="switch"><input type="checkbox" role="switch" name="personalizacao" aria-labelledby="ck-personal"><span></span></span></li>
+      <li class="ck-item"><div><h3 id="ck-publi">Publicidade</h3><p>Medem o resultado das campanhas do Hub e mostram anúncios mais relevantes para você em outras plataformas, como Instagram e Facebook.</p><p class="ck-tools" data-tools="publicidade"></p></div><span class="switch"><input type="checkbox" role="switch" name="publicidade" aria-labelledby="ck-publi"><span></span></span></li>
     </ul>
     <div class="ck-actions">
       <button class="btn btn-ghost" type="button" data-action="cookies-salvar">Salvar escolhas</button>
@@ -1409,6 +1411,9 @@ p{text-wrap:pretty}
     loginUrl: 'https://www.ailogichuboficial.com/', // menu "Entrar": acesso ao sistema do Hub
     // corretor e imobiliária criam o acesso no cadastro do Hub (aprovado pela diretoria); indicador usa o formulário do site
     parceiros: { corretor: 'https://www.ailogichuboficial.com/cadastro?perfil=corretor', imobiliaria: 'https://www.ailogichuboficial.com/cadastro?perfil=imobiliaria', indicador: null },
+    // métricas e anúncios: só carregam para quem autorizar no aviso de cookies; vazio = desligado
+    ga4: '',        // Google Analytics 4: ID de métricas, no formato G-XXXXXXXXXX
+    metaPixel: '',  // Pixel da Meta (Instagram e Facebook): só os números do ID
     videoSam: 'assets/video-sam.mp4',      // vídeo "como funciona a conversa com o Sam"; sem o arquivo, mostra a demonstração animada
     // link de cada imóvel com prévia própria no Instagram/WhatsApp (funções em api/, na Vercel); '' = link com #imovel-<id>
     linkImovel: /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '/imovel/' : '',
@@ -1936,8 +1941,8 @@ p{text-wrap:pretty}
           <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
           <p class="card-price">${esc(priceOf(i))}</p>
           <div class="card-cta">
-            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(i)))}" target="_blank" rel="noopener">${ico('calendar')}Agendar visita</a>
-            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener">Fazer proposta</a>
+            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(i)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
+            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
           </div>
         </div>
       </article>`;
@@ -1968,9 +1973,9 @@ p{text-wrap:pretty}
       ? new URL(CONFIG.linkImovel + encodeURIComponent(item.id), location.origin).href
       : `${location.href.split('#')[0]}#imovel-${encodeURIComponent(item.id)}`;
     try {
-      if (navigator.share) { await navigator.share({ title: `${item.titulo} · AI Logic Hub`, text: `${item.titulo}, ${item.bairro} — ${priceOf(item)}`, url }); return; }
+      if (navigator.share) { await navigator.share({ title: `${item.titulo} · AI Logic Hub`, text: `${item.titulo}, ${item.bairro} — ${priceOf(item)}`, url }); medir('compartilhar', { metodo: 'compartilhar' }, item); return; }
     } catch (e) { if (e && e.name === 'AbortError') return; }
-    try { await navigator.clipboard.writeText(url); toast('Link do imóvel copiado'); }
+    try { await navigator.clipboard.writeText(url); toast('Link do imóvel copiado'); medir('compartilhar', { metodo: 'copiar_link' }, item); }
     catch { toast('Não deu para copiar o link agora'); }
   }
   /** Link compartilhado abre o detalhe do imóvel: /imovel/<id> chega como ?imovel=<id>; o formato antigo é #imovel-<id>. */
@@ -2071,6 +2076,7 @@ p{text-wrap:pretty}
   $('.filters').addEventListener('click', e => {
     const b = e.target.closest('[data-filter]'); if (!b || b.dataset.filter === filter) return;
     filter = b.dataset.filter;
+    medir('filtro', { filtro: filter });
     $$('.chip', e.currentTarget).forEach(c => c.setAttribute('aria-pressed', String(c === b)));
     renderGrid();
   });
@@ -2078,7 +2084,7 @@ p{text-wrap:pretty}
     id = String(id);
     const item = byId(id);
     if (favs.has(id)) { favs.delete(id); toast('Removido dos salvos'); }
-    else { favs.add(id); toast(item ? `${item.titulo} salvo` : 'Salvo'); }
+    else { favs.add(id); toast(item ? `${item.titulo} salvo` : 'Salvo'); medir('salvar_imovel', {}, item); }
     store.set('alh:favs', [...favs]);
     $$(`.fav[data-id="${CSS.escape(id)}"]`).forEach(b => b.setAttribute('aria-pressed', String(favs.has(id))));
     if (btn) { btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
@@ -2089,6 +2095,7 @@ p{text-wrap:pretty}
   const detail = $('#detail');
   function openDetail(item) {
     if (!item) return;
+    medir('ver_imovel', {}, item);
     const fotos = photosOf(item);
     const alt = fotos.find(u => u !== item.foto);
     const specs = [
@@ -2122,8 +2129,8 @@ p{text-wrap:pretty}
             <button class="act" type="button" data-action="gallery" data-id="${id}" aria-label="Ver as ${fotos.length} fotos de ${t}">${ico('photos')}<span aria-hidden="true">Ver fotos</span></button>
           </div>
           <div class="detail-cta">
-            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(item)))}" target="_blank" rel="noopener">${ico('calendar')}Agendar visita</a>
-            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(item)))}" target="_blank" rel="noopener">Fazer proposta</a>
+            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(item)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
+            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(item)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
           </div>
         </div>
       </div>`;
@@ -2225,6 +2232,7 @@ p{text-wrap:pretty}
       if (ctx.pergunta) this.user(ctx.pergunta);
       if (ctx.imovel) this.user(`Tenho uma dúvida sobre ${ctx.imovel.titulo} (cód. ${ctx.imovel.codigo}).`, { imovel: ctx.imovel });
       if (ctx.bairro) this.user(`Quero conhecer imóveis em ${ctx.bairro}.`, { bairro: ctx.bairro });
+      if (!this.isOpen) medir('sam_abrir', { origem: ctx.imovel ? 'imovel' : ctx.bairro ? 'bairro' : ctx.pergunta ? 'banner' : 'botao' }, ctx.imovel);
       this.isOpen = true;
       samEl.classList.add('is-open');
       openDialog(samEl, { modal: mqMobile.matches, focus: mqFine.matches && !mqMobile.matches ? input : $('[data-action="close"]', samEl) });
@@ -2462,7 +2470,7 @@ p{text-wrap:pretty}
   askForm.addEventListener('submit', e => { e.preventDefault(); perguntar(askInput.value.trim()); });
   askForm.addEventListener('click', e => { const b = e.target.closest('[data-ask]'); if (b) perguntar(b.dataset.ask); });
   askInput.addEventListener('input', () => Hero.sync());
-  $('#sam-form').addEventListener('submit', e => { e.preventDefault(); const v = input.value; input.value = ''; autosize(); Sam.user(v); });
+  $('#sam-form').addEventListener('submit', e => { e.preventDefault(); const v = input.value; input.value = ''; autosize(); if (v.trim()) medir('sam_mensagem'); Sam.user(v); });
   input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#sam-form').requestSubmit(); } });
   function autosize() { input.style.height = 'auto'; input.style.height = `${Math.min(120, input.scrollHeight)}px`; }
   input.addEventListener('input', autosize);
@@ -2577,6 +2585,7 @@ p{text-wrap:pretty}
           $('#lead-success-title').textContent = nome ? `Falta um toque, ${nome}.` : 'Falta um toque.';
           $('#lead-success-text').textContent = 'Abrimos o WhatsApp do Hub com a sua mensagem pronta. É só enviar por lá para ela chegar ao time. Se o WhatsApp não abriu, toque no botão abaixo.';
         }
+        medir('lead', { tipo: parceiro ? (data.perfil || 'parceiro') : 'anunciar', canal: noHub ? 'hub' : 'whatsapp' });
         form.reset();
         $('#lead-forms').hidden = true; $('#lead-success').hidden = false;
         $('#lead-success-title').focus();
@@ -2628,6 +2637,7 @@ p{text-wrap:pretty}
   videoEl.addEventListener('error', () => { if (videoModal.classList.contains('is-open')) showDemo(); else videoOk = false; });
   videoEl.addEventListener('canplay', () => videoStage.classList.remove('is-loading'));
   function openVideo() {
+    medir('video');
     openDialog(videoModal, { focus: $('.modal-x', videoModal) });
     if (!videoOk) { showDemo(); return; }
     $('#video-demo').hidden = true; videoStage.classList.remove('is-demo'); videoEl.hidden = false;
@@ -2719,9 +2729,9 @@ p{text-wrap:pretty}
       case 'video': openVideo(); break;
       case 'privacidade': e.preventDefault(); openPolicy(); break;
       case 'cookies-prefs': openCookiePrefs(); break;
-      case 'cookies-aceitar': Consent.save(true, true); break;
-      case 'cookies-essenciais': Consent.save(false, false); break;
-      case 'cookies-salvar': Consent.save($('[name="analise"]', cookiePrefs).checked, $('[name="personalizacao"]', cookiePrefs).checked); break;
+      case 'cookies-aceitar': Consent.save({ analise: true, personalizacao: true, publicidade: true }); break;
+      case 'cookies-essenciais': Consent.save({}); break;
+      case 'cookies-salvar': Consent.save(Object.fromEntries(OPCIONAIS.map(k => [k, $(`[name="${k}"]`, cookiePrefs).checked]))); break;
       case 'hood': Sam.open({ bairro: a.dataset.bairro }); break;
       case 'ask': { const it = byId(id); closeDialog(detail, { restoreFocus: false }); Sam.open({ imovel: it }); break; }
       case 'sam-restart': Sam.reset(); break;
@@ -2758,19 +2768,21 @@ p{text-wrap:pretty}
     }
   }
 
-  // Cookies: só os essenciais vêm ligados. Um script opcional (análise, personalização) só pode carregar
-  // quando window.alhConsent permitir; cada escolha dispara o evento "alh:consent" no document.
-  // Hoje o site não usa nenhum cookie opcional. Mudou o que se pergunta? Suba COOKIES_V e o aviso volta.
-  const COOKIES_V = 1;
+  // Cookies: só os essenciais vêm ligados. Um script opcional (análise, personalização, publicidade) só pode
+  // carregar quando window.alhConsent permitir; cada escolha dispara o evento "alh:consent" no document.
+  // Mudou o que se pergunta? Suba COOKIES_V e o aviso volta para todo mundo (v2: entrou Publicidade).
+  const COOKIES_V = 2;
+  const OPCIONAIS = ['analise', 'personalizacao', 'publicidade'];
   const cookieBar = $('#cookie'), cookiePrefs = $('#cookies');
   const Consent = {
     get() { const c = store.get('alh:consent', null); return c && c.v === COOKIES_V ? c : null; },
     publish(c) {
-      window.alhConsent = Object.freeze({ decidido: !!c, analise: !!(c && c.analise), personalizacao: !!(c && c.personalizacao) });
+      window.alhConsent = Object.freeze({ decidido: !!c, ...Object.fromEntries(OPCIONAIS.map(k => [k, !!(c && c[k])])) });
       document.dispatchEvent(new CustomEvent('alh:consent', { detail: window.alhConsent }));
     },
-    save(analise, personalizacao) {
-      const c = { v: COOKIES_V, analise: !!analise, personalizacao: !!personalizacao, em: new Date().toISOString() };
+    /** escolhas: { analise, personalizacao, publicidade }; o que faltar fica desligado */
+    save(escolhas) {
+      const c = { v: COOKIES_V, ...Object.fromEntries(OPCIONAIS.map(k => [k, !!escolhas[k]])), em: new Date().toISOString() };
       store.set('alh:consent', c);
       this.publish(c);
       cookieBar.hidden = true;
@@ -2781,11 +2793,110 @@ p{text-wrap:pretty}
   };
   function openCookiePrefs() {
     const c = Consent.get();
-    $('[name="analise"]', cookiePrefs).checked = !!(c && c.analise);
-    $('[name="personalizacao"]', cookiePrefs).checked = !!(c && c.personalizacao);
+    OPCIONAIS.forEach(k => { $(`[name="${k}"]`, cookiePrefs).checked = !!(c && c[k]); });
+    $$('[data-tools]', cookiePrefs).forEach(p => { p.textContent = toolsText(p.dataset.tools); });
     closeDrop(); closeMenu();
     openDialog(cookiePrefs);
   }
+
+  /* ================= MÉTRICAS E ANÚNCIOS ================= */
+  // Google Analytics 4 (Análise de navegação) e Pixel da Meta (Publicidade) só carregam com a autorização
+  // da pessoa e só com o ID preenchido no CONFIG. Nenhum dado pessoal sai daqui: nome, telefone, e-mail e o
+  // texto das conversas com o Sam nunca entram nos eventos, só dados do imóvel e da ação.
+  const FERRAMENTAS = {
+    analise: [{ on: () => /^G-[A-Z0-9]{4,}$/.test(CONFIG.ga4 || ''), txt: 'Google Analytics 4 (Google): cookies _ga e _ga_*, por até 2 anos.' }],
+    publicidade: [{ on: () => /^\d{6,20}$/.test(String(CONFIG.metaPixel || '')), txt: 'Pixel da Meta (Instagram e Facebook): cookies _fbp e fr, por até 90 dias.' }]
+  };
+  const toolsText = cat => {
+    const on = (FERRAMENTAS[cat] || []).filter(f => f.on()).map(f => f.txt);
+    return on.length ? `Em uso: ${on.join(' ')}` : 'Nenhuma ferramenta em uso no momento.';
+  };
+  const addScript = src => { const s = document.createElement('script'); s.async = true; s.src = src; document.head.appendChild(s); };
+  const Rastreio = {
+    ga: false, meta: false,
+    apply(c) {
+      const ga4 = FERRAMENTAS.analise[0].on() && CONFIG.ga4, pixel = FERRAMENTAS.publicidade[0].on() && String(CONFIG.metaPixel);
+      if (ga4) {
+        window['ga-disable-' + ga4] = !c.analise;
+        if (c.analise && !this.ga) {
+          this.ga = true;
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+          gtag('js', new Date());
+          gtag('config', ga4);
+          addScript('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga4));
+        }
+        if (this.ga) gtag('consent', 'update', { analytics_storage: c.analise ? 'granted' : 'denied' });
+      }
+      if (pixel) {
+        if (c.publicidade && !this.meta) {
+          this.meta = true;
+          // carregador oficial do Pixel: enfileira as chamadas até o fbevents.js chegar
+          const f = window.fbq = function () { f.callMethod ? f.callMethod.apply(f, arguments) : f.queue.push(arguments); };
+          if (!window._fbq) window._fbq = f;
+          f.push = f; f.loaded = true; f.version = '2.0'; f.queue = [];
+          addScript('https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', pixel);
+          fbq('track', 'PageView');
+        } else if (this.meta) fbq('consent', c.publicidade ? 'grant' : 'revoke');
+      }
+      // autorização retirada: apaga os cookies que essas ferramentas gravaram neste domínio
+      if (!c.analise) this.clear(/^_ga(_|$)/);
+      if (!c.publicidade) this.clear(/^_fb[pc]$/);
+    },
+    clear(re) {
+      const host = location.hostname.split('.');
+      document.cookie.split(';').map(x => x.split('=')[0].trim()).filter(n => re.test(n)).forEach(n => {
+        for (let k = 0; k < host.length; k++) {
+          const dom = host.slice(k).join('.');
+          document.cookie = `${n}=; Max-Age=0; path=/; domain=${dom}`;
+        }
+        document.cookie = `${n}=; Max-Age=0; path=/`;
+      });
+    }
+  };
+  // evento do site → nome no GA4 e no Pixel (sem nome no Pixel: o evento fica só no GA4)
+  const EVENTOS = {
+    ver_imovel: { ga: 'view_item', meta: 'ViewContent' },
+    salvar_imovel: { ga: 'add_to_wishlist', meta: 'AddToWishlist' },
+    compartilhar: { ga: 'share' },
+    agendar_visita: { ga: 'agendar_visita', meta: 'Schedule' },
+    fazer_proposta: { ga: 'fazer_proposta', meta: 'Contact' },
+    whatsapp: { ga: 'whatsapp_click', meta: 'Contact' },
+    lead: { ga: 'generate_lead', meta: 'Lead' },
+    sam_abrir: { ga: 'sam_abrir', metaCustom: 'ConversaSam' },
+    sam_mensagem: { ga: 'sam_mensagem' },
+    filtro: { ga: 'filtro_vitrine' },
+    video: { ga: 'video_sam' },
+    entrar: { ga: 'entrar_click' }
+  };
+  /** Registra uma ação. extra: só categorias curtas (origem, filtro, canal...); item: o imóvel, quando houver. */
+  function medir(nome, extra = {}, item) {
+    const c = window.alhConsent || {}, ev = EVENTOS[nome];
+    if (!ev || !((c.analise && Rastreio.ga) || (c.publicidade && Rastreio.meta))) return;
+    const im = item ? { codigo: String(item.codigo || item.id || ''), tipo: item.tipo || '', bairro: item.bairro || '', finalidade: item.finalidade || '', preco: Number(item.preco) || 0 } : null;
+    try {
+      if (c.analise && Rastreio.ga && ev.ga) {
+        gtag('event', ev.ga, { ...extra, ...(im ? { currency: 'BRL', value: im.preco, imovel_codigo: im.codigo, imovel_tipo: im.tipo, imovel_bairro: im.bairro, imovel_finalidade: im.finalidade,
+          items: [{ item_id: im.codigo, item_name: String(item.titulo || '').slice(0, 100), item_category: im.tipo, item_category2: im.bairro, item_variant: im.finalidade, price: im.preco }] } : {}) });
+      }
+      if (c.publicidade && Rastreio.meta && (ev.meta || ev.metaCustom)) {
+        const dados = { ...extra, ...(im ? { content_ids: [im.codigo], content_type: 'home_listing', content_category: im.tipo, currency: 'BRL', value: im.preco } : {}) };
+        ev.meta ? fbq('track', ev.meta, dados) : fbq('trackCustom', ev.metaCustom, dados);
+      }
+    } catch { /* métrica nunca atrapalha o site */ }
+  }
+  document.addEventListener('alh:consent', e => Rastreio.apply(e.detail));
+  // cliques que saem do site: WhatsApp (botões de visita e proposta têm evento próprio) e "Entrar"
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    if (a.dataset.track) medir(a.dataset.track, { origem: a.closest('.modal') ? 'detalhe' : 'vitrine' }, byId(a.dataset.id));
+    else if (a.hasAttribute('data-login')) medir('entrar');
+    else if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(a.href)) medir('whatsapp', { origem: a.id === 'sam-wa' ? 'sam' : a.id === 'lead-wa' ? 'formulario' : a.closest('footer') ? 'rodape' : 'site' });
+  }, true);
+
   Consent.publish(Consent.get());
   if (!Consent.get()) setTimeout(() => { cookieBar.hidden = false; document.documentElement.classList.add('has-cookie'); }, 700);
 
