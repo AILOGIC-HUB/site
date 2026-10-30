@@ -478,6 +478,54 @@ p{text-wrap:pretty}
   .how-cta .btn{width:100%}
 }
 
+/* política de privacidade (janela) e aviso de cookies */
+.modal-card.modal-card--doc{width:min(860px,100%);padding:clamp(24px,4vw,48px);background:#fff;border-color:#dfe7ee;color:#203b55}
+.modal-card--doc .modal-x{background:#eef3f7;border-color:#dfe7ee;color:#0b2946;-webkit-backdrop-filter:none;backdrop-filter:none}
+.modal-card--doc .modal-x:hover{background:#e2e9f0}
+.doc-loading{margin:0;padding-right:48px;color:#61768b}
+.doc-loading a{color:#147ca4}
+.modal-card--doc .al-privacy-content{padding-right:8px}
+.al-privacy-content {color:#203b55;font-weight:400;font-size:15px;line-height:1.73;overflow-wrap:anywhere}
+.al-privacy-content h2.al-document-title{font-size:clamp(24px,3vw,32px);line-height:1.16;letter-spacing:-.035em;font-weight:750;color:#0b2946;margin:0 0 15px}
+.al-privacy-content h2.al-section-title{font-size:18px;font-weight:730;line-height:1.34;letter-spacing:-.016em;color:#123c57;border-top:1px solid #dfe7ee;padding-top:20px;margin:30px 0 11px;scroll-margin-top:20px}
+.al-privacy-content p{margin:0 0 14px}
+.al-privacy-content ul{padding-left:22px;margin:0 0 18px}
+.al-privacy-content li{margin-bottom:10px}
+.al-privacy-content strong{font-weight:700;color:#0c344c}
+.al-privacy-content a{color:#147ca4;text-decoration:underline}
+@media (max-width:640px){.al-privacy-content{font-size:14px;line-height:1.7}.al-privacy-content h2.al-section-title{font-size:17px}}
+.cookie{position:fixed;left:clamp(12px,2.4vw,32px);bottom:calc(18px + env(safe-area-inset-bottom));z-index:52;width:min(420px,calc(100% - 24px));padding:20px 20px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(10,22,38,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 24px 60px -20px rgba(0,0,0,.7);font-size:13.5px;line-height:1.55;color:var(--g200);animation:cookieIn .6s var(--ease-out) both}
+@keyframes cookieIn{from{opacity:0;transform:translateY(20px)}}
+.cookie-title{margin:0 0 8px;font-size:16px;font-weight:700;line-height:1.3;letter-spacing:-.02em;color:#fff}
+.cookie p{margin:0 0 8px}
+.cookie a{color:var(--cyan)}
+.cookie-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.cookie-actions .btn{min-height:44px;padding:0 10px;font-size:11.5px}
+.cookie-more{grid-column:1/-1;justify-self:center;min-height:36px;padding:0 8px;border:0;background:none;font-size:13px;color:var(--g300);text-decoration:underline;text-underline-offset:3px}
+.cookie-more:hover{color:#fff}
+.ck-list{list-style:none;margin:0 0 20px;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ck-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 18px}
+.ck-item + .ck-item{border-top:1px solid var(--line)}
+.ck-item h3{margin:0 0 4px;font-size:15.5px;font-weight:700;color:#fff}
+.ck-item p{margin:0;font-size:13.5px;line-height:1.5;color:var(--g300)}
+.ck-always{font-size:12px;font-weight:600;white-space:nowrap;color:var(--cyan)}
+.switch{position:relative;display:inline-block;width:48px;height:28px;flex:none}
+.switch input{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.switch span{position:absolute;inset:0;border-radius:999px;background:rgba(255,255,255,.18);transition:background-color .2s ease}
+.switch span::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s var(--ease)}
+.switch input:checked + span{background:var(--blue)}
+.switch input:checked + span::after{transform:translateX(20px)}
+.switch input:focus-visible + span{outline:3px solid var(--cyan);outline-offset:2px}
+.ck-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ck-actions .btn{padding:0 10px;font-size:11px}
+.ck-note{margin:14px 0 0;font-size:13px;color:var(--g400)}
+.ck-note a{color:var(--cyan)}
+@media (max-width:640px){
+  .cookie{left:8px;right:8px;width:auto;bottom:calc(8px + env(safe-area-inset-bottom));padding:16px 16px 12px;font-size:13px}
+  .has-cookie .sam-fab{opacity:0;visibility:hidden}
+  .ck-actions{grid-template-columns:1fr}
+}
+
 @keyframes fill{to{transform:none}}
 
 /* bairros */
@@ -1122,18 +1170,58 @@ p{text-wrap:pretty}
         <h3>Legal</h3>
         <ul>
           <li><a href="#rodape">Termos de uso</a></li>
-          <li><a href="#rodape">Privacidade</a></li>
-          <li><a href="#rodape">Cookies</a></li>
+          <li><a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a></li>
+          <li><button type="button" data-action="cookies-prefs">Preferências de cookies</button></li>
         </ul>
       </div>
     </div>
     <div class="foot-legal">
       <p>Imagens meramente ilustrativas. Valores, metragens e disponibilidade podem mudar sem aviso prévio e são confirmados no momento da proposta. As respostas do Sam são informativas e não substituem a análise de um corretor.</p>
-      <p>© <span id="year">2026</span> AI Logic Hub</p>
+      <p>© <span id="year">2026</span> AILOGIC HUB NEGOCIOS IMOBILIARIOS LTDA · CNPJ 68.449.833/0001-78</p>
     </div>
   </div>
 </footer>
 </div>
+
+<!-- ============ PRIVACIDADE E COOKIES ============ -->
+<div class="modal" id="politica-modal" role="dialog" aria-modal="true" aria-label="Política de Privacidade">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--doc">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar a Política de Privacidade"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div id="politica-body"><p class="doc-loading">Carregando a Política de Privacidade…</p></div>
+  </div>
+</div>
+
+<div class="modal" id="cookies" role="dialog" aria-modal="true" aria-labelledby="cookies-title">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--form">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar preferências de cookies"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <h2 class="lead-title" id="cookies-title">Preferências de cookies</h2>
+    <p class="lead-sub">Escolha o que o site pode usar. Dá para mudar quando quiser, em "Preferências de cookies", no rodapé.</p>
+    <ul class="ck-list">
+      <li class="ck-item"><div><h3>Essenciais</h3><p>Fazem o site funcionar com segurança e guardam suas escolhas, como os imóveis salvos e esta preferência.</p></div><span class="ck-always">Sempre ativos</span></li>
+      <li class="ck-item"><div><h3 id="ck-analise">Análise de navegação</h3><p>Mostram, de forma agregada, como o site é usado, para melhorá-lo.</p></div><span class="switch"><input type="checkbox" role="switch" name="analise" aria-labelledby="ck-analise"><span></span></span></li>
+      <li class="ck-item"><div><h3 id="ck-personal">Personalização</h3><p>Lembram o que você procura para sugerir imóveis mais próximos do seu perfil.</p></div><span class="switch"><input type="checkbox" role="switch" name="personalizacao" aria-labelledby="ck-personal"><span></span></span></li>
+    </ul>
+    <div class="ck-actions">
+      <button class="btn btn-ghost" type="button" data-action="cookies-salvar">Salvar escolhas</button>
+      <button class="btn btn-light" type="button" data-action="cookies-essenciais">Somente essenciais</button>
+      <button class="btn btn-light" type="button" data-action="cookies-aceitar">Aceitar todos</button>
+    </div>
+    <p class="ck-note">Saiba mais na <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</p>
+  </div>
+</div>
+
+<section class="cookie" id="cookie" aria-labelledby="cookie-title" hidden>
+  <h2 class="cookie-title" id="cookie-title">Sua privacidade é importante para nós.</h2>
+  <p>Utilizamos cookies essenciais para o funcionamento e a segurança do site. Com sua autorização, também podemos utilizar cookies para compreender sua navegação e oferecer uma experiência cada vez mais inteligente e personalizada.</p>
+  <p>Você tem o controle sobre suas preferências. Saiba mais em nossa <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</p>
+  <div class="cookie-actions">
+    <button class="btn btn-light" type="button" data-action="cookies-essenciais">Somente essenciais</button>
+    <button class="btn btn-light" type="button" data-action="cookies-aceitar">Aceitar todos</button>
+    <button class="cookie-more" type="button" data-action="cookies-prefs">Preferências</button>
+  </div>
+</section>
 
 <!-- ============ SAM ============ -->
 <button class="sam-fab" id="sam-fab" type="button" data-action="sam" aria-label="Falar com o Sam">
@@ -1161,7 +1249,7 @@ p{text-wrap:pretty}
     <textarea id="sam-input" rows="1" placeholder="Escreva sua mensagem" autocomplete="off" maxlength="600"></textarea>
     <button class="send" type="submit" aria-label="Enviar mensagem"><svg class="i" aria-hidden="true"><use href="#i-send"/></svg></button>
   </form>
-  <p class="sam-note">O Sam pode errar. Um corretor confirma tudo antes da visita.</p>
+  <p class="sam-note">O Sam é um assistente virtual e pode errar; um corretor confirma tudo antes da visita. <a href="politica-de-privacidade.html" data-action="privacidade">Privacidade</a></p>
 </aside>
 
 <!-- ============ DETALHE DO IMÓVEL ============ -->
@@ -1202,7 +1290,7 @@ p{text-wrap:pretty}
           <div class="field full"><label for="a-bairro">Bairro</label><input id="a-bairro" name="bairro" autocomplete="address-level3" required maxlength="60" data-msg="Em qual bairro fica?"><p class="field-error" aria-live="polite"></p></div>
           <div class="field full"><label for="a-msg">Algo que devemos saber?</label><textarea id="a-msg" name="mensagem" maxlength="600" placeholder="Metragem, andar, se está ocupado…"></textarea></div>
         </div>
-        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre este anúncio. <a href="https://www.ailogichuboficial.com/privacidade" target="_blank" rel="noopener">Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
+        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre este anúncio. <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
         <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-foot">
           <small>Usamos seus dados só para falar sobre este anúncio.</small>
@@ -1230,7 +1318,7 @@ p{text-wrap:pretty}
           <div class="field"><label for="p-cidade">Cidade</label><input id="p-cidade" name="cidade" autocomplete="address-level2" required maxlength="60" data-msg="Em qual cidade?"><p class="field-error" aria-live="polite"></p></div>
           <div class="field full" data-perfis="indicador" data-req="indicador"><label for="p-indica" data-label="Qual imóvel você quer indicar?">Qual imóvel você quer indicar?</label><textarea id="p-indica" name="indicacao" maxlength="600" data-msg="Conte qual imóvel você quer indicar." placeholder="Bairro ou endereço, tipo do imóvel, se o dono já sabe…"></textarea><p class="field-error" aria-live="polite"></p></div>
         </div>
-        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre esta parceria. <a href="https://www.ailogichuboficial.com/privacidade" target="_blank" rel="noopener">Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
+        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre esta parceria. <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
         <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-foot">
           <small>Retornamos em até 1 dia útil.</small>
@@ -2629,6 +2717,11 @@ p{text-wrap:pretty}
       case 'lead': closeDrop(); closeMenu(); openLead(a.dataset.tab); break;
       case 'parceiro': closeDrop(); closeMenu(); openLead('parceiro', a.dataset.perfil); break;
       case 'video': openVideo(); break;
+      case 'privacidade': e.preventDefault(); openPolicy(); break;
+      case 'cookies-prefs': openCookiePrefs(); break;
+      case 'cookies-aceitar': Consent.save(true, true); break;
+      case 'cookies-essenciais': Consent.save(false, false); break;
+      case 'cookies-salvar': Consent.save($('[name="analise"]', cookiePrefs).checked, $('[name="personalizacao"]', cookiePrefs).checked); break;
       case 'hood': Sam.open({ bairro: a.dataset.bairro }); break;
       case 'ask': { const it = byId(id); closeDialog(detail, { restoreFocus: false }); Sam.open({ imovel: it }); break; }
       case 'sam-restart': Sam.reset(); break;
@@ -2637,6 +2730,64 @@ p{text-wrap:pretty}
       case 'close': { const d = a.closest('.modal, .lb, .sam, .mobile-menu'); if (d) closeDialog(d); break; }
     }
   });
+
+  /* ================= PRIVACIDADE E COOKIES ================= */
+  // O texto da política fica só em politica-de-privacidade.html (a página abre sozinha pelo link);
+  // aqui ele é lido e mostrado numa janela. Aberto como arquivo (sem servidor), o link abre a página.
+  const POLITICA_URL = 'politica-de-privacidade.html';
+  const policyModal = $('#politica-modal'), policyBody = $('#politica-body');
+  let policyLoaded = false;
+  async function openPolicy() {
+    if (!CONFIG.online) { window.open(POLITICA_URL, '_blank', 'noopener'); return; }
+    closeDrop(); closeMenu();
+    openDialog(policyModal, { focus: $('.modal-x', policyModal) });
+    $('.modal-card', policyModal).scrollTop = 0;
+    if (policyLoaded) return;
+    try {
+      const res = await fetch(POLITICA_URL, { headers: { Accept: 'text/html' } });
+      if (!res.ok) throw new Error(String(res.status));
+      const sec = new DOMParser().parseFromString(await res.text(), 'text/html').getElementById('politica');
+      if (!sec) throw new Error('sem conteúdo');
+      // a página é nossa, mas só o texto entra: nada de script, estilo, objeto ou atributo de evento
+      $$('script,style,iframe,object,embed,form', sec).forEach(n => n.remove());
+      [sec, ...$$('*', sec)].forEach(n => [...n.attributes].forEach(at => { if (/^on/i.test(at.name)) n.removeAttribute(at.name); }));
+      policyBody.replaceChildren(document.importNode(sec, true));
+      policyLoaded = true;
+    } catch {
+      policyBody.innerHTML = `<p class="doc-loading">Não foi possível carregar o texto aqui. <a href="${esc(POLITICA_URL)}" target="_blank" rel="noopener">Abrir a Política de Privacidade</a>.</p>`;
+    }
+  }
+
+  // Cookies: só os essenciais vêm ligados. Um script opcional (análise, personalização) só pode carregar
+  // quando window.alhConsent permitir; cada escolha dispara o evento "alh:consent" no document.
+  // Hoje o site não usa nenhum cookie opcional. Mudou o que se pergunta? Suba COOKIES_V e o aviso volta.
+  const COOKIES_V = 1;
+  const cookieBar = $('#cookie'), cookiePrefs = $('#cookies');
+  const Consent = {
+    get() { const c = store.get('alh:consent', null); return c && c.v === COOKIES_V ? c : null; },
+    publish(c) {
+      window.alhConsent = Object.freeze({ decidido: !!c, analise: !!(c && c.analise), personalizacao: !!(c && c.personalizacao) });
+      document.dispatchEvent(new CustomEvent('alh:consent', { detail: window.alhConsent }));
+    },
+    save(analise, personalizacao) {
+      const c = { v: COOKIES_V, analise: !!analise, personalizacao: !!personalizacao, em: new Date().toISOString() };
+      store.set('alh:consent', c);
+      this.publish(c);
+      cookieBar.hidden = true;
+      document.documentElement.classList.remove('has-cookie');
+      if (stack.some(d => d.el === cookiePrefs)) closeDialog(cookiePrefs);
+      toast('Preferências de cookies salvas');
+    }
+  };
+  function openCookiePrefs() {
+    const c = Consent.get();
+    $('[name="analise"]', cookiePrefs).checked = !!(c && c.analise);
+    $('[name="personalizacao"]', cookiePrefs).checked = !!(c && c.personalizacao);
+    closeDrop(); closeMenu();
+    openDialog(cookiePrefs);
+  }
+  Consent.publish(Consent.get());
+  if (!Consent.get()) setTimeout(() => { cookieBar.hidden = false; document.documentElement.classList.add('has-cookie'); }, 700);
 
   /* ================= INIT ================= */
   $('#year').textContent = String(new Date().getFullYear());

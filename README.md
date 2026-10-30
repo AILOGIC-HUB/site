@@ -40,7 +40,15 @@ Enquanto um arquivo não existe, a página não quebra:
 - "Como funciona": seis fotos lado a lado, uma por etapa (Converse com o Sam → Curadoria → Visita → Proposta e negociação → Documentos e assinatura → Entrega das chaves). O número e o título ficam sempre à vista; ao passar o mouse, a descrição sobe por cima da foto, que continua aparecendo, e as outras fotos escurecem um pouco. No celular e no tablet as fotos passam de lado e a descrição fica sempre visível. As fotos estão em `assets/como-funciona/` (256×1024).
 - Bairros que abrem o Sam já no contexto do bairro.
 - Acessibilidade: `lang="pt-BR"`, `alt`, `aria-label` nos botões de ícone, `role="dialog"` com foco preso e ESC, alvos de toque ≥ 44 px, `prefers-reduced-motion`.
-- Segurança: todo dado dinâmico passa por `esc()` antes de ir para o HTML, URLs de imagem passam por `safeUrl()`, nenhum `onclick` inline (delegação com `addEventListener`), e nada de PII no `localStorage` (só os IDs dos favoritos).
+- Segurança: todo dado dinâmico passa por `esc()` antes de ir para o HTML, URLs de imagem passam por `safeUrl()`, nenhum `onclick` inline (delegação com `addEventListener`), e nada de PII no `localStorage` (só os IDs dos favoritos e a escolha de cookies).
+
+## Privacidade e cookies
+
+- **Política de Privacidade** (versão 2.0, de 30/10/2026, do pacote de publicação): fica em `politica-de-privacidade.html`, uma página própria com o texto integral. O site abre o mesmo texto numa janela (lê a página), pelos links do rodapé, do aviso de cookies, dos formulários e do painel do Sam. Aberto como arquivo, sem servidor, o link abre a página. Para atualizar a política, troque só o bloco `<section id="politica">` da página.
+- **Aviso de cookies**, na primeira visita, com o texto aprovado e três saídas de um clique: **Somente essenciais**, **Aceitar todos** e **Preferências** (Essenciais sempre ativos; Análise de navegação e Personalização desligados até a pessoa ligar). A escolha fica em `localStorage` (`alh:consent`, sem dado pessoal) e pode ser revista em "Preferências de cookies", no rodapé. Para perguntar de novo a todos, suba `COOKIES_V` no script.
+- **Hoje o site não usa nenhum cookie opcional.** Qualquer ferramenta de análise ou publicidade (Google Analytics, Meta Pixel...) só pode carregar quando `window.alhConsent.analise` (ou `.personalizacao`) for `true`; cada escolha dispara o evento `alh:consent` no `document`.
+- Rodapé com a razão social e o CNPJ (AILOGIC HUB NEGOCIOS IMOBILIARIOS LTDA, 68.449.833/0001-78). O painel do Sam avisa que ele é um assistente virtual.
+- Pendências do pacote, antes de considerar a política publicada: conferir o endereço com o cartão CNPJ oficial; criar um canal eletrônico de privacidade (e-mail dedicado) e atualizar a seção 17; aprovação do jurídico.
 
 ## Ligação com o sistema do Hub
 
@@ -68,7 +76,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-5aUeqV3kINnZ+9wupZ4BntZ/PwWcrzDWYN8gnXdXrnY=';
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-+SpTmgMsvm0YPiHpz1WSDT4mPc87vGcYuIVgehXoDsU=';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com;
