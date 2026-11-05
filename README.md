@@ -81,6 +81,35 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 - **Formulários** (Anunciar e Ser parceiro): `POST /api/proposta?action=lead_site`, com a autorização de contato marcada. O contato entra em Comercial › Leads. Se o Hub não responder, a mensagem segue pelo WhatsApp, como antes.
 - O Hub só aceita essas chamadas de origens conhecidas (CORS). Ao ligar um domínio novo no site, acrescente-o em `SITE_ORIGINS` na Vercel do Hub (separado por vírgula).
 
+## Landing page de captação (`/lp`)
+
+Página própria para campanhas (Meta, Google, bio do Instagram), em `lp/index.html`: mesmo visual do site, sem menu (todo clique leva ao formulário ou ao WhatsApp), HTML + CSS + JS inline, sem build. Abre também com duplo-clique. São cerca de 126 KB (32 KB com gzip), sem contar as imagens.
+
+**Seções**: topo com o formulário à vista → faixa "como a curadoria trabalha" → "Menos anúncios. Mais certeza." (do jeito de sempre × com o Hub) → como funciona em três passos → Sam, com uma conversa de exemplo animada (marcada como "Exemplo") → bairros (o card marca o bairro no formulário) → bloco para proprietários → perguntas frequentes → chamada final → rodapé com razão social e CNPJ. No celular, uma barra fixa com "Quero minha seleção" e WhatsApp aparece longe do formulário.
+
+**Formulário em quatro etapas** (cerca de 1 minuto), com barra de progresso, Voltar, validação por etapa e resumo da busca antes do envio:
+
+| Etapa | Quem procura (comprar, alugar, investir) | Proprietário (vender ou alugar o imóvel) |
+|---|---|---|
+| 1 | O que você quer fazer? | O que você quer fazer? |
+| 2 | Tipo, quartos, até 3 bairros (ou "Outro" / "Ainda não sei") | Vender/alugar, tipo, bairro, área |
+| 3 | Faixa de valor (venda ou aluguel por mês), indispensáveis, prazo | Situação, valor esperado, prazo, observações |
+| 4 | Nome, WhatsApp, e-mail (opcional), melhor horário, autorização de contato | igual |
+
+- **Envio**: `POST /api/proposta?action=lead_site` do Hub, igual aos formulários do site, com `tipo` `cliente` ou `proprietario` e `origem` `site-formulario` (o Hub só aceita `site-cadastro` e `site-formulario`). O perfil inteiro vai no campo `mensagem` (até 500 caracteres), começando por "Landing page", e aparece no lead em Comercial › Leads. Sem resposta do Hub, a mensagem segue pelo WhatsApp, já preenchida, como no site.
+- **Campanha (UTM)**: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` e `utm_term` (e se veio de clique do Google ou da Meta) são lidos da URL, guardados na sessão do navegador e vão no fim da `mensagem` ("Origem: meta/cpc, campanha selecao-nov, anúncio..."). Atende à regra MKT-360 do Marketing (todo lead de tráfego externo com origem).
+- **Uma página, várias campanhas**: `?para=` troca o título e já abre na segunda etapa com a intenção marcada:
+  - `/lp` (ou `?para=comprar`): quem quer comprar para morar;
+  - `/lp?para=alugar`, `/lp?para=investir`;
+  - `/lp?para=proprietario`: título, botões e envio do proprietário;
+  - `&bairro=Pinheiros` já marca o bairro (ou preenche o bairro do imóvel, para proprietário).
+
+  Exemplo de anúncio: `https://<site>/lp?para=alugar&bairro=Moema&utm_source=meta&utm_medium=cpc&utm_campaign=locacao-moema&utm_content=video-1`.
+- **Cookies e métricas**: mesmo aviso, mesmo texto e mesma escolha do site (`alh:consent`): quem já escolheu no site não vê o aviso de novo. GA4 e Pixel seguem a mesma regra; **preencha `ga4` e `metaPixel` também no `CONFIG` da landing**. Eventos, sem nenhum dado pessoal: `lp_inicio` (primeira resposta), `lp_etapa` (cada etapa, com a intenção), `generate_lead` / `Lead` (envio, com tipo, intenção e canal hub/whatsapp) e `whatsapp_click` / `Contact`. Todos levam `pagina: lp` e a `variante`.
+- **"Conversar com o Sam"** leva ao site com `?sam=1`, que abre o painel do Sam direto.
+- **CSP**: se o cabeçalho também valer para `/lp`, acrescente os hashes dos dois scripts da landing (desta versão): `'sha256-STYPFcK96F7WDpjrr8lWACDtdgptm5zp3cvxlvxvz58='` e `'sha256-U3mWRv2X+tjpJm5RJzU8xQs4mgYNSDs8Eqq3JMoUO6U='`, e `https://images.unsplash.com` em `img-src` (fotos dos bairros e da conversa de exemplo).
+- **Para revisar antes de anunciar**: textos das perguntas frequentes (prazo de retorno de 1 dia útil, regiões atendidas) e as faixas de valor, com o comercial; trocar as fotos do Unsplash dos bairros por fotos próprias.
+
 ## O que é demonstração
 
 - **Imóveis**: 9 imóveis de exemplo no formato do `/api/vitrine`, marcados na tela como "Exemplo" (etiqueta nos cards, nos destaques do banner e no detalhe, mais um aviso na coleção). Somem sozinhos quando o Hub publicar imóveis reais.
@@ -100,7 +129,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
 
   ```
   default-src 'self';
-  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-slo1O0DQGdTo9Pk20y/+9/YkzPXADz8B4B/hOglNIoI=' https://www.googletagmanager.com https://connect.facebook.net;
+  script-src 'self' 'sha256-eFK9hDkDon/NPDG/wQvJ0DrtXVrwpsFTD7A06bWUWvs=' 'sha256-7dih+tVyjZGH+G9d44/lwIjMlaOIllomslLTxG/hcS0=' https://www.googletagmanager.com https://connect.facebook.net;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src https://fonts.gstatic.com;
   img-src 'self' data: https://images.unsplash.com https://www.googletagmanager.com https://*.google-analytics.com https://www.facebook.com;

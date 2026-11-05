@@ -2915,6 +2915,8 @@ p{text-wrap:pretty}
   const hashSlide = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
   if (hashSlide && hashSlide.classList.contains('panel')) Hero.go(Hero.list().indexOf(hashSlide), 1, { instant: true });
   openFromHash();
+  // ?sam=1 (links da landing page /lp) abre o Sam direto
+  if (new URLSearchParams(location.search).has('sam')) setTimeout(() => Sam.open({}), 600);
   // o primeiro slide entra animado depois da primeira pintura
   const firstSlide = Hero.list()[Hero.cur];
   firstSlide.classList.remove('is-active');
