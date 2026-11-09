@@ -3,38 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Receba sua seleção de imóveis — AI Logic Hub</title>
-<meta name="description" content="Conte em um minuto o que você procura. A curadoria do AI Logic Hub seleciona até três imóveis em São Paulo para o seu perfil e um especialista te chama no WhatsApp.">
+<title>AI Logic Hub — Em breve</title>
+<meta name="description" content="O AI Logic Hub une curadoria, inteligência e gente de verdade para aproximar quem procura, quem vende e quem negocia imóveis. Entre na lista e saiba do lançamento antes.">
 <meta name="theme-color" content="#061326">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AI Logic Hub">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:title" content="Receba só os imóveis que fazem sentido para você">
-<meta property="og:description" content="Até três imóveis por vez, escolhidos pela curadoria do Hub para o seu perfil. Conte o que procura em um minuto.">
+<meta property="og:title" content="AI Logic Hub — Em breve">
+<meta property="og:description" content="Uma nova forma de encontrar, apresentar e negociar imóveis está chegando. Entre na lista de lançamento.">
 <meta property="og:image" content="https://site-orpin-two-16.vercel.app/assets/og-image.jpg">
 <meta property="og:image:secure_url" content="https://site-orpin-two-16.vercel.app/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AI Logic Hub: encontre o imóvel certo para você.">
+<meta property="og:image:alt" content="AI Logic Hub: inteligência que conecta.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://site-orpin-two-16.vercel.app/assets/og-image.jpg">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preload" as="image" href="../assets/hero-1.webp" fetchpriority="high">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <script>
-  /* Antes de qualquer <img>: marca JS ativo e trata imagens que falharem
-     (tenta data-alt-src; se falhar de novo, esconde e deixa o gradiente da marca aparecer). */
+  /* Antes de qualquer <img>: marca JS ativo e esconde imagens que falharem (o gradiente da marca aparece no lugar). */
   document.documentElement.classList.add('js');
   document.addEventListener('error', function (e) {
     var img = e.target;
     if (!img || img.tagName !== 'IMG') return;
-    var alt = img.getAttribute('data-alt-src');
-    if (alt && !img.hasAttribute('data-alt-used')) { img.setAttribute('data-alt-used', ''); img.src = alt; return; }
     img.classList.add('img-broken');
     if (img.getAttribute('data-fallback') === 'logo' && img.parentNode) img.parentNode.classList.add('logo-missing');
   }, true);
@@ -103,10 +99,6 @@ p{text-wrap:pretty}
 .btn-primary:hover{background:#0a5fbd;box-shadow:0 14px 34px -14px rgba(15,139,255,.8)}
 .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}
 .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.06)}
-.btn-dark{background:var(--ink);color:#fff}
-.btn-dark:hover{background:#15263d}
-.btn-white{background:#fff;color:var(--ink);border-color:var(--line-light)}
-.btn-white:hover{border-color:var(--ink)}
 .btn-wa{background:var(--wa);color:#05301a}
 .btn-wa:hover{background:#2fe072}
 .btn-block{width:100%}
@@ -115,322 +107,230 @@ p{text-wrap:pretty}
 .btn-arrow:hover .i{transform:translateX(3px)}
 
 /* ---------- Header ---------- */
-.lp-header{position:fixed;inset:0 0 auto;z-index:50;height:var(--header-h);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(12px,2.6vw,36px);border-bottom:1px solid transparent;transition:background-color .4s ease,border-color .4s ease,-webkit-backdrop-filter .4s ease,backdrop-filter .4s ease}
+.lp-header{position:fixed;inset:0 0 auto;z-index:50;height:var(--header-h);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:0 clamp(12px,2.6vw,36px);border-bottom:1px solid transparent;transition:background-color .4s ease,border-color .4s ease,-webkit-backdrop-filter .4s ease,backdrop-filter .4s ease}
 .lp-header.is-scrolled{background:rgba(6,19,38,.86);border-bottom-color:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
-.brand{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
+.brand{justify-self:start;display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
 .brand img{height:32px;width:auto}
 .logo-text{display:none;font-weight:700;font-size:19px;letter-spacing:-.03em;color:var(--g200)}
 .logo-text b{color:var(--blue);font-weight:700}
 .logo-missing img{display:none}
 .logo-missing .logo-text{display:inline}
-.header-actions{display:flex;align-items:center;gap:8px}
+.status{display:inline-flex;align-items:center;gap:10px;margin:0;font-size:11.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--g300)}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 0 rgba(76,198,255,.6);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(76,198,255,0)}100%{box-shadow:0 0 0 0 rgba(76,198,255,0)}}
+.header-actions{justify-self:end;display:flex;align-items:center;gap:8px}
 .header-actions .btn{min-height:42px;padding:0 18px;font-size:11.5px}
-.header-wa{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;border-radius:var(--radius);font-size:14px;font-weight:500;text-decoration:none;color:rgba(255,255,255,.92);transition:background-color .2s ease}
-.header-wa:hover{background:rgba(255,255,255,.1)}
-.header-wa .i{color:var(--wa)}
-@media (max-width:640px){.header-wa span{display:none}.header-wa{width:44px;padding:0;justify-content:center}.header-actions .btn{padding:0 14px}}
-@media (max-width:380px){.header-actions .btn{display:none}}
+@media (max-width:760px){.lp-header{grid-template-columns:1fr auto}.status{display:none}}
+@media (max-width:380px){.header-actions .btn{padding:0 12px;font-size:10.5px}}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;isolation:isolate;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:calc(var(--header-h) + clamp(28px,5vw,64px)) 0 clamp(48px,6vw,80px);overflow:hidden}
-.hero-media{position:absolute;inset:0;z-index:-2}
-.hero-media img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);animation:kenburns 26s var(--ease) both}
-@keyframes kenburns{from{transform:scale(1.14) translate3d(1.5%,0,0)}to{transform:scale(1.02) translate3d(0,0,0)}}
+.hero{position:relative;isolation:isolate;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:calc(var(--header-h) + clamp(28px,5vw,64px)) 0 clamp(56px,7vw,96px);overflow:hidden}
+.hero-media{position:absolute;inset:0;z-index:-3}
+.hero-media img{width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(.7)}
+.hero-net{position:absolute;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none}
 .hero-shade{position:absolute;inset:0;z-index:-1;background:
-  linear-gradient(90deg,rgba(6,19,38,.94) 0%,rgba(6,19,38,.78) 42%,rgba(6,19,38,.5) 70%,rgba(6,19,38,.72) 100%),
-  linear-gradient(180deg,rgba(6,19,38,.55) 0%,transparent 30%,transparent 70%,var(--night) 100%)}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,480px);gap:clamp(32px,5vw,72px);align-items:center}
+  radial-gradient(60% 70% at 85% 30%,rgba(15,139,255,.18),transparent 60%),
+  linear-gradient(90deg,rgba(6,19,38,.96) 0%,rgba(6,19,38,.82) 45%,rgba(6,19,38,.55) 75%,rgba(6,19,38,.75) 100%),
+  linear-gradient(180deg,rgba(6,19,38,.6) 0%,transparent 28%,transparent 70%,var(--night) 100%)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,450px);gap:clamp(32px,5vw,72px);align-items:center}
 .eyebrow{margin:0 0 18px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
-.eyebrow .dot{display:inline-block;width:7px;height:7px;margin:0 10px 1px 0;border-radius:50%;background:var(--wa);box-shadow:0 0 0 4px rgba(37,211,102,.18);vertical-align:middle;animation:pulse 2.4s ease-in-out infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(37,211,102,.05)}}
-.hero-title{margin:0;font-size:clamp(38px,5.2vw,74px);font-weight:700;line-height:.98;letter-spacing:-.055em}
-.hero-title span{display:block;color:var(--g200);font-weight:600}
-.hero-title em{font-style:normal;background:linear-gradient(100deg,var(--cyan),#9fe1ff 60%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-sub{margin:24px 0 0;max-width:560px;font-size:clamp(16px,1.35vw,19px);line-height:1.55;color:rgba(255,255,255,.86)}
-.hero-points{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:12px;max-width:560px}
-.hero-points li{display:flex;align-items:flex-start;gap:12px;font-size:15.5px;color:var(--g200)}
-.hero-points .tick{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:50%;background:rgba(76,198,255,.14);color:var(--cyan)}
-.hero-points .tick .i{width:15px;height:15px;stroke-width:2.2}
-.hero-points strong{color:#fff;font-weight:600}
-.hero-trust{display:flex;flex-wrap:wrap;gap:8px 22px;margin:32px 0 0;padding:0;list-style:none;font-size:13px;color:var(--g300)}
-.hero-trust li{display:inline-flex;align-items:center;gap:8px}
-.hero-trust .i{width:17px;height:17px;color:var(--cyan)}
+.hero-title{margin:0;font-size:clamp(40px,5.4vw,76px);font-weight:700;line-height:.97;letter-spacing:-.055em}
+.hero-title span{display:block;font-weight:600;background:linear-gradient(100deg,var(--cyan) 0%,#9fe1ff 45%,#fff 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{margin:26px 0 0;max-width:570px;font-size:clamp(16px,1.35vw,19px);line-height:1.55;color:rgba(255,255,255,.86)}
+.hero-sub strong{color:#fff;font-weight:600}
+
+/* fases do lançamento */
+.phases{list-style:none;margin:34px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:570px}
+.phase{position:relative;padding:16px 14px 0 0}
+.phase::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:rgba(255,255,255,.12)}
+.phase::after{content:"";position:absolute;left:0;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--night);border:2px solid rgba(255,255,255,.3)}
+.phase.is-done::before{background:var(--cyan)}
+.phase.is-done::after{background:var(--cyan);border-color:var(--cyan)}
+.phase.is-now::before{background:linear-gradient(90deg,var(--cyan),rgba(255,255,255,.12))}
+.phase.is-now::after{border-color:var(--cyan);background:var(--night);box-shadow:0 0 0 5px rgba(76,198,255,.18)}
+.phase b{display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--g400)}
+.phase.is-done b,.phase.is-now b{color:var(--cyan)}
+.phase span{display:block;margin-top:4px;font-size:14px;font-weight:600;line-height:1.3;color:#fff}
+.phase small{display:block;margin-top:3px;font-size:12.5px;line-height:1.4;color:var(--g400)}
 .reveal{opacity:0;transform:translate3d(0,22px,0);animation:rise .9s var(--ease-out) forwards}
-.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.4s}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}
 @keyframes rise{to{opacity:1;transform:none}}
 @media (max-width:960px){
   .hero{min-height:0;align-items:flex-start}
   .hero-grid{grid-template-columns:minmax(0,1fr)}
-  .hero-shade{background:linear-gradient(180deg,rgba(6,19,38,.82) 0%,rgba(6,19,38,.7) 40%,rgba(6,19,38,.94) 75%,var(--night) 100%)}
-  .hero-points{display:none}
-  .hero-trust{margin-top:22px}
+  .hero-shade{background:linear-gradient(180deg,rgba(6,19,38,.8) 0%,rgba(6,19,38,.7) 40%,rgba(6,19,38,.95) 75%,var(--night) 100%)}
 }
 @media (max-width:640px){
   .hero{padding-top:calc(var(--header-h) + 22px)}
-  .hero-grid{gap:24px}
+  .hero-grid{gap:28px}
   .eyebrow{margin-bottom:14px}
+  .hero-title{font-size:36px}
   .hero-sub{margin-top:16px;font-size:15.5px}
-  .hero-trust{display:none}
+  .phases{margin-top:24px}
+  .phase{padding-right:8px}
+  .phase small{display:none}
+  .phase span{font-size:13px}
 }
 
-/* ---------- Formulário em etapas ---------- */
-.wizard{position:relative;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:rgba(9,20,35,.9);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);box-shadow:0 40px 100px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.06);scroll-margin-top:calc(var(--header-h) + 12px)}
-.wizard::before{content:"";position:absolute;inset:-1px;z-index:-1;border-radius:21px;background:linear-gradient(150deg,rgba(76,198,255,.5),transparent 35%,transparent 65%,rgba(15,139,255,.35));opacity:.6;pointer-events:none}
-.wz-head{padding:24px 26px 0}
-.wz-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.wz-kicker{margin:0;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
-.wz-count{margin:0;font-size:12.5px;color:var(--g400);font-variant-numeric:tabular-nums}
-.wz-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.wz-bar span{height:4px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
-.wz-bar span::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,var(--blue),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .55s var(--ease-out)}
-.wz-bar span.on::after{transform:scaleX(1)}
-.wz-body{padding:22px 26px 6px}
-.step{display:none;border:0;margin:0;padding:0;min-width:0}
-.step.is-current{display:block;animation:stepIn .5s var(--ease-out) both}
-.step.is-back{animation-name:stepBack}
-@keyframes stepIn{from{opacity:0;transform:translate3d(18px,0,0)}to{opacity:1;transform:none}}
-@keyframes stepBack{from{opacity:0;transform:translate3d(-18px,0,0)}to{opacity:1;transform:none}}
-.step-title{margin:0;font-size:clamp(22px,2.2vw,27px);font-weight:700;line-height:1.12;letter-spacing:-.035em;outline:none}
-.step-sub{margin:8px 0 20px;font-size:14.5px;color:var(--g300)}
-.q{border:0;margin:0 0 18px;padding:0;min-width:0}
-.q legend,.q-label{display:block;margin:0 0 9px;padding:0;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}
-.q legend small,.q-label small{margin-left:6px;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--g400)}
+/* ---------- Cartão de cadastro ---------- */
+.signup{position:relative;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:rgba(9,20,35,.9);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);box-shadow:0 40px 100px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.06);scroll-margin-top:calc(var(--header-h) + 12px)}
+.signup::before{content:"";position:absolute;inset:-1px;z-index:-1;border-radius:21px;background:linear-gradient(150deg,rgba(76,198,255,.55),transparent 35%,transparent 65%,rgba(15,139,255,.35));opacity:.6;pointer-events:none}
+.su-head{padding:26px 26px 0}
+.su-kicker{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.su-kicker .i{width:18px;height:18px}
+.su-title{margin:0;font-size:clamp(24px,2.4vw,30px);font-weight:700;line-height:1.08;letter-spacing:-.04em;outline:none}
+.su-sub{margin:10px 0 0;font-size:14.5px;color:var(--g300)}
+.su-body{padding:18px 26px 4px}
+.q{border:0;margin:0 0 16px;padding:0;min-width:0}
+.q legend{display:block;margin:0 0 9px;padding:0;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}
 .q-error,.field-error{margin:8px 0 0;font-size:12.5px;line-height:1.4;color:var(--bad)}
 .q-error:empty,.field-error:empty{display:none}
-
-/* cartões de intenção */
-.intents{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.intent{position:relative;display:block}
-.intent input{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
-.intent-card{display:flex;flex-direction:column;gap:10px;min-height:118px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);transition:border-color .2s ease,background-color .2s ease,transform .25s var(--ease),box-shadow .25s ease}
-.intent-ico{width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:rgba(76,198,255,.1);color:var(--cyan);transition:background-color .2s ease,color .2s ease}
-.intent-card strong{display:block;font-size:15px;font-weight:600;line-height:1.25}
-.intent-card small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:var(--g400)}
-.intent-check{position:absolute;top:12px;right:12px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,255,255,.2);color:transparent;transition:all .2s ease}
-.intent-check .i{width:13px;height:13px;stroke-width:2.6}
-.intent:hover .intent-card{border-color:rgba(255,255,255,.28);transform:translateY(-2px)}
-.intent input:checked + .intent-card{border-color:var(--cyan);background:rgba(76,198,255,.09);box-shadow:0 14px 34px -18px rgba(76,198,255,.6)}
-.intent input:checked + .intent-card .intent-ico{background:var(--cyan);color:var(--ink)}
-.intent input:checked + .intent-card .intent-check{background:var(--cyan);border-color:var(--cyan);color:var(--ink)}
-.intent input:focus-visible + .intent-card{outline:2px solid var(--cyan);outline-offset:2px}
-.intent--wide{grid-column:1/-1}
-.intent--wide .intent-card{flex-direction:row;align-items:center;min-height:0;border-style:dashed}
-.intent--wide input:checked + .intent-card{border-style:solid}
-
-/* pílulas (escolha única ou múltipla) */
-.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
 .pill{position:relative;display:inline-flex}
 .pill input{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
-.pill span{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);font-size:14px;font-weight:500;color:var(--g200);transition:border-color .2s ease,background-color .2s ease,color .2s ease}
-.pill span .i{width:15px;height:15px;stroke-width:2.4;margin-left:-4px;display:none}
+.pill span{display:inline-flex;align-items:center;min-height:38px;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);font-size:13.5px;font-weight:500;color:var(--g200);transition:border-color .2s ease,background-color .2s ease,color .2s ease}
 .pill:hover span{border-color:rgba(255,255,255,.3)}
 .pill input:checked + span{border-color:var(--cyan);background:rgba(76,198,255,.12);color:#fff}
-.pill input[type=checkbox]:checked + span .i{display:block;color:var(--cyan)}
 .pill input:focus-visible + span{outline:2px solid var(--cyan);outline-offset:2px}
-.pills--seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.pills--seg .pill span{justify-content:center;width:100%;padding:0 8px}
-.pills--seg .pill{display:flex}
-
-/* campos */
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field{display:grid;gap:6px;align-content:start}
 .field.full{grid-column:1/-1}
 .field label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}
 .field label small{font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--g400)}
-.field input,.field textarea{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:16px;color:#fff;transition:border-color .2s ease,box-shadow .2s ease}
-.field textarea{min-height:84px;resize:vertical}
-.field input::placeholder,.field textarea::placeholder{color:#66758a}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(76,198,255,.16)}
+.field input{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:16px;color:#fff;transition:border-color .2s ease,box-shadow .2s ease}
+.field input::placeholder{color:#66758a}
+.field input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(76,198,255,.16)}
 .field [aria-invalid="true"]{border-color:#ff7a8a}
-.outro{margin-top:10px}
-.consent{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;margin-top:16px;font-size:13px;line-height:1.45;color:var(--g200);cursor:pointer}
+.consent{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;margin-top:14px;font-size:13px;line-height:1.45;color:var(--g200);cursor:pointer}
 .consent input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--blue)}
 .consent a{color:var(--cyan)}
 .consent .field-error{grid-column:2;margin-top:2px}
 .hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
-
-/* resumo do perfil na última etapa */
-.recap{margin:0 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
-.recap-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.recap-head p{margin:0;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}
-.recap-edit{min-height:32px;padding:0 4px;border:0;background:none;font-size:13px;color:var(--cyan);text-decoration:underline;text-underline-offset:3px}
-.recap-tags{display:flex;flex-wrap:wrap;gap:6px}
-.recap-tags span{display:inline-flex;align-items:center;min-height:28px;padding:0 11px;border-radius:999px;background:rgba(76,198,255,.1);font-size:13px;color:#dff4ff}
-
-.wz-foot{display:flex;align-items:center;gap:10px;padding:16px 26px 24px}
-.wz-back{display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 14px 0 8px;border:0;border-radius:var(--radius);background:none;font-size:14px;font-weight:500;color:var(--g300);transition:color .2s ease,background-color .2s ease}
-.wz-back:hover{color:#fff;background:rgba(255,255,255,.06)}
-.wz-next{flex:1}
-.wz-note{display:flex;align-items:center;gap:8px;margin:0;padding:0 26px 22px;font-size:12.5px;color:var(--g400)}
-.wz-note .i{width:15px;height:15px;color:var(--g300)}
-
+.su-foot{padding:16px 26px 0}
+.su-note{display:flex;align-items:flex-start;gap:8px;margin:0;padding:12px 26px 24px;font-size:12.5px;line-height:1.45;color:var(--g400)}
+.su-note .i{width:15px;height:15px;margin-top:1px;color:var(--g300)}
 /* concluído */
-.done{padding:30px 26px 28px;text-align:center}
-.done-check{position:relative;width:76px;height:76px;margin:0 auto 22px;display:grid;place-items:center;border-radius:50%;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.5);color:var(--wa)}
-.done-check::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(37,211,102,.25);animation:ring 1.8s var(--ease-out) .2s both}
+.done{padding:32px 26px 28px;text-align:center}
+.done-check{position:relative;width:76px;height:76px;margin:0 auto 22px;display:grid;place-items:center;border-radius:50%;background:rgba(76,198,255,.12);border:1px solid rgba(76,198,255,.5);color:var(--cyan)}
+.done-check::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(76,198,255,.25);animation:ring 1.8s var(--ease-out) .2s both}
 @keyframes ring{from{transform:scale(.7);opacity:1}to{transform:scale(1.25);opacity:0}}
 .done-check .i{width:34px;height:34px;stroke-width:2.2;stroke-dasharray:30;stroke-dashoffset:30;animation:draw .6s var(--ease-out) .15s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
-.done-title{margin:0;font-size:clamp(26px,3vw,34px);font-weight:700;line-height:1.05;letter-spacing:-.045em;outline:none}
-.done-text{margin:12px auto 0;max-width:380px;color:var(--g300)}
-.next-steps{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:0;text-align:left;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.done-title{margin:0;font-size:clamp(26px,3vw,32px);font-weight:700;line-height:1.05;letter-spacing:-.045em;outline:none}
+.done-text{margin:12px auto 0;max-width:370px;color:var(--g300)}
+.next-steps{list-style:none;margin:24px 0 0;padding:0;display:grid;text-align:left;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .next-steps li{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px 16px;font-size:14px;color:var(--g200)}
 .next-steps li + li{border-top:1px solid var(--line)}
 .next-steps b{display:block;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan)}
 .next-steps .n{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:rgba(76,198,255,.12);font-size:12.5px;font-weight:700;color:var(--cyan)}
 .done-btns{display:grid;gap:10px;margin-top:22px}
-
 @media (max-width:520px){
-  .wz-head{padding:20px 18px 0}
-  .wz-body{padding:20px 18px 4px}
-  .wz-foot{padding:14px 18px 20px}
-  .wz-note{padding:0 18px 20px}
-  .done{padding:26px 18px 22px}
-  .intent-card{min-height:108px;padding:14px}
+  .su-head{padding:22px 18px 0}.su-body{padding:18px 18px 4px}.su-foot{padding:14px 18px 0}.su-note{padding:12px 18px 20px}.done{padding:26px 18px 22px}
   .fields{grid-template-columns:1fr}
 }
 
-/* ---------- Faixa de garantias ---------- */
-.proof{position:relative;z-index:2;margin-top:-1px;border-block:1px solid var(--line);background:var(--ink)}
-.proof-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.proof-list li{display:flex;align-items:flex-start;gap:14px;padding:28px clamp(14px,2vw,26px)}
-.proof-list li + li{border-left:1px solid var(--line)}
-.proof-ico{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:12px;background:rgba(76,198,255,.1);color:var(--cyan)}
-.proof-list strong{display:block;font-size:15.5px;font-weight:600;line-height:1.3}
-.proof-txt > span{display:block;margin-top:3px;font-size:13.5px;line-height:1.45;color:var(--g400)}
-@media (max-width:960px){.proof-list{grid-template-columns:1fr 1fr}.proof-list li:nth-child(3){border-left:0}.proof-list li:nth-child(n+3){border-top:1px solid var(--line)}}
-@media (max-width:560px){.proof-list{grid-template-columns:1fr}.proof-list li{padding:20px 4px}.proof-list li + li{border-left:0;border-top:1px solid var(--line)}}
+/* ---------- Faixa de públicos ---------- */
+.ticker{position:relative;overflow:hidden;border-block:1px solid var(--line);background:var(--ink)}
+.ticker-track{display:flex;width:max-content;animation:tick 42s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker ul{display:flex;align-items:center;margin:0;padding:0;list-style:none}
+.ticker li{display:flex;align-items:center;gap:22px;padding:18px 0 18px 22px;font-size:12.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--g300);white-space:nowrap}
+.ticker li::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:.7}
+@keyframes tick{to{transform:translate3d(-50%,0,0)}}
 
 /* ---------- Seções ---------- */
 .section{position:relative;padding:clamp(80px,10vw,140px) 0}
 .section-light{background:var(--ice);color:var(--ink);color-scheme:light}
 .section-dark{background:var(--night)}
 .section-ink{background:radial-gradient(70% 60% at 15% 0%,rgba(15,139,255,.16),transparent 60%),radial-gradient(60% 50% at 95% 100%,rgba(76,198,255,.08),transparent 60%),var(--ink)}
-.section-head{max-width:760px;margin:0 auto clamp(40px,5.5vw,64px);text-align:center}
+.section-head{max-width:760px;margin:0 0 clamp(40px,5.5vw,64px)}
+.section-head--center{margin-inline:auto;text-align:center}
 .section-title{margin:0;font-size:clamp(34px,4.8vw,62px);font-weight:700;line-height:1;letter-spacing:-.055em}
 .section-title span{display:block;color:var(--g300);font-weight:600}
 .section-light .section-title span{color:var(--blue-deep)}
-.section-sub{margin:20px auto 0;max-width:600px;font-size:clamp(16px,1.3vw,18px);color:var(--g300)}
+.section-sub{margin:20px 0 0;max-width:620px;font-size:clamp(16px,1.3vw,18px);color:var(--g300)}
+.section-head--center .section-sub{margin-inline:auto}
 .section-light .section-sub{color:var(--g600)}
 .section-light .eyebrow{color:var(--blue-deep)}
-.section-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:clamp(40px,5vw,56px)}
+.section-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(32px,4vw,48px)}
+.section-cta--center{justify-content:center}
 [data-reveal]{opacity:0;transform:translate3d(0,28px,0);transition:opacity .9s var(--ease-out),transform .9s var(--ease-out)}
 [data-reveal].is-in{opacity:1;transform:none}
 [data-stagger] > *{opacity:0;transform:translate3d(0,24px,0);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out)}
 [data-stagger].is-in > *{opacity:1;transform:none}
-[data-stagger].is-in > *:nth-child(2){transition-delay:.08s}
-[data-stagger].is-in > *:nth-child(3){transition-delay:.16s}
-[data-stagger].is-in > *:nth-child(4){transition-delay:.24s}
-[data-stagger].is-in > *:nth-child(5){transition-delay:.32s}
-[data-stagger].is-in > *:nth-child(6){transition-delay:.4s}
-[data-stagger].is-in > *:nth-child(7){transition-delay:.48s}
-[data-stagger].is-in > *:nth-child(8){transition-delay:.56s}
+[data-stagger].is-in > *:nth-child(2){transition-delay:.07s}
+[data-stagger].is-in > *:nth-child(3){transition-delay:.14s}
+[data-stagger].is-in > *:nth-child(4){transition-delay:.21s}
+[data-stagger].is-in > *:nth-child(5){transition-delay:.28s}
+[data-stagger].is-in > *:nth-child(6){transition-delay:.35s}
 
-/* comparação */
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1040px;margin:0 auto}
-.cmp{padding:clamp(24px,3vw,36px);border-radius:20px}
-.cmp h3{display:flex;align-items:center;gap:12px;margin:0 0 22px;font-size:20px;font-weight:700;letter-spacing:-.03em}
-.cmp ul{list-style:none;margin:0;padding:0;display:grid;gap:16px}
-.cmp li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;font-size:15.5px;line-height:1.5}
-.cmp .mk{width:26px;height:26px;display:grid;place-items:center;border-radius:50%}
-.cmp .mk .i{width:14px;height:14px;stroke-width:2.4}
-.cmp--old{border:1px solid var(--line-light);background:#fff;color:var(--g600)}
-.cmp--old h3{color:var(--g700)}
-.cmp--old .mk{background:#f1f3f6;color:#9aa5b3}
-.cmp--hub{position:relative;overflow:hidden;background:var(--ink);color:var(--g200);box-shadow:0 40px 80px -40px rgba(7,17,31,.6)}
-.cmp--hub::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 100% 0%,rgba(76,198,255,.2),transparent 60%);pointer-events:none}
-.cmp--hub h3{color:#fff}
-.cmp--hub .mk{background:var(--cyan);color:var(--ink)}
-.cmp--hub img{height:22px;width:auto}
-.cmp-tag{position:absolute;top:22px;right:22px;padding:5px 10px;border-radius:999px;background:rgba(76,198,255,.14);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
-@media (max-width:820px){.compare{grid-template-columns:1fr}}
+/* o que é o Hub: problema → resposta */
+.gap-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(36px,6vw,96px);align-items:start}
+.gap-grid .section-head{margin-bottom:0}
+.gap-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.gap-list li{display:grid;grid-template-columns:44px 1fr;gap:4px 16px;padding:22px 0;border-bottom:1px solid var(--line)}
+.gap-list .n{grid-row:span 2;font-size:12.5px;font-weight:700;letter-spacing:.08em;color:var(--cyan);padding-top:3px;font-variant-numeric:tabular-nums}
+.gap-list h3{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.gap-list p{margin:0;font-size:15px;color:var(--g400)}
+.answer-head{margin:clamp(64px,8vw,104px) 0 28px;font-size:clamp(22px,2.4vw,30px);font-weight:700;letter-spacing:-.035em;line-height:1.15}
+.answer-head span{color:var(--cyan)}
+.answer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pillar{position:relative;padding:28px 26px 30px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0))}
+.pillar-ico{width:46px;height:46px;display:grid;place-items:center;margin-bottom:20px;border-radius:12px;background:rgba(76,198,255,.1);color:var(--cyan)}
+.pillar-ico .i{width:22px;height:22px}
+.pillar b{display:block;font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.pillar h3{margin:8px 0 0;font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.03em}
+.pillar p{margin:10px 0 0;font-size:15px;color:var(--g300)}
+@media (max-width:900px){.gap-grid{grid-template-columns:minmax(0,1fr)}.answer{grid-template-columns:minmax(0,1fr)}}
 
-/* como funciona */
-.steps3{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;counter-reset:s}
-.s3{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);background:var(--surface)}
-.s3-media{position:relative;aspect-ratio:4/3;overflow:hidden}
-.s3-media img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out)}
-.s3:hover .s3-media img{transform:scale(1.05)}
-.s3-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--surface) 100%)}
-.s3-n{position:absolute;top:16px;left:16px;z-index:1;display:inline-grid;place-items:center;min-width:44px;height:30px;padding:0 10px;border-radius:999px;background:rgba(6,19,38,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12.5px;font-weight:700;letter-spacing:.08em;color:var(--cyan)}
-.s3-body{padding:4px 24px 26px}
-.s3-body h3{margin:0;font-size:21px;font-weight:700;letter-spacing:-.03em}
-.s3-body p{margin:10px 0 0;color:var(--g300);font-size:15px}
-.s3-time{display:inline-flex;align-items:center;gap:7px;margin-top:16px;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--g400)}
-.s3-time .i{width:15px;height:15px}
-.after{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;margin:28px auto 0;max-width:900px;font-size:14px;color:var(--g400)}
-.after b{color:var(--g200);font-weight:600}
-.after i{font-style:normal;color:#3c4b61}
-.note{margin:18px 0 0;text-align:center;font-size:12.5px;color:var(--g400)}
-@media (max-width:900px){
-  .steps3{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gutter) * -1);padding:0 var(--gutter) 6px;scrollbar-width:none}
-  .steps3::-webkit-scrollbar{display:none}
-  .s3{flex:0 0 min(80%,340px);scroll-snap-align:start}
+/* como funciona a curadoria */
+.journey{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.jstep{position:relative;overflow:hidden;border-radius:16px;aspect-ratio:9/16;max-height:440px;background:var(--surface);isolation:isolate}
+.jstep img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out)}
+.jstep::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,19,38,.1) 30%,rgba(6,19,38,.94) 100%)}
+.jstep:hover img{transform:scale(1.05)}
+.jstep-cap{position:absolute;inset:auto 0 0;padding:16px}
+.jstep-n{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--cyan)}
+.jstep h3{margin:6px 0 0;font-size:16px;font-weight:700;line-height:1.2;letter-spacing:-.02em}
+.jstep p{margin:6px 0 0;font-size:13px;line-height:1.45;color:var(--g200)}
+.note{margin:16px 0 0;font-size:12.5px;color:var(--g400)}
+@media (max-width:1100px){
+  .journey{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gutter) * -1);padding:0 var(--gutter) 6px;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .jstep{flex:0 0 min(62%,240px);scroll-snap-align:start}
 }
 
-/* Sam */
-.sam-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:clamp(36px,6vw,90px);align-items:center}
-.sam-grid .section-title,.sam-grid .section-sub{text-align:left;margin-left:0}
-.feat{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:18px}
-.feat li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
-.feat .proof-ico{width:40px;height:40px}
-.feat strong{display:block;font-size:16px;font-weight:600}
-.feat .proof-txt > span{display:block;margin-top:2px;font-size:14.5px;color:var(--g400)}
-.sam-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-.phone{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:28px;background:#081322;box-shadow:0 50px 100px -40px rgba(0,0,0,.8),0 0 0 8px rgba(255,255,255,.025);overflow:hidden}
-.phone-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
-.avatar{position:relative;display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;flex:none;background:linear-gradient(140deg,var(--blue),#0a3a73)}
-.avatar::before{content:"S";font-weight:700;font-size:16px;color:#fff}
-.avatar img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover}
-.online{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:var(--wa);border:2px solid #081322}
-.phone-head strong{display:block;font-size:15px}
-.phone-head small{display:block;font-size:12.5px;color:var(--wa)}
-.demo-tag{margin-left:auto;padding:4px 9px;border-radius:999px;border:1px solid var(--line);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
-.chat{display:flex;flex-direction:column;gap:10px;height:400px;padding:18px;overflow:hidden;background:radial-gradient(80% 50% at 50% 0%,rgba(15,139,255,.07),transparent 70%)}
-.msg{max-width:84%;padding:11px 14px;border-radius:16px;font-size:14.5px;line-height:1.45;animation:msgIn .45s var(--ease-out) both}
-.msg--me{align-self:flex-end;border-bottom-right-radius:5px;background:var(--blue-deep);color:#fff}
-.msg--sam{align-self:flex-start;border-bottom-left-radius:5px;background:var(--surface-2);border:1px solid var(--line);color:var(--g200)}
-.msg-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
-.msg-cards span{aspect-ratio:1;border-radius:8px;background-size:cover;background-position:center;background-color:#0e2a4d}
-.typing{align-self:flex-start;display:inline-flex;gap:5px;padding:14px 16px;border-radius:16px;border-bottom-left-radius:5px;background:var(--surface-2);border:1px solid var(--line)}
-.typing i{width:7px;height:7px;border-radius:50%;background:var(--g400);animation:blink 1.2s infinite}
-.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
-@keyframes blink{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
-@keyframes msgIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.98)}to{opacity:1;transform:none}}
-.phone-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--g400)}
-.replay{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border:0;border-radius:var(--radius);background:none;font-size:13px;color:var(--g300)}
-.replay:hover{color:#fff;background:rgba(255,255,255,.06)}
-.replay .i{width:16px;height:16px}
-@media (max-width:900px){.sam-grid{grid-template-columns:minmax(0,1fr)}.chat{height:360px}}
+/* para quem */
+.who{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.who-card{display:flex;flex-direction:column;padding:26px 24px 20px;border:1px solid var(--line-light);border-radius:18px;background:#fff;color:var(--ink);transition:border-color .25s ease,transform .3s var(--ease),box-shadow .3s ease}
+.who-card:hover{border-color:#b9c4d0;transform:translateY(-3px);box-shadow:0 24px 50px -30px rgba(7,17,31,.35)}
+.who-top{display:flex;align-items:center;gap:12px}
+.who-ico{width:42px;height:42px;display:grid;place-items:center;flex:none;border-radius:12px;background:#e8f2fc;color:var(--blue-deep)}
+.who-card h3{margin:0;font-size:18px;font-weight:700;letter-spacing:-.02em;line-height:1.25}
+.who-card p{margin:14px 0 0;font-size:15px;color:var(--g600)}
+.who-card ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+.who-card li{display:flex;gap:10px;font-size:14.5px;color:var(--g700)}
+.who-card li .i{width:17px;height:17px;margin-top:3px;color:var(--blue-deep);stroke-width:2.2}
+.who-cta{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding-top:18px;min-height:44px;border:0;background:none;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-deep);text-align:left}
+.who-cta .i{width:16px;height:16px;transition:transform .3s var(--ease)}
+.who-cta:hover .i{transform:translateX(3px)}
+.who-cta[aria-pressed="true"]{color:var(--ink)}
+@media (max-width:960px){.who{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.who{grid-template-columns:minmax(0,1fr)}}
 
-/* bairros */
-.hoods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.hood{position:relative;display:block;width:100%;aspect-ratio:4/5;padding:0;border:0;border-radius:18px;overflow:hidden;text-align:left;color:#fff}
-.hood img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out)}
-.hood::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,19,38,.05) 30%,rgba(6,19,38,.9) 100%);transition:background-color .3s ease}
-.hood:hover img{transform:scale(1.06)}
-.hood-body{position:absolute;inset:auto 0 0;z-index:1;padding:18px}
-.hood-name{display:block;font-size:20px;font-weight:700;letter-spacing:-.03em}
-.hood-line{display:block;margin-top:2px;font-size:13.5px;color:var(--g200)}
-.hood-cta{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan)}
-.hood-cta .i{width:16px;height:16px}
-.hood.is-picked{box-shadow:0 0 0 2px var(--cyan)}
-.hood.is-picked .hood-cta{color:#fff}
-@media (max-width:900px){.hoods{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.hood-body{padding:14px}.hood-name{font-size:17px}.hood-line{font-size:12.5px}.hood-cta{gap:6px;font-size:10.5px;letter-spacing:.08em;white-space:nowrap}.hood-cta .i{width:14px;height:14px}}
-
-/* proprietários */
-.owner{position:relative;isolation:isolate;overflow:hidden;border-radius:28px;min-height:520px;display:grid;align-items:end}
-.owner-media{position:absolute;inset:0;z-index:-2}
-.owner-media img{width:100%;height:100%;object-fit:cover}
-.owner::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(6,19,38,.94) 0%,rgba(6,19,38,.7) 50%,rgba(6,19,38,.2) 100%)}
-.owner-body{max-width:620px;padding:clamp(28px,5vw,64px)}
-.owner .section-title{text-align:left}
-.owner-list{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px 22px}
-.owner-list li{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--g200)}
-.owner-list .i{width:18px;height:18px;color:var(--cyan)}
-.owner-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
-@media (max-width:700px){.owner{min-height:0}.owner::before{background:linear-gradient(180deg,rgba(6,19,38,.5) 0%,rgba(6,19,38,.95) 55%)}.owner-body{padding-top:200px}.owner-list{grid-template-columns:1fr}}
+/* por que entrar agora */
+.early{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(36px,6vw,90px);align-items:center}
+.early-art{position:relative;aspect-ratio:1;max-width:520px;width:100%;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(60% 60% at 50% 45%,rgba(15,139,255,.28),transparent 70%),var(--ink)}
+.early-art canvas{position:absolute;inset:0;width:100%;height:100%}
+.early-logo{position:absolute;left:50%;top:44%;width:44%;height:auto;transform:translate(-50%,-50%);filter:drop-shadow(0 10px 40px rgba(15,139,255,.45))}
+.early-badge{position:absolute;left:18px;right:18px;bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(6,19,38,.75);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--g200)}
+.early-badge span:last-child{color:var(--cyan)}
+.perks{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:18px}
+.perks li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.perks .pillar-ico{width:42px;height:42px;margin:0}
+.perks strong{display:block;font-size:16px;font-weight:600}
+.perks .t > span{display:block;margin-top:2px;font-size:14.5px;color:var(--g400)}
+@media (max-width:900px){.early{grid-template-columns:minmax(0,1fr)}.early-art{max-width:none;aspect-ratio:16/10}.early-logo{width:30%}}
 
 /* FAQ */
 .faq{max-width:820px;margin:0 auto;border-top:1px solid var(--line-light)}
@@ -453,15 +353,15 @@ p{text-wrap:pretty}
 /* CTA final */
 .final{position:relative;overflow:hidden;text-align:center}
 .final::before{content:"";position:absolute;left:50%;top:0;width:900px;height:900px;transform:translate(-50%,-55%);border-radius:50%;background:radial-gradient(closest-side,rgba(15,139,255,.28),transparent 70%);pointer-events:none}
-.final .section-title{position:relative}
-.final .section-sub{position:relative}
-.final .section-cta{position:relative}
+.final > .wrap{position:relative}
+.final .section-sub{margin-inline:auto}
 
 /* rodapé */
 .lp-footer{padding:56px 0 calc(32px + env(safe-area-inset-bottom));background:var(--ink);border-top:1px solid var(--line);color:var(--g300)}
 .foot-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px}
-.foot-brand{display:inline-flex;min-height:44px;align-items:center;text-decoration:none}
+.foot-brand{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .foot-brand img{height:34px;width:auto}
+.foot-brand small{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--g400)}
 .foot-links{display:flex;flex-wrap:wrap;gap:4px 22px;list-style:none;margin:0;padding:0}
 .foot-links a,.foot-links button{display:inline-flex;align-items:center;min-height:40px;padding:0;border:0;background:none;font-size:14.5px;text-decoration:none;color:var(--g300);transition:color .2s ease}
 .foot-links a:hover,.foot-links button:hover{color:#fff}
@@ -472,7 +372,6 @@ p{text-wrap:pretty}
 .mbar{position:fixed;left:0;right:0;bottom:0;z-index:45;display:none;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(6,19,38,.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);transform:translateY(110%);transition:transform .45s var(--ease-out)}
 .mbar.is-on{transform:none}
 .mbar .btn{flex:1;min-height:48px}
-.mbar .btn-wa{flex:0 0 52px;padding:0}
 @media (max-width:760px){.mbar{display:flex}}
 
 /* cookies (mesmo texto e mesma escolha do site) */
@@ -516,15 +415,14 @@ p{text-wrap:pretty}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));z-index:90;max-width:calc(100% - 32px);transform:translate(-50%,16px);padding:12px 18px;border-radius:999px;background:rgba(7,17,31,.94);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:14px;font-weight:500;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s ease,transform .4s var(--ease-out)}
 .toast.is-on{opacity:1;transform:translate(-50%,0)}
 
-/* sem JS: o formulário em etapas não funciona, então só o WhatsApp aparece */
 .nojs{padding:24px 26px;color:var(--g200)}
-html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
+html:not(.js) .signup form{display:none}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal,[data-reveal],[data-stagger] > *{opacity:1!important;transform:none!important}
-  .hero-media img{transform:none}
+  .ticker-track{animation:none}
 }
 </style>
 </head>
@@ -532,455 +430,232 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-wa" viewBox="0 0 24 24"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.3 7.6L3.5 20.5l1.4-4.4a8.5 8.5 0 1 1 15.6-4.6z"/><path d="M9 8.2c.3-.5.7-.5 1-.5l.9 2c.1.3 0 .5-.2.7l-.5.6c.6 1.2 1.6 2.2 2.8 2.8l.6-.5c.2-.2.4-.3.7-.2l2 .9c0 .3 0 .7-.5 1-1 .7-2.3.6-3.6-.1a8.4 8.4 0 0 1-3.2-3.2c-.7-1.3-.8-2.6 0-3.5z" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.3 7.6L3.5 20.5l1.4-4.4a8.5 8.5 0 1 1 15.6-4.6z"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 11L12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></symbol>
-  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8L20 3M16.5 6.5l2.5 2.5M14 9l2 2"/></symbol>
-  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3.5 17l6-6 4 4 7-7"/><path d="M15 8h5.5v5.5"/></symbol>
-  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.5V4h8.5l8.5 8.5-8.5 8.5z"/><circle cx="8" cy="8.5" r="1.3"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5l7 2.8v5.2c0 4.4-3 7.9-7 9-4-1.1-7-4.6-7-9V6.3z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
-  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
-  <symbol id="i-three" viewBox="0 0 24 24"><rect x="3" y="5" width="5" height="14" rx="1.5"/><rect x="9.5" y="5" width="5" height="14" rx="1.5"/><rect x="16" y="5" width="5" height="14" rx="1.5"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4h7A1.5 1.5 0 0 1 14 5.5V21M14 10h4.5a1.5 1.5 0 0 1 1.5 1.5V21M3 21h18M7.5 8h3M7.5 12h3M7.5 16h3"/></symbol>
+  <symbol id="i-crane" viewBox="0 0 24 24"><path d="M6 21V4h1.5L19 7.5M6 7.5h13M10 4.5l-4 3M14 21v-4h4v4M3 21h18"/><path d="M17 7.5V12"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8L20 3M16.5 6.5l2.5 2.5M14 9l2 2"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 7h14M5 7l-2.5 6a2.5 2.5 0 0 0 5 0zM19 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
-  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.6"/></symbol>
-  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
-  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
-  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11.5A8 8 0 1 1 17.6 6"/><path d="M20 4.5v5h-5"/></symbol>
-  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></symbol>
-  <symbol id="i-handshake" viewBox="0 0 24 24"><path d="M3 11l4-4 3 1.5L13 7l4 1 4 3"/><path d="M7 7v6l4 4 2-1.5 2 1.5 3-3"/><path d="M11 17l-1.5 1.5M13.5 15.5L15 17"/></symbol>
-  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3.5h8l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20z"/><path d="M14 3.5V8h4M9 12.5h6M9 16h6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><path d="M15.5 5.6a3.2 3.2 0 0 1 0 5.8M17.5 14.6c1.8.7 3 2.3 3.5 4.9"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3.5 8.5V6h17v2.5a2.5 2.5 0 0 0 0 5V16h-17v-2.5a2.5 2.5 0 0 0 0-5z"/><path d="M14 6v10" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.5l1.8 5.2 5.2 1.8-5.2 1.8L12 17.5l-1.8-5.2L5 10.5l5.2-1.8z"/><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
 </svg>
 
-<a class="skip" href="#selecao">Pular para o formulário</a>
+<a class="skip" href="#lista">Pular para o cadastro</a>
 
 <!-- ============ HEADER ============ -->
+<!-- Pré-lançamento: nenhum link leva ao site com imóveis de exemplo nem ao Sam. Todo clique leva ao cadastro. -->
 <header class="lp-header" id="header">
-  <a class="brand" href="../" data-site aria-label="AI Logic Hub — ir para o site">
+  <a class="brand" href="#topo" aria-label="AI Logic Hub — voltar ao início">
     <img src="../assets/logo-horizontal.png" alt="AI Logic Hub" width="900" height="278" data-fallback="logo">
     <span class="logo-text" aria-hidden="true">AI Logic <b>Hub</b></span>
   </a>
+  <p class="status"><span class="pulse" aria-hidden="true"></span>Pré-lançamento · Em breve</p>
   <div class="header-actions">
-    <a class="header-wa" href="https://wa.me/5511936238387" target="_blank" rel="noopener" data-wa="header" aria-label="Falar no WhatsApp"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
-    <a class="btn btn-light" href="#selecao" data-action="form" data-cta>Quero minha seleção</a>
+    <a class="btn btn-light" href="#lista" data-action="form">Entrar na lista</a>
   </div>
 </header>
 
 <main id="main">
 
-<!-- ============ HERO + FORMULÁRIO ============ -->
+<!-- ============ HERO + CADASTRO ============ -->
 <section class="hero" id="topo" aria-labelledby="hero-title">
   <div class="hero-media media" aria-hidden="true">
-    <img src="../assets/hero-1.webp" data-alt-src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=70" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
+    <img src="../assets/hero-1.webp" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
   </div>
+  <canvas class="hero-net" id="hero-net" aria-hidden="true"></canvas>
   <div class="hero-shade"></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow reveal" data-v="eyebrow"><span class="dot" aria-hidden="true"></span>Curadoria imobiliária · São Paulo</p>
-      <h1 class="hero-title reveal d1" id="hero-title" data-v="title">Pare de garimpar anúncio. <span>Receba só os imóveis que <em>fazem sentido para você.</em></span></h1>
-      <p class="hero-sub reveal d2" data-v="sub">Conte em um minuto o que você procura. A curadoria do Hub seleciona até três imóveis para o seu perfil e um especialista te chama no WhatsApp em até 1 dia útil.</p>
-      <ul class="hero-points reveal d3" data-v="points">
-        <li><span class="tick"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span><span class="proof-txt"><strong>Até três imóveis por vez</strong>, nunca uma lista de duzentos.</span></li>
-        <li><span class="tick"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span><span class="proof-txt"><strong>Analisados pela curadoria</strong> antes de chegar até você.</span></li>
-        <li><span class="tick"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span><span class="proof-txt"><strong>O Sam responde a qualquer hora</strong>, e gente de verdade acompanha a visita.</span></li>
-      </ul>
-      <ul class="hero-trust reveal d4">
-        <li><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Leva cerca de 1 minuto</li>
-        <li><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>Retorno pelo WhatsApp</li>
-        <li><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Dados protegidos (LGPD)</li>
-      </ul>
+      <p class="eyebrow reveal">Inteligência que conecta</p>
+      <h1 class="hero-title reveal d1" id="hero-title">O mercado imobiliário vai mudar. <span>Saiba antes de todo mundo.</span></h1>
+      <p class="hero-sub reveal d2">O AI Logic Hub une curadoria, inteligência artificial e gente de verdade para aproximar quem procura, quem vende e quem negocia imóveis. <strong>Ainda não abrimos para o público.</strong> Entre na lista e receba o convite para o lançamento oficial.</p>
+      <ol class="phases reveal d3" aria-label="Etapas do lançamento">
+        <li class="phase is-done"><b>Fase 1</b><span>Parceiros internos</span><small>O Hub já roda com os primeiros parceiros.</small></li>
+        <li class="phase is-now" aria-current="step"><b>Agora</b><span>Lista de lançamento</span><small>Cadastro aberto para quem quer chegar primeiro.</small></li>
+        <li class="phase"><b>Em breve</b><span>Lançamento oficial</span><small>Abertura para todo o mercado.</small></li>
+      </ol>
     </div>
 
-    <!-- formulário em quatro etapas: intenção → imóvel → valor e prazo → contato -->
-    <div class="wizard reveal d2" id="selecao" role="region" aria-labelledby="wz-kicker">
-      <div class="wz-head">
-        <div class="wz-top">
-          <p class="wz-kicker" id="wz-kicker">Monte sua seleção</p>
-          <p class="wz-count" id="wz-count" aria-live="polite">Etapa 1 de 4</p>
-        </div>
-        <div class="wz-bar" id="wz-bar" role="progressbar" aria-label="Progresso do formulário" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"><span class="on"></span><span></span><span></span><span></span></div>
-      </div>
-
+    <!-- cadastro na lista de lançamento -->
+    <div class="signup reveal d2" id="lista" role="region" aria-labelledby="su-title">
       <form id="lp-form" novalidate>
-        <div class="wz-body">
-
-          <!-- 1. INTENÇÃO -->
-          <fieldset class="step is-current" data-step="1" aria-labelledby="t1">
-            <h2 class="step-title" id="t1" tabindex="-1">O que você quer fazer?</h2>
-            <p class="step-sub">Escolha uma opção. Na próxima etapa, a gente afina.</p>
-            <div class="q" data-req="radio" data-msg="Escolha uma opção para continuar.">
-              <div class="intents" role="radiogroup" aria-labelledby="t1">
-                <label class="intent"><input type="radio" name="intencao" value="comprar"><span class="intent-card"><span class="intent-ico"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg></span><span class="proof-txt"><strong>Comprar para morar</strong><small>Encontrar o lugar certo</small></span><span class="intent-check"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span></span></label>
-                <label class="intent"><input type="radio" name="intencao" value="alugar"><span class="intent-card"><span class="intent-ico"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg></span><span class="proof-txt"><strong>Alugar</strong><small>Mudar sem maratona de visitas</small></span><span class="intent-check"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span></span></label>
-                <label class="intent"><input type="radio" name="intencao" value="investir"><span class="intent-card"><span class="intent-ico"><svg class="i" aria-hidden="true"><use href="#i-trend"/></svg></span><span class="proof-txt"><strong>Investir</strong><small>Renda ou valorização</small></span><span class="intent-check"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span></span></label>
-                <label class="intent"><input type="radio" name="intencao" value="anunciar"><span class="intent-card"><span class="intent-ico"><svg class="i" aria-hidden="true"><use href="#i-tag"/></svg></span><span class="proof-txt"><strong>Vender ou alugar meu imóvel</strong><small>Sou proprietário</small></span><span class="intent-check"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span></span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </div>
-          </fieldset>
-
-          <!-- 2. IMÓVEL (quem procura) -->
-          <fieldset class="step" data-step="2" data-for="cliente" aria-labelledby="t2">
-            <h2 class="step-title" id="t2" tabindex="-1">Como é o imóvel ideal?</h2>
-            <p class="step-sub" data-sub-intent>Não precisa ser exato. Serve de ponto de partida para a curadoria.</p>
-            <fieldset class="q" data-req="radio" data-msg="Escolha o tipo de imóvel.">
-              <legend>Tipo de imóvel</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="tipo" value="Apartamento"><span>Apartamento</span></label>
-                <label class="pill"><input type="radio" name="tipo" value="Casa"><span>Casa</span></label>
-                <label class="pill"><input type="radio" name="tipo" value="Cobertura"><span>Cobertura</span></label>
-                <label class="pill"><input type="radio" name="tipo" value="Studio"><span>Studio</span></label>
-                <label class="pill"><input type="radio" name="tipo" value="Tanto faz"><span>Tanto faz</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-            <fieldset class="q">
-              <legend>Quartos <small>(opcional)</small></legend>
-              <div class="pills pills--seg">
-                <label class="pill"><input type="radio" name="quartos" value="1"><span>1</span></label>
-                <label class="pill"><input type="radio" name="quartos" value="2"><span>2</span></label>
-                <label class="pill"><input type="radio" name="quartos" value="3"><span>3</span></label>
-                <label class="pill"><input type="radio" name="quartos" value="4+"><span>4+</span></label>
-              </div>
-            </fieldset>
-            <fieldset class="q" data-req="bairros" data-max="3" data-msg="Escolha até três bairros ou marque “Ainda não sei”.">
-              <legend>Bairros <small>(até três)</small></legend>
-              <div class="pills" id="pills-bairros">
-                <label class="pill"><input type="checkbox" name="bairros" value="Pinheiros"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Pinheiros</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Itaim Bibi"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Itaim Bibi</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Vila Nova Conceição"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Vila Nova Conceição</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Jardim Europa"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Jardim Europa</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Jardins"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Jardins</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Moema"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Moema</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Higienópolis"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Higienópolis</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Alto de Pinheiros"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Alto de Pinheiros</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="outro" data-outro><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Outro</span></label>
-                <label class="pill"><input type="checkbox" name="bairros" value="Ainda não sei" data-exclusive><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Ainda não sei</span></label>
-              </div>
-              <div class="field outro" id="outro-wrap" hidden>
-                <label class="sr-only" for="f-outro">Qual bairro?</label>
-                <input id="f-outro" name="bairro_outro" maxlength="60" autocomplete="address-level3" placeholder="Qual bairro ou região?">
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-          </fieldset>
-
-          <!-- 2. IMÓVEL (proprietário) -->
-          <fieldset class="step" data-step="2" data-for="proprietario" aria-labelledby="t2p">
-            <h2 class="step-title" id="t2p" tabindex="-1">Conte sobre o seu imóvel.</h2>
-            <p class="step-sub">Com isso, o especialista já chega preparado para a conversa.</p>
-            <fieldset class="q" data-req="radio" data-msg="Vender ou alugar?">
-              <legend>Você quer</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="p_finalidade" value="vender"><span>Vender</span></label>
-                <label class="pill"><input type="radio" name="p_finalidade" value="alugar"><span>Alugar</span></label>
-                <label class="pill"><input type="radio" name="p_finalidade" value="avaliar"><span>Ainda estou avaliando</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-            <fieldset class="q" data-req="radio" data-msg="Escolha o tipo do imóvel.">
-              <legend>Tipo do imóvel</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="p_tipo" value="Apartamento"><span>Apartamento</span></label>
-                <label class="pill"><input type="radio" name="p_tipo" value="Casa"><span>Casa</span></label>
-                <label class="pill"><input type="radio" name="p_tipo" value="Cobertura"><span>Cobertura</span></label>
-                <label class="pill"><input type="radio" name="p_tipo" value="Studio"><span>Studio</span></label>
-                <label class="pill"><input type="radio" name="p_tipo" value="Comercial"><span>Comercial</span></label>
-                <label class="pill"><input type="radio" name="p_tipo" value="Terreno"><span>Terreno</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-            <div class="fields">
-              <div class="field"><label for="f-pbairro">Bairro</label><input id="f-pbairro" name="p_bairro" list="lista-bairros" autocomplete="address-level3" required maxlength="60" placeholder="Ex.: Pinheiros" data-msg="Em qual bairro fica?"><p class="field-error" aria-live="polite"></p></div>
-              <div class="field"><label for="f-parea">Área <small>(m², opcional)</small></label><input id="f-parea" name="p_area" inputmode="numeric" maxlength="6" placeholder="Ex.: 140" data-digits></div>
-            </div>
-            <datalist id="lista-bairros"><option value="Pinheiros"><option value="Itaim Bibi"><option value="Vila Nova Conceição"><option value="Jardim Europa"><option value="Jardins"><option value="Moema"><option value="Higienópolis"><option value="Alto de Pinheiros"><option value="Vila Madalena"><option value="Perdizes"><option value="Brooklin"><option value="Campo Belo"></datalist>
-          </fieldset>
-
-          <!-- 3. VALOR E PRAZO (quem procura) -->
-          <fieldset class="step" data-step="3" data-for="cliente" aria-labelledby="t3">
-            <h2 class="step-title" id="t3" tabindex="-1">Investimento e momento.</h2>
-            <p class="step-sub">Assim a curadoria só traz o que cabe no seu plano.</p>
-            <fieldset class="q" data-req="radio" data-msg="Escolha uma faixa de valor." data-for="comprar investir">
-              <legend>Faixa de valor</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="faixa" value="Até R$ 1 milhão"><span>Até R$ 1 mi</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="R$ 1 a 2 milhões"><span>R$ 1–2 mi</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="R$ 2 a 4 milhões"><span>R$ 2–4 mi</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="R$ 4 a 8 milhões"><span>R$ 4–8 mi</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="Acima de R$ 8 milhões"><span>Acima de R$ 8 mi</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-            <fieldset class="q" data-req="radio" data-msg="Escolha uma faixa de aluguel." data-for="alugar">
-              <legend>Aluguel por mês</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="faixa" value="Até R$ 6 mil/mês"><span>Até R$ 6 mil</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="R$ 6 a 10 mil/mês"><span>R$ 6–10 mil</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="R$ 10 a 20 mil/mês"><span>R$ 10–20 mil</span></label>
-                <label class="pill"><input type="radio" name="faixa" value="Acima de R$ 20 mil/mês"><span>Acima de R$ 20 mil</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-            <fieldset class="q">
-              <legend>Indispensáveis <small>(opcional)</small></legend>
-              <div class="pills">
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="varanda"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Varanda</span></label>
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="2 ou mais vagas"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>2+ vagas</span></label>
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="aceita pet"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Aceita pet</span></label>
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="perto do metrô"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Perto do metrô</span></label>
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="lazer completo"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Lazer completo</span></label>
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="silêncio"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Silêncio</span></label>
-                <label class="pill"><input type="checkbox" name="indispensaveis" value="home office"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Home office</span></label>
-                <label class="pill" data-for="comprar investir"><input type="checkbox" name="indispensaveis" value="pronto para morar"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Pronto para morar</span></label>
-                <label class="pill" data-for="alugar"><input type="checkbox" name="indispensaveis" value="mobiliado"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Mobiliado</span></label>
-              </div>
-            </fieldset>
-            <fieldset class="q" data-req="radio" data-msg="Quando você pretende fechar?">
-              <legend>Quando pretende fechar?</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="prazo" value="o quanto antes"><span>O quanto antes</span></label>
-                <label class="pill"><input type="radio" name="prazo" value="em até 3 meses"><span>Em até 3 meses</span></label>
-                <label class="pill"><input type="radio" name="prazo" value="em 3 a 6 meses"><span>3 a 6 meses</span></label>
-                <label class="pill"><input type="radio" name="prazo" value="só pesquisando"><span>Só pesquisando</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-          </fieldset>
-
-          <!-- 3. VALOR E PRAZO (proprietário) -->
-          <fieldset class="step" data-step="3" data-for="proprietario" aria-labelledby="t3p">
-            <h2 class="step-title" id="t3p" tabindex="-1">Situação e momento.</h2>
-            <p class="step-sub">Últimos detalhes sobre o imóvel antes do contato.</p>
-            <fieldset class="q">
-              <legend>O imóvel está <small>(opcional)</small></legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="p_situacao" value="desocupado"><span>Desocupado</span></label>
-                <label class="pill"><input type="radio" name="p_situacao" value="ocupado pelo proprietário"><span>Moro nele</span></label>
-                <label class="pill"><input type="radio" name="p_situacao" value="alugado"><span>Alugado</span></label>
-              </div>
-            </fieldset>
-            <fieldset class="q">
-              <legend>Valor que você espera <small>(opcional)</small></legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="p_valor" value="quero uma avaliação"><span>Quero uma avaliação</span></label>
-                <label class="pill"><input type="radio" name="p_valor" value="até R$ 1 milhão"><span>Até R$ 1 mi</span></label>
-                <label class="pill"><input type="radio" name="p_valor" value="R$ 1 a 3 milhões"><span>R$ 1–3 mi</span></label>
-                <label class="pill"><input type="radio" name="p_valor" value="R$ 3 a 8 milhões"><span>R$ 3–8 mi</span></label>
-                <label class="pill"><input type="radio" name="p_valor" value="acima de R$ 8 milhões"><span>Acima de R$ 8 mi</span></label>
-              </div>
-            </fieldset>
-            <fieldset class="q" data-req="radio" data-msg="Quando você quer começar?">
-              <legend>Quando quer começar?</legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="prazo" value="o quanto antes"><span>O quanto antes</span></label>
-                <label class="pill"><input type="radio" name="prazo" value="em até 3 meses"><span>Em até 3 meses</span></label>
-                <label class="pill"><input type="radio" name="prazo" value="sem pressa"><span>Sem pressa</span></label>
-              </div>
-              <p class="q-error" aria-live="polite"></p>
-            </fieldset>
-            <div class="field full"><label for="f-pobs">Algo que devemos saber? <small>(opcional)</small></label><textarea id="f-pobs" name="obs" maxlength="300" placeholder="Andar, vagas, se tem reforma recente…"></textarea></div>
-          </fieldset>
-
-          <!-- 4. CONTATO -->
-          <fieldset class="step" data-step="4" aria-labelledby="t4">
-            <h2 class="step-title" id="t4" tabindex="-1" data-t4>Para onde enviamos sua seleção?</h2>
-            <p class="step-sub" data-s4>Um especialista te chama no WhatsApp em até 1 dia útil.</p>
-            <div class="recap" id="recap">
-              <div class="recap-head"><p>Sua busca</p><button class="recap-edit" type="button" data-goto="2">Editar</button></div>
-              <div class="recap-tags" id="recap-tags"></div>
-            </div>
-            <div class="fields">
-              <div class="field full"><label for="f-nome">Nome</label><input id="f-nome" name="nome" autocomplete="name" required maxlength="80" placeholder="Como podemos te chamar?" data-msg="Diga como podemos te chamar."><p class="field-error" aria-live="polite"></p></div>
-              <div class="field"><label for="f-whats">WhatsApp</label><input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(11) 90000-0000" data-phone data-msg="Informe um WhatsApp com DDD."><p class="field-error" aria-live="polite"></p></div>
-              <div class="field"><label for="f-email">E-mail <small>(opcional)</small></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="120" placeholder="voce@email.com" data-msg="Confira o e-mail."><p class="field-error" aria-live="polite"></p></div>
-            </div>
-            <fieldset class="q" style="margin-top:16px">
-              <legend>Melhor horário para falar <small>(opcional)</small></legend>
-              <div class="pills">
-                <label class="pill"><input type="radio" name="horario" value="manhã"><span>Manhã</span></label>
-                <label class="pill"><input type="radio" name="horario" value="tarde"><span>Tarde</span></label>
-                <label class="pill"><input type="radio" name="horario" value="noite"><span>Noite</span></label>
-                <label class="pill"><input type="radio" name="horario" value="qualquer horário"><span>Qualquer horário</span></label>
-              </div>
-            </fieldset>
-            <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre <span data-aceite>esta busca</span>. <a href="../politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
-            <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          </fieldset>
+        <div class="su-head">
+          <p class="su-kicker"><svg class="i" aria-hidden="true"><use href="#i-ticket"/></svg>Lista de lançamento</p>
+          <h2 class="su-title" id="su-title" tabindex="-1">Garanta seu convite.</h2>
+          <p class="su-sub">Leva menos de um minuto.</p>
         </div>
-
-        <div class="wz-foot">
-          <button class="wz-back" type="button" id="wz-back" hidden><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg>Voltar</button>
-          <button class="btn btn-primary btn-arrow wz-next" type="button" id="wz-next"><span>Continuar</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <div class="su-body">
+          <fieldset class="q" data-req="radio" data-msg="Escolha o perfil que mais combina com você.">
+            <legend>Qual perfil mais combina com você?</legend>
+            <div class="pills" id="perfis">
+              <label class="pill"><input type="radio" name="perfil" value="comprar"><span>Comprar, alugar ou investir</span></label>
+              <label class="pill"><input type="radio" name="perfil" value="proprietario"><span>Tenho imóvel ou terreno</span></label>
+              <label class="pill"><input type="radio" name="perfil" value="corretor"><span>Corretor(a)</span></label>
+              <label class="pill"><input type="radio" name="perfil" value="imobiliaria"><span>Imobiliária</span></label>
+              <label class="pill"><input type="radio" name="perfil" value="construtora"><span>Construtora ou incorporadora</span></label>
+              <label class="pill"><input type="radio" name="perfil" value="juridico"><span>Jurídico ou cartório</span></label>
+              <label class="pill"><input type="radio" name="perfil" value="acompanhar"><span>Só acompanhar</span></label>
+            </div>
+            <p class="q-error" aria-live="polite"></p>
+          </fieldset>
+          <div class="fields">
+            <div class="field full"><label for="f-nome">Nome</label><input id="f-nome" name="nome" autocomplete="name" required maxlength="80" placeholder="Como podemos te chamar?" data-msg="Diga como podemos te chamar."><p class="field-error" aria-live="polite"></p></div>
+            <div class="field"><label for="f-whats">WhatsApp</label><input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(11) 90000-0000" data-phone data-msg="Informe um WhatsApp com DDD."><p class="field-error" aria-live="polite"></p></div>
+            <div class="field"><label for="f-cidade">Cidade</label><input id="f-cidade" name="cidade" autocomplete="address-level2" required maxlength="60" placeholder="Ex.: São Paulo" data-msg="Em qual cidade você está?"><p class="field-error" aria-live="polite"></p></div>
+            <div class="field full"><label for="f-email">E-mail <small>(opcional)</small></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="120" placeholder="voce@email.com" data-msg="Confira o e-mail."><p class="field-error" aria-live="polite"></p></div>
+          </div>
+          <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para entrar na lista, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre o lançamento. <a href="../politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
+          <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         </div>
-        <p class="wz-note"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span id="wz-note">Seus dados ficam com a equipe do Hub e servem só para esta busca.</span></p>
+        <div class="su-foot">
+          <button class="btn btn-primary btn-block btn-arrow" type="submit" id="su-btn"><span>Quero entrar na lista</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <p class="su-note"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span>Seus dados ficam com a equipe do Hub e servem só para falar sobre o lançamento. Sem spam.</span></p>
       </form>
 
       <div class="done" id="done" hidden>
         <div class="done-check"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></div>
-        <h2 class="done-title" id="done-title" tabindex="-1">Recebido.</h2>
-        <p class="done-text" id="done-text">Sua busca já está com a curadoria.</p>
+        <h2 class="done-title" id="done-title" tabindex="-1">Você está na lista.</h2>
+        <p class="done-text" id="done-text">Quando o lançamento oficial for aberto, você fica sabendo antes.</p>
         <ol class="next-steps" id="done-steps"></ol>
         <div class="done-btns">
-          <a class="btn btn-wa" id="done-wa" href="https://wa.me/5511936238387" target="_blank" rel="noopener" data-wa="sucesso"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg><span>Adiantar pelo WhatsApp</span></a>
-          <a class="btn btn-ghost" href="../#imoveis" data-site-hash="imoveis">Ver a coleção no site</a>
+          <a class="btn btn-wa" id="done-wa" href="https://wa.me/5511936238387" target="_blank" rel="noopener" data-wa="sucesso"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg><span>Confirmar pelo WhatsApp</span></a>
         </div>
       </div>
 
-      <noscript><div class="nojs"><p>Para montar sua seleção, fale com a equipe pelo WhatsApp:</p><a class="btn btn-wa btn-block" href="https://wa.me/5511936238387" target="_blank" rel="noopener">Abrir o WhatsApp</a></div></noscript>
+      <noscript><div class="nojs"><p>Para entrar na lista de lançamento, fale com a equipe pelo WhatsApp:</p><a class="btn btn-wa btn-block" href="https://wa.me/5511936238387" target="_blank" rel="noopener">Abrir o WhatsApp</a></div></noscript>
     </div>
   </div>
 </section>
 
-<!-- ============ GARANTIAS ============ -->
-<section class="proof" aria-label="Como a curadoria trabalha">
+<!-- ============ PÚBLICOS ============ -->
+<div class="ticker" role="region" aria-label="Para quem é o AI Logic Hub">
+  <div class="ticker-track">
+    <ul><li>Quem procura imóvel</li><li>Corretores</li><li>Imobiliárias</li><li>Construtoras</li><li>Incorporadoras</li><li>Proprietários</li><li>Terrenos</li><li>Jurídico e cartório</li></ul>
+    <ul aria-hidden="true"><li>Quem procura imóvel</li><li>Corretores</li><li>Imobiliárias</li><li>Construtoras</li><li>Incorporadoras</li><li>Proprietários</li><li>Terrenos</li><li>Jurídico e cartório</li></ul>
+  </div>
+</div>
+
+<!-- ============ O QUE É O HUB ============ -->
+<section class="section section-dark" id="o-que-e" aria-labelledby="oque-title">
   <div class="wrap">
-    <ul class="proof-list" data-stagger>
-      <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-three"/></svg></span><span class="proof-txt"><strong>Três por vez</strong><span>Opções para comparar com calma, não para rolar sem fim.</span></span></li>
-      <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="proof-txt"><strong>Curadoria antes do anúncio</strong><span>Se a gente não moraria, não mostramos.</span></span></li>
-      <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="proof-txt"><strong>Resposta a qualquer hora</strong><span>O Sam responde na hora, inclusive às onze da noite.</span></span></li>
-      <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg></span><span class="proof-txt"><strong>Gente de verdade na visita</strong><span>Um corretor da equipe acompanha você até as chaves.</span></span></li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============ POR QUE É DIFERENTE ============ -->
-<section class="section section-light" id="diferente" aria-labelledby="dif-title">
-  <div class="wrap">
-    <header class="section-head" data-reveal>
-      <p class="eyebrow">Por que é diferente</p>
-      <h2 class="section-title" id="dif-title">Menos anúncios. <span>Mais certeza.</span></h2>
-      <p class="section-sub">Procurar imóvel não precisa ser um segundo emprego. A curadoria faz o filtro pesado para você decidir com calma.</p>
-    </header>
-    <div class="compare" data-stagger>
-      <div class="cmp cmp--old">
-        <h3>Do jeito de sempre</h3>
-        <ul>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></span>Centenas de anúncios repetidos e fotos que não batem com a realidade.</li>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></span>Imóvel que já saiu do mercado, mas continua no ar.</li>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></span>Você explica tudo de novo a cada corretor que liga.</li>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></span>Fim de semana inteiro em visitas que não valiam a viagem.</li>
-        </ul>
-      </div>
-      <div class="cmp cmp--hub">
-        <span class="cmp-tag">Com o Hub</span>
-        <h3><img src="../assets/logo-horizontal.png" alt="AI Logic Hub" width="900" height="278" loading="lazy" data-fallback="logo"><span class="logo-text" aria-hidden="true">AI Logic <b>Hub</b></span></h3>
-        <ul>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span>Até três opções por vez, escolhidas para o seu perfil.</li>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span>Cada imóvel passa por uma análise detalhada antes de chegar a você.</li>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span>Você conta uma vez. O Sam e a equipe lembram do que importa.</li>
-          <li><span class="mk"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span>Você só visita o que vale a pena.</li>
-        </ul>
-      </div>
+    <div class="gap-grid">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">O que é o AI Logic Hub</p>
+        <h2 class="section-title" id="oque-title">O mercado já tem as pontas. <span>Falta o que acontece entre elas.</span></h2>
+        <p class="section-sub">Tem gente procurando, imóvel disponível e corretor querendo fechar negócio. O que se perde é a conexão: a informação certa, para a pessoa certa, no momento certo. O Hub nasce para fazer essa ponte.</p>
+      </header>
+      <ol class="gap-list" data-stagger>
+        <li><span class="n">01</span><h3>A busca se repete</h3><p>A pessoa explica o que quer várias vezes e continua recebendo opções que não combinam com ela.</p></li>
+        <li><span class="n">02</span><h3>A visita perde o sentido</h3><p>Agenda cheia não significa interesse real. Tempo e deslocamento se perdem antes da negociação.</p></li>
+        <li><span class="n">03</span><h3>O contexto se espalha</h3><p>Conversas, documentos e propostas ficam em lugares diferentes. Cada etapa recomeça do zero.</p></li>
+        <li><span class="n">04</span><h3>Boas oportunidades não se encontram</h3><p>Existe imóvel e existe demanda. Falta entender qual combinação merece avançar.</p></li>
+      </ol>
     </div>
-    <div class="section-cta" data-reveal>
-      <a class="btn btn-dark btn-arrow" href="#selecao" data-action="form" data-cta>Quero minha seleção <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <p class="answer-head" data-reveal>O Hub junta três coisas <span>que hoje andam separadas.</span></p>
+    <div class="answer" data-stagger>
+      <article class="pillar"><span class="pillar-ico"><svg class="i" aria-hidden="true"><use href="#i-filter"/></svg></span><b>Curadoria</b><h3>Menos volume, mais acerto.</h3><p>Cada imóvel passa por uma análise antes de ser apresentado. Quem procura recebe poucas opções, todas alinhadas ao seu perfil.</p></article>
+      <article class="pillar"><span class="pillar-ico"><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg></span><b>Inteligência</b><h3>O contexto acompanha a conversa.</h3><p>O Sam, assistente virtual do Hub, entende o que a pessoa procura e guarda o que importa, da primeira mensagem ao fechamento.</p></article>
+      <article class="pillar"><span class="pillar-ico"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg></span><b>Gente de verdade</b><h3>Confiança em cada etapa.</h3><p>Corretores e especialistas acompanham visita, proposta, documentos e assinatura. Todo mundo enxerga o próximo passo.</p></article>
     </div>
   </div>
 </section>
 
-<!-- ============ COMO FUNCIONA ============ -->
-<section class="section section-dark" id="como-funciona" aria-labelledby="como-title">
+<!-- ============ COMO FUNCIONA A CURADORIA ============ -->
+<section class="section section-ink" id="como-funciona" aria-labelledby="como-title">
   <div class="wrap">
     <header class="section-head" data-reveal>
-      <p class="eyebrow">Como funciona</p>
-      <h2 class="section-title" id="como-title">Três passos até a visita certa.</h2>
-      <p class="section-sub">Você conta o que procura. A gente faz o filtro. Você escolhe o que vale a visita.</p>
+      <p class="eyebrow">Como funciona a curadoria</p>
+      <h2 class="section-title" id="como-title">Do primeiro oi à entrega das chaves.</h2>
+      <p class="section-sub">Para quem procura imóvel, a jornada no Hub tem seis etapas, e o atendimento acompanha você em todas.</p>
     </header>
-    <ol class="steps3" data-stagger>
-      <li class="s3">
-        <div class="s3-media media"><span class="s3-n">01</span><img src="../assets/como-funciona/01-conversa.jpg" alt="Mão segurando um celular com uma conversa aberta" width="256" height="1024" loading="lazy" decoding="async"></div>
-        <div class="s3-body"><h3>Conte o que você procura</h3><p>Pelo formulário desta página ou numa conversa com o Sam. Onde quer morar, quanto quer investir, o que não abre mão.</p><span class="s3-time"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Cerca de 1 minuto</span></div>
-      </li>
-      <li class="s3">
-        <div class="s3-media media"><span class="s3-n">02</span><img src="../assets/como-funciona/02-curadoria.jpg" alt="Casa com piscina iluminada ao entardecer" width="256" height="1024" loading="lazy" decoding="async"></div>
-        <div class="s3-body"><h3>Receba sua seleção</h3><p>Um especialista te chama no WhatsApp e apresenta até três opções por vez, de acordo com o seu perfil. Não serviu? A curadoria ajusta.</p><span class="s3-time"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>Em até 1 dia útil</span></div>
-      </li>
-      <li class="s3">
-        <div class="s3-media media"><span class="s3-n">03</span><img src="../assets/como-funciona/03-visita.jpg" alt="Corretor apresentando um imóvel a um casal" width="256" height="1024" loading="lazy" decoding="async"></div>
-        <div class="s3-body"><h3>Visite só o que vale a pena</h3><p>Escolha o imóvel que despertou seu interesse e peça a visita. Um corretor da equipe acompanha você.</p><span class="s3-time"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>No horário que você escolher</span></div>
-      </li>
+    <ol class="journey" data-stagger>
+      <li class="jstep"><img src="../assets/como-funciona/01-conversa.jpg" alt="" width="256" height="1024" loading="lazy" decoding="async"><div class="jstep-cap"><span class="jstep-n">01</span><h3>Conversa</h3><p>Você conta o que procura, onde quer morar e o que é importante.</p></div></li>
+      <li class="jstep"><img src="../assets/como-funciona/02-curadoria.jpg" alt="" width="256" height="1024" loading="lazy" decoding="async"><div class="jstep-cap"><span class="jstep-n">02</span><h3>Curadoria</h3><p>Até três opções por vez, de acordo com o seu perfil.</p></div></li>
+      <li class="jstep"><img src="../assets/como-funciona/03-visita.jpg" alt="" width="256" height="1024" loading="lazy" decoding="async"><div class="jstep-cap"><span class="jstep-n">03</span><h3>Visita</h3><p>Você visita só o que despertou interesse, com um corretor da equipe.</p></div></li>
+      <li class="jstep"><img src="../assets/como-funciona/04-proposta.jpg" alt="" width="256" height="1024" loading="lazy" decoding="async"><div class="jstep-cap"><span class="jstep-n">04</span><h3>Proposta</h3><p>A negociação é acompanhada pelo profissional responsável.</p></div></li>
+      <li class="jstep"><img src="../assets/como-funciona/05-assinatura.jpg" alt="" width="256" height="1024" loading="lazy" decoding="async"><div class="jstep-cap"><span class="jstep-n">05</span><h3>Documentos</h3><p>Análise dos documentos e assinatura digital do contrato.</p></div></li>
+      <li class="jstep"><img src="../assets/como-funciona/06-chaves.jpg" alt="" width="256" height="1024" loading="lazy" decoding="async"><div class="jstep-cap"><span class="jstep-n">06</span><h3>Chaves</h3><p>Condições cumpridas, é hora de receber as chaves.</p></div></li>
     </ol>
-    <p class="after" data-reveal>Depois da visita, o Hub segue com você: <b>proposta e negociação</b><i aria-hidden="true">→</i><b>documentos e assinatura</b><i aria-hidden="true">→</i><b>entrega das chaves</b></p>
-    <p class="note">Imagens ilustrativas. Visitas e condições sujeitas à confirmação.</p>
-    <div class="section-cta" data-reveal>
-      <a class="btn btn-light btn-arrow" href="#selecao" data-action="form" data-cta>Começar agora <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-    </div>
+    <p class="note">Imagens ilustrativas.</p>
   </div>
 </section>
 
-<!-- ============ SAM ============ -->
-<section class="section section-ink" id="sam" aria-labelledby="sam-title">
-  <div class="wrap sam-grid">
-    <div data-reveal>
-      <p class="eyebrow">Converse com o Sam</p>
-      <h2 class="section-title" id="sam-title">Pergunte às onze da noite. <span>Ele responde.</span></h2>
-      <p class="section-sub">O Sam é o assistente virtual do Hub. Conhece os imóveis da coleção, os bairros e os números. Quando fizer sentido visitar, ele passa a conversa para um corretor da equipe.</p>
-      <ul class="feat">
-        <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="proof-txt"><strong>Responde na hora</strong><span>Sem esperar o horário comercial para tirar uma dúvida.</span></span></li>
-        <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg></span><span class="proof-txt"><strong>Conhece cada bairro</strong><span>Onde bate sol, onde tem barulho, quanto tempo leva de manhã.</span></span></li>
-        <li><span class="proof-ico"><svg class="i" aria-hidden="true"><use href="#i-handshake"/></svg></span><span class="proof-txt"><strong>Passa para um corretor</strong><span>Quando é hora de visitar, entra gente de verdade.</span></span></li>
-      </ul>
-      <div class="sam-actions">
-        <a class="btn btn-light btn-arrow" href="#selecao" data-action="form" data-cta>Montar minha seleção <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        <a class="btn btn-ghost" href="../?sam=1" data-site-sam>Conversar com o Sam</a>
-      </div>
-    </div>
-    <div class="phone" data-reveal>
-      <div class="phone-head">
-        <span class="avatar"><img src="../assets/sam-avatar.png" alt="" width="64" height="64" loading="lazy"><i class="online"></i></span>
-        <span><strong>Sam</strong><small>online agora</small></span>
-        <span class="demo-tag">Exemplo</span>
-      </div>
-      <div class="chat" id="chat" role="log" aria-label="Exemplo de conversa com o Sam"></div>
-      <div class="phone-foot"><span>Conversa ilustrativa</span><button class="replay" type="button" id="replay"><svg class="i" aria-hidden="true"><use href="#i-refresh"/></svg>Ver de novo</button></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ BAIRROS ============ -->
-<section class="section section-dark" id="bairros" aria-labelledby="bairros-title">
+<!-- ============ PARA QUEM ============ -->
+<section class="section section-light" id="para-quem" aria-labelledby="quem-title">
   <div class="wrap">
     <header class="section-head" data-reveal>
-      <p class="eyebrow">Bairros</p>
-      <h2 class="section-title" id="bairros-title">Comece pelo bairro.</h2>
-      <p class="section-sub">Toque num bairro e ele já entra na sua busca. Dá para escolher até três.</p>
+      <p class="eyebrow">Para quem vive o mercado</p>
+      <h2 class="section-title" id="quem-title">Uma novidade. <span>Vários pontos de entrada.</span></h2>
+      <p class="section-sub">Cada parte do mercado sente uma dor diferente. Escolha a sua e entre na lista com o perfil certo.</p>
     </header>
-    <div class="hoods" data-stagger>
-      <button class="hood media" type="button" data-bairro="Pinheiros"><img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Pinheiros</span><span class="hood-line">Cafés, galerias e metrô na porta.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Itaim Bibi"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Itaim Bibi</span><span class="hood-line">Tudo a pé, do escritório ao jantar.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Vila Nova Conceição"><img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Vila Nova Conceição</span><span class="hood-line">O Ibirapuera como quintal.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Jardim Europa"><img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Jardim Europa</span><span class="hood-line">Ruas arborizadas e casas amplas.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Moema"><img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Moema</span><span class="hood-line">Plano, verde e perto do parque.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Higienópolis"><img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Higienópolis</span><span class="hood-line">Prédios clássicos e vida de bairro.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Alto de Pinheiros"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Alto de Pinheiros</span><span class="hood-line">Silêncio a dez minutos de tudo.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
-      <button class="hood media" type="button" data-bairro="Jardins"><img src="https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="875" loading="lazy" decoding="async"><span class="hood-body"><span class="hood-name">Jardins</span><span class="hood-line">A Oscar Freire a uma quadra.</span><span class="hood-cta">Incluir na busca <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></button>
+    <div class="who" data-stagger>
+      <article class="who-card">
+        <div class="who-top"><span class="who-ico"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg></span><h3>Quem procura imóvel</h3></div>
+        <p>Para comprar, alugar ou investir sem atravessar listas intermináveis.</p>
+        <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Poucas opções, escolhidas para o seu perfil</li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Respostas a qualquer hora</li></ul>
+        <button class="who-cta" type="button" data-perfil="comprar">Entrar na lista <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </article>
+      <article class="who-card">
+        <div class="who-top"><span class="who-ico"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg></span><h3>Corretores</h3></div>
+        <p>Para quem vende e negocia e precisa de cliente qualificado.</p>
+        <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Visitas com mais aderência</li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Contexto do cliente em um só lugar</li></ul>
+        <button class="who-cta" type="button" data-perfil="corretor">Entrar como corretor <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </article>
+      <article class="who-card">
+        <div class="who-top"><span class="who-ico"><svg class="i" aria-hidden="true"><use href="#i-building"/></svg></span><h3>Imobiliárias</h3></div>
+        <p>Para quem administra uma operação e quer controle e produtividade.</p>
+        <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Carteira apresentada com curadoria</li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Menos tarefas espalhadas entre sistemas</li></ul>
+        <button class="who-cta" type="button" data-perfil="imobiliaria">Entrar como imobiliária <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </article>
+      <article class="who-card">
+        <div class="who-top"><span class="who-ico"><svg class="i" aria-hidden="true"><use href="#i-crane"/></svg></span><h3>Construtoras e incorporadoras</h3></div>
+        <p>Para quem constrói e quer aproximar portfólio e demanda real.</p>
+        <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Lançamentos para o público certo</li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Leitura clara do interesse comercial</li></ul>
+        <button class="who-cta" type="button" data-perfil="construtora">Entrar na lista <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </article>
+      <article class="who-card">
+        <div class="who-top"><span class="who-ico"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg></span><h3>Proprietários</h3></div>
+        <p>Para quem tem um imóvel ou terreno e quer chegar a quem realmente procura.</p>
+        <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Imóvel bem apresentado</li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Interessados que já sabem o que querem</li></ul>
+        <button class="who-cta" type="button" data-perfil="proprietario">Entrar como proprietário <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </article>
+      <article class="who-card">
+        <div class="who-top"><span class="who-ico"><svg class="i" aria-hidden="true"><use href="#i-scale"/></svg></span><h3>Jurídico e cartório</h3></div>
+        <p>Para quem cuida da segurança do negócio, do contrato ao registro.</p>
+        <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Documentos organizados desde o começo</li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Assinaturas e registros no fluxo</li></ul>
+        <button class="who-cta" type="button" data-perfil="juridico">Entrar na lista <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ============ PROPRIETÁRIOS ============ -->
-<section class="section section-dark" id="proprietarios" aria-labelledby="owner-title" style="padding-top:0">
-  <div class="wrap">
-    <div class="owner" data-reveal>
-      <div class="owner-media media" aria-hidden="true"><img src="../assets/hero-2.webp" data-alt-src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=70" alt="" width="1920" height="1080" loading="lazy" decoding="async"></div>
-      <div class="owner-body">
-        <p class="eyebrow">Para proprietários</p>
-        <h2 class="section-title" id="owner-title">Tem um imóvel para vender ou alugar?</h2>
-        <p class="section-sub" style="margin-left:0;text-align:left">Seu imóvel merece ser bem apresentado. E visto por quem já chega sabendo o que quer.</p>
-        <ul class="owner-list">
-          <li><svg class="i" aria-hidden="true"><use href="#i-camera"/></svg>Fotografia profissional</li>
-          <li><svg class="i" aria-hidden="true"><use href="#i-eye"/></svg>Curadoria e apresentação</li>
-          <li><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>Interessados qualificados</li>
-          <li><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>Tudo acompanhado pelo WhatsApp</li>
-        </ul>
-        <div class="owner-actions">
-          <button class="btn btn-light btn-arrow" type="button" data-action="anunciar">Anunciar meu imóvel <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </div>
+<!-- ============ POR QUE ENTRAR AGORA ============ -->
+<section class="section section-dark" id="antes" aria-labelledby="antes-title">
+  <div class="wrap early">
+    <div class="early-art" data-reveal aria-hidden="true">
+      <canvas id="early-net"></canvas>
+      <img class="early-logo" src="../assets/logo-horizontal.png" alt="" width="900" height="278" loading="lazy">
+      <div class="early-badge"><span>Convite aberto</span><span>Lista de lançamento</span></div>
+    </div>
+    <div data-reveal>
+      <p class="eyebrow">Antes da abertura</p>
+      <h2 class="section-title" id="antes-title">Algumas conexões <span>começam primeiro.</span></h2>
+      <p class="section-sub">Quem entra na lista acompanha o lançamento de perto, antes de o Hub abrir para todo o mercado.</p>
+      <ul class="perks">
+        <li><span class="pillar-ico"><svg class="i" aria-hidden="true"><use href="#i-bell"/></svg></span><span class="t"><strong>Novidades em primeira mão</strong><span>A data de abertura e as primeiras informações chegam antes para você.</span></span></li>
+        <li><span class="pillar-ico"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg></span><span class="t"><strong>Grupo exclusivo de lançamento</strong><span>O convite chega pelo WhatsApp, para quem está na lista.</span></span></li>
+        <li><span class="pillar-ico"><svg class="i" aria-hidden="true"><use href="#i-ticket"/></svg></span><span class="t"><strong>Convite para a apresentação</strong><span>Conheça o Hub funcionando antes da abertura oficial.</span></span></li>
+      </ul>
+      <div class="section-cta">
+        <a class="btn btn-light btn-arrow" href="#lista" data-action="form">Quero entrar na lista <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </div>
@@ -989,38 +664,34 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
 <!-- ============ PERGUNTAS ============ -->
 <section class="section section-light" id="perguntas" aria-labelledby="faq-title">
   <div class="wrap">
-    <header class="section-head" data-reveal>
+    <header class="section-head section-head--center" data-reveal>
       <p class="eyebrow">Perguntas frequentes</p>
       <h2 class="section-title" id="faq-title">Antes de você perguntar.</h2>
     </header>
     <div class="faq" data-reveal>
       <details>
-        <summary>Em quanto tempo vocês me chamam?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>Um especialista te chama no WhatsApp em até 1 dia útil. Se quiser adiantar, depois de enviar o formulário é só tocar em “Adiantar pelo WhatsApp”.</p></div>
+        <summary>Quando é o lançamento?<span class="pm" aria-hidden="true"></span></summary>
+        <div class="faq-a"><p>Em breve. Hoje o Hub roda com os primeiros parceiros, numa fase fechada. Quem está na lista recebe a data do lançamento oficial antes de todo mundo.</p></div>
       </details>
       <details>
-        <summary>Preciso ter tudo definido para começar?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>Não. Muita gente começa só com o bairro e uma faixa de valor. Na conversa, o especialista e o Sam ajudam a afinar o resto.</p></div>
+        <summary>Por que ainda não aparecem imóveis aqui?<span class="pm" aria-hidden="true"></span></summary>
+        <div class="faq-a"><p>Porque o Hub ainda não abriu para o público. Vamos mostrar imóveis quando você puder visitar, perguntar e negociar de verdade. Até lá, esta página explica o que vem e guarda o seu lugar na lista.</p></div>
       </details>
       <details>
-        <summary>Por que só três imóveis por vez?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>Porque comparar três boas opções é melhor do que rolar trezentas. Se nenhuma servir, a curadoria ajusta a busca com o que você contou e traz as próximas.</p></div>
+        <summary>Entrar na lista tem algum custo?<span class="pm" aria-hidden="true"></span></summary>
+        <div class="faq-a"><p>Não. O cadastro é gratuito e você pode pedir para sair a qualquer momento.</p></div>
       </details>
       <details>
-        <summary>Quais regiões vocês atendem?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>A curadoria está concentrada em bairros de São Paulo como Pinheiros, Itaim Bibi, Vila Nova Conceição, Jardins, Jardim Europa, Moema e Higienópolis. Procura outra região? Marque “Outro” no formulário e conte qual; a equipe avalia.</p></div>
+        <summary>O que acontece depois do cadastro?<span class="pm" aria-hidden="true"></span></summary>
+        <div class="faq-a"><p>Seu contato entra na lista de lançamento do Hub. A equipe fala com você pelo WhatsApp com as novidades, o convite para o grupo exclusivo e a data de abertura.</p></div>
       </details>
       <details>
-        <summary>Quem é o Sam?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>O Sam é o assistente virtual do AI Logic Hub. Ele responde dúvidas sobre imóveis e bairros a qualquer hora e passa a conversa para um corretor quando é hora de visitar. As respostas do Sam são informativas e não substituem a análise de um corretor.</p></div>
+        <summary>Sou corretor, imobiliária ou construtora. Como participo?<span class="pm" aria-hidden="true"></span></summary>
+        <div class="faq-a"><p>Escolha o seu perfil no cadastro. A equipe de parcerias do Hub fala com você sobre como participar do lançamento.</p></div>
       </details>
       <details>
         <summary>O que vocês fazem com os meus dados?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>Usamos seu nome e seu contato para falar com você sobre esta busca, só com a sua autorização. A finalidade do Hub não é comercializar listas de dados pessoais.</p><p>Os detalhes, inclusive como pedir para sair, estão na <a href="../politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p></div>
-      </details>
-      <details>
-        <summary>Sou corretor ou imobiliária. Posso ser parceiro?<span class="pm" aria-hidden="true"></span></summary>
-        <div class="faq-a"><p>Pode. O cadastro de parceiros é feito no sistema do Hub e passa pela aprovação da diretoria. <a href="https://www.ailogichuboficial.com/cadastro?perfil=corretor" data-parceiro target="_blank" rel="noopener">Fazer o cadastro de parceiro</a>.</p></div>
+        <div class="faq-a"><p>Usamos seu nome e seu contato para falar com você sobre o lançamento, só com a sua autorização. A finalidade do Hub não é comercializar listas de dados pessoais.</p><p>Os detalhes, inclusive como pedir para sair, estão na <a href="../politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p></div>
       </details>
     </div>
   </div>
@@ -1029,12 +700,11 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
 <!-- ============ CTA FINAL ============ -->
 <section class="section section-dark final" id="final" aria-labelledby="final-title">
   <div class="wrap">
-    <p class="eyebrow" data-reveal>Pronto para começar?</p>
-    <h2 class="section-title" id="final-title" data-reveal>Seu próximo endereço começa <span>com uma conversa.</span></h2>
-    <p class="section-sub" data-reveal>Um minuto agora, e você recebe só o que faz sentido para você.</p>
-    <div class="section-cta" data-reveal>
-      <a class="btn btn-light btn-arrow" href="#selecao" data-action="form" data-cta>Quero minha seleção <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      <a class="btn btn-ghost" href="https://wa.me/5511936238387" target="_blank" rel="noopener" data-wa="final"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>Falar no WhatsApp</a>
+    <p class="eyebrow" data-reveal>Lista de lançamento aberta</p>
+    <h2 class="section-title" id="final-title" data-reveal>O próximo movimento do mercado <span>começa antes de ser visto.</span></h2>
+    <p class="section-sub" data-reveal>Um minuto agora, e você fica sabendo do lançamento antes de todo mundo.</p>
+    <div class="section-cta section-cta--center" data-reveal>
+      <a class="btn btn-light btn-arrow" href="#lista" data-action="form">Quero entrar na lista <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
   </div>
 </section>
@@ -1043,19 +713,19 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
 <footer class="lp-footer">
   <div class="wrap">
     <div class="foot-row">
-      <a class="foot-brand" href="../" data-site aria-label="AI Logic Hub — ir para o site">
+      <div class="foot-brand">
         <img src="../assets/logo-horizontal.png" alt="AI Logic Hub" width="900" height="278" loading="lazy" data-fallback="logo">
         <span class="logo-text" aria-hidden="true">AI Logic <b>Hub</b></span>
-      </a>
+        <small>Pré-lançamento</small>
+      </div>
       <ul class="foot-links">
-        <li><a href="../" data-site>Site do Hub</a></li>
         <li><a href="https://wa.me/5511936238387" target="_blank" rel="noopener" data-wa="rodape">WhatsApp</a></li>
         <li><a href="../politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></li>
         <li><button type="button" data-action="cookies-prefs">Preferências de cookies</button></li>
       </ul>
     </div>
     <div class="foot-legal">
-      <p>Imagens meramente ilustrativas. Valores, metragens e disponibilidade podem mudar sem aviso prévio e são confirmados no momento da proposta. As respostas do Sam são informativas e não substituem a análise de um corretor.</p>
+      <p>Imagens meramente ilustrativas. O AI Logic Hub está em fase de pré-lançamento; funcionalidades e datas podem mudar até a abertura oficial.</p>
       <p>© <span id="year">2026</span> AILOGIC HUB NEGOCIOS IMOBILIARIOS LTDA · CNPJ 68.449.833/0001-78</p>
     </div>
   </div>
@@ -1063,8 +733,7 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
 
 <!-- barra fixa no celular -->
 <div class="mbar" id="mbar" aria-hidden="true">
-  <a class="btn btn-light" href="#selecao" data-action="form" data-cta tabindex="-1">Quero minha seleção</a>
-  <a class="btn btn-wa" href="https://wa.me/5511936238387" target="_blank" rel="noopener" data-wa="barra" aria-label="Falar no WhatsApp" tabindex="-1"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg></a>
+  <a class="btn btn-light" href="#lista" data-action="form" tabindex="-1">Quero entrar na lista</a>
 </div>
 
 <!-- cookies: mesmo texto, mesmas categorias e mesma escolha (alh:consent) do site -->
@@ -1107,12 +776,12 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
   'use strict';
 
   /* ================= CONFIG ================= */
-  // Mesmo sistema do site: o contato entra em Comercial › Leads no Hub. Na prévia local as chamadas vão para /api.
+  // O cadastro entra como lead no Hub (Comercial › Leads). Na prévia local as chamadas vão para /api.
   const HUB = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '' : 'https://www.ailogichuboficial.com';
   const CONFIG = {
     whatsapp: '5511936238387',
     leadUrl: HUB + '/api/proposta?action=lead_site', // POST {nome, whatsapp, email, tipo, origem, mensagem, aceite, hp}
-    parceiroUrl: 'https://www.ailogichuboficial.com/cadastro?perfil=corretor',
+    grupoUrl: '',   // link do grupo exclusivo de lançamento (https://chat.whatsapp.com/...); vazio = conversa com o Hub
     // métricas e anúncios: os mesmos IDs do index.html; só carregam para quem autorizar no aviso de cookies
     ga4: '',        // Google Analytics 4: G-XXXXXXXXXX
     metaPixel: '',  // Pixel da Meta: só os números do ID
@@ -1125,8 +794,8 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' };
   const esc = v => String(v ?? '').replace(/[&<>"'`]/g, c => ESC_MAP[c]);
-  const listPt = a => a.length > 1 ? `${a.slice(0, -1).join(', ')} e ${a[a.length - 1]}` : (a[0] || '');
   const waLink = text => `https://wa.me/${CONFIG.whatsapp}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
+  const safeUrl = u => { try { const x = new URL(String(u || ''), location.href); return x.protocol === 'https:' ? x.href : ''; } catch { return ''; } };
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
@@ -1141,18 +810,11 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
     clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('is-on'), 3200);
   }
   const scrollBehavior = () => (reduceMotion.matches ? 'auto' : 'smooth');
-
-  // Aberta como arquivo (duplo-clique), "../" listaria a pasta: aponta para o index.html
-  if (location.protocol === 'file:') {
-    $$('[data-site]').forEach(a => { a.href = '../index.html'; });
-    $$('[data-site-hash]').forEach(a => { a.href = '../index.html#' + a.dataset.siteHash; });
-    $$('[data-site-sam]').forEach(a => { a.href = '../index.html?sam=1'; });
-  }
-  $$('[data-parceiro]').forEach(a => { a.href = CONFIG.parceiroUrl; });
+  const WA_PADRAO = 'Olá! Vim pela página de pré-lançamento do AI Logic Hub e quero saber mais.';
+  $$('[data-wa]').forEach(a => { if (a.id !== 'done-wa') a.href = waLink(WA_PADRAO); });
 
   /* ================= CAMPANHA (UTM) ================= */
-  // Regra MKT-360 do Marketing: todo lead de tráfego externo leva a origem. Os parâmetros de campanha
-  // (não são dado pessoal) ficam na sessão, para não se perderem se a pessoa navegar e voltar.
+  // Regra MKT-360 do Marketing: todo lead de tráfego externo leva a origem (não é dado pessoal; fica na sessão).
   const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
   const qs = new URLSearchParams(location.search);
   const campanha = (() => {
@@ -1173,91 +835,32 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
     return partes.join(', ');
   };
 
-  /* ================= VARIANTES DA CAMPANHA ================= */
-  // ?para=alugar | investir | proprietario (ou ?intencao=...) troca o título e já marca a primeira etapa.
-  const VARIANTES = {
-    comprar: null,
-    alugar: {
-      eyebrow: 'Locação com curadoria · São Paulo',
-      title: 'Alugue sem maratona de visitas. <span>Receba só os imóveis que <em>fazem sentido para você.</em></span>',
-      sub: 'Conte em um minuto o que você procura. A curadoria do Hub seleciona até três imóveis para alugar no seu perfil e um especialista te chama no WhatsApp em até 1 dia útil.',
-      wa: 'Olá! Vim pela página de seleção do AI Logic Hub e quero ajuda para alugar um imóvel.'
-    },
-    investir: {
-      eyebrow: 'Investimento imobiliário · São Paulo',
-      title: 'Invista com critério. <span>Receba só as oportunidades que <em>passaram pela curadoria.</em></span>',
-      sub: 'Conte em um minuto seu objetivo e sua faixa de investimento. A curadoria do Hub seleciona até três imóveis para o seu perfil e um especialista te chama no WhatsApp em até 1 dia útil.',
-      wa: 'Olá! Vim pela página de seleção do AI Logic Hub e quero ajuda para investir em um imóvel.'
-    },
-    anunciar: {
-      eyebrow: 'Para proprietários · São Paulo',
-      title: 'Seu imóvel bem apresentado. <span>Para quem já chega <em>sabendo o que quer.</em></span>',
-      sub: 'Fotografia profissional, curadoria e interessados qualificados. Conte sobre o imóvel e um especialista te chama no WhatsApp em até 1 dia útil para marcar a visita técnica.',
-      points: ['<strong>Fotografia profissional</strong> e apresentação cuidadosa.', '<strong>Interessados qualificados</strong>, que já chegam sabendo o que querem.', '<strong>Você acompanha tudo</strong> pelo WhatsApp.'],
-      cta: 'Anunciar meu imóvel',
-      wa: 'Olá! Vim pela página do AI Logic Hub e quero anunciar meu imóvel.'
-    }
+  /* ================= CADASTRO NA LISTA ================= */
+  // perfil → tipo aceito pelo Hub (cliente, proprietario, parceiro) e texto para a equipe
+  const PERFIS = {
+    comprar: { tipo: 'cliente', txt: 'Quer comprar, alugar ou investir' },
+    proprietario: { tipo: 'proprietario', txt: 'Tem um imóvel ou terreno' },
+    corretor: { tipo: 'parceiro', txt: 'Corretor(a)' },
+    imobiliaria: { tipo: 'parceiro', txt: 'Imobiliária' },
+    construtora: { tipo: 'parceiro', txt: 'Construtora ou incorporadora' },
+    juridico: { tipo: 'parceiro', txt: 'Jurídico, contratos ou cartório' },
+    acompanhar: { tipo: 'cliente', txt: 'Quer acompanhar a novidade' }
   };
-  const ALIAS = { proprietario: 'anunciar', vender: 'anunciar', anuncie: 'anunciar', locacao: 'alugar', aluguel: 'alugar', investimento: 'investir', compra: 'comprar' };
-  const pedida = (() => { const v = String(qs.get('para') || qs.get('intencao') || '').toLowerCase().trim(); return ALIAS[v] || v; })();
-  const variante = Object.prototype.hasOwnProperty.call(VARIANTES, pedida) ? pedida : '';
-  let waTexto = 'Olá! Vim pela página de seleção do AI Logic Hub e quero ajuda para encontrar um imóvel.';
-  if (VARIANTES[variante]) {
-    const V = VARIANTES[variante];
-    if (V.eyebrow) $('[data-v="eyebrow"]').innerHTML = '<span class="dot" aria-hidden="true"></span>' + esc(V.eyebrow);
-    if (V.title) $('[data-v="title"]').innerHTML = V.title;         // texto fixo deste arquivo, nunca da URL
-    if (V.sub) $('[data-v="sub"]').textContent = V.sub;
-    if (V.points) $$('[data-v="points"] li > span:last-child').forEach((s, i) => { if (V.points[i]) s.innerHTML = V.points[i]; });
-    if (V.cta) $$('.lp-header [data-cta], .mbar [data-cta]').forEach(a => { a.textContent = V.cta; });
-    if (V.wa) waTexto = V.wa;
-  }
-  const setWa = () => $$('[data-wa]').forEach(a => { if (a.id !== 'done-wa') a.href = waLink(waTexto); });
-  setWa();
-
-  /* ================= FORMULÁRIO EM ETAPAS ================= */
-  const form = $('#lp-form'), wizard = $('#selecao');
-  const btnNext = $('#wz-next'), btnBack = $('#wz-back');
-  const TOTAL = 4;
-  let step = 1, started = false, sending = false;
-  const intencao = () => ($('input[name="intencao"]:checked', form) || {}).value || '';
-  const ramo = () => (intencao() === 'anunciar' ? 'proprietario' : 'cliente');
-  const stepEl = n => $$('.step', form).find(s => +s.dataset.step === n && !s.hidden);
-
-  /** Mostra só o que vale para a intenção escolhida ([data-for]) e desliga os campos escondidos. */
-  function syncRamo() {
-    const r = ramo(), it = intencao();
-    $$('[data-for]', form).forEach(el => { const alvo = el.dataset.for.split(' '); el.hidden = !(alvo.includes(r) || alvo.includes(it)); });
-    $$('input,textarea', form).forEach(f => { f.disabled = !!f.closest('[data-for][hidden]'); });
-    const dono = r === 'proprietario';
-    $('[data-t4]').textContent = dono ? 'Como falamos com você?' : 'Para onde enviamos sua seleção?';
-    $('[data-s4]').textContent = dono ? 'Um especialista te chama no WhatsApp em até 1 dia útil para marcar a visita técnica.' : 'Um especialista te chama no WhatsApp em até 1 dia útil com a sua seleção.';
-    $('[data-aceite]').textContent = dono ? 'este anúncio' : 'esta busca';
-    $('#wz-note').textContent = dono ? 'Seus dados ficam com a equipe do Hub e servem só para este anúncio.' : 'Seus dados ficam com a equipe do Hub e servem só para esta busca.';
-    const sub = $('[data-sub-intent]');
-    if (sub) sub.textContent = it === 'investir' ? 'Para renda ou valorização, o tipo e o bairro mudam tudo. Não precisa ser exato.' : it === 'alugar' ? 'Conte o essencial. A curadoria cuida do resto.' : 'Não precisa ser exato. Serve de ponto de partida para a curadoria.';
-  }
-
+  const form = $('#lp-form'), card = $('#lista'), btn = $('#su-btn');
+  let sending = false, started = false;
+  const perfil = () => ($('input[name="perfil"]:checked', form) || {}).value || '';
   function setErr(box, msg) { const e = $('.q-error, .field-error', box); if (e) e.textContent = msg || ''; }
-  /** Confere a etapa atual: grupos obrigatórios ([data-req]) e campos com required. */
-  function validar(el) {
+
+  function validar() {
     let primeiro = null;
-    $$('[data-req]', el).forEach(q => {
-      if (q.closest('[data-for][hidden]')) return;
-      let ok;
-      if (q.dataset.req === 'bairros') {
-        const marcados = $$('input[name="bairros"]:checked', q);
-        const outro = marcados.some(i => i.hasAttribute('data-outro'));
-        ok = marcados.length > 0 && (!outro || $('#f-outro').value.trim().length > 1 || marcados.length > 1);
-        if (outro && !$('#f-outro').value.trim() && marcados.length === 1) { setErr(q, 'Conte qual bairro ou região.'); if (!primeiro) primeiro = $('#f-outro'); return; }
-      } else ok = !!$('input:checked', q);
-      setErr(q, ok ? '' : q.dataset.msg);
-      if (!ok && !primeiro) primeiro = $('input:not([disabled])', q);
-    });
-    $$('.field input, .field textarea, .consent input', el).forEach(f => {
-      if (f.disabled) return;
+    const q = $('[data-req]', form);
+    const okPerfil = !!perfil();
+    setErr(q, okPerfil ? '' : q.dataset.msg);
+    if (!okPerfil) primeiro = $('input', q);
+    $$('.field input, .consent input', form).forEach(f => {
       let ok = f.checkValidity();
       if (ok && f.hasAttribute('data-phone')) { const d = f.value.replace(/\D/g, ''); ok = d.length >= 10 && d.length <= 11; }
-      if (ok && f.name === 'nome') ok = f.value.trim().length >= 2;
+      if (ok && (f.name === 'nome' || f.name === 'cidade')) ok = f.value.trim().length >= 2;
       f.setAttribute('aria-invalid', String(!ok));
       const box = f.closest('.field, .consent'); if (box) setErr(box, ok ? '' : (f.dataset.msg || 'Confira este campo.'));
       if (!ok && !primeiro) primeiro = f;
@@ -1265,123 +868,30 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
     if (primeiro) { primeiro.focus({ preventScroll: true }); primeiro.scrollIntoView({ block: 'center', behavior: scrollBehavior() }); }
     return !primeiro;
   }
-
-  function go(n, opts = {}) {
-    const voltar = n < step;
-    step = Math.max(1, Math.min(TOTAL, n));
-    syncRamo();
-    $$('.step', form).forEach(s => s.classList.remove('is-current', 'is-back'));
-    const el = stepEl(step);
-    el.classList.add('is-current'); if (voltar) el.classList.add('is-back');
-    $$('#wz-bar span').forEach((b, i) => b.classList.toggle('on', i < step));
-    $('#wz-bar').setAttribute('aria-valuenow', String(step));
-    $('#wz-count').textContent = `Etapa ${step} de ${TOTAL}`;
-    btnBack.hidden = step === 1;
-    const ultimo = step === TOTAL;
-    $('span', btnNext).textContent = ultimo ? (ramo() === 'proprietario' ? 'Enviar meu imóvel' : 'Receber minha seleção') : 'Continuar';
-    if (ultimo) recap();
-    if (opts.focus !== false) {
-      const t = $('.step-title', el); if (t) t.focus({ preventScroll: true });
-      const top = wizard.getBoundingClientRect().top;
-      if (top < 0 || top > innerHeight * .6) wizard.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
-    }
-    if (opts.medir !== false) medir('etapa', { etapa: step, intencao: intencao() || 'nenhuma' });
-  }
-  function avancar() {
-    if (!validar(stepEl(step))) return;
-    if (step < TOTAL) go(step + 1); else enviar();
-  }
-  btnNext.addEventListener('click', avancar);
-  btnBack.addEventListener('click', () => go(step - 1));
-  // Enter num campo de texto avança a etapa (e só envia na última)
-  form.addEventListener('submit', e => { e.preventDefault(); avancar(); });
-  form.addEventListener('click', e => { const b = e.target.closest('[data-goto]'); if (b) go(+b.dataset.goto); });
-
   form.addEventListener('change', e => {
-    const t = e.target;
-    if (!started) { started = true; medir('inicio', { intencao: intencao() || 'nenhuma' }); }
-    const q = t.closest('[data-req]'); if (q) setErr(q, '');
-    if (t.name === 'intencao') {
-      syncRamo();
-      // escolheu a intenção: segue sozinho para a próxima etapa (dá tempo de ver o cartão marcado)
-      if (step === 1) setTimeout(() => { if (step === 1 && intencao()) go(2); }, reduceMotion.matches ? 0 : 320);
-    }
-    if (t.name === 'bairros') bairrosChange(t);
+    if (!started) { started = true; medir('inicio', { perfil: perfil() || 'nenhum' }); }
+    if (e.target.name === 'perfil') { setErr($('[data-req]', form), ''); syncWho(); }
   });
   form.addEventListener('input', e => {
     const f = e.target;
     if (f.getAttribute('aria-invalid') === 'true') { f.setAttribute('aria-invalid', 'false'); const box = f.closest('.field, .consent'); if (box) setErr(box, ''); }
-    if (f.id === 'f-outro') setErr($('[data-req="bairros"]'), '');
   });
   $('#f-whats').addEventListener('input', e => {
     const inp = e.target, d = inp.value.replace(/\D/g, '').slice(0, 11);
     inp.value = d.length > 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d;
   });
-  $$('[data-digits]').forEach(inp => inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); }));
 
-  /* bairros: até três, "Ainda não sei" é exclusivo e "Outro" abre o campo */
-  const MAX_BAIRROS = 3;
-  function bairrosChange(t) {
-    const todos = $$('input[name="bairros"]', form);
-    if (t.checked && t.hasAttribute('data-exclusive')) todos.forEach(i => { if (i !== t) i.checked = false; });
-    else if (t.checked) todos.forEach(i => { if (i.hasAttribute('data-exclusive')) i.checked = false; });
-    const marcados = todos.filter(i => i.checked && !i.hasAttribute('data-exclusive'));
-    if (t.checked && marcados.length > MAX_BAIRROS) { t.checked = false; toast('Escolha até três bairros.'); }
-    syncOutro();
-    syncHoods();
-  }
-  function syncOutro() {
-    const on = !!$('input[data-outro]:checked', form);
-    $('#outro-wrap').hidden = !on;
-    if (on && document.activeElement && document.activeElement.hasAttribute('data-outro')) setTimeout(() => $('#f-outro').focus(), 50);
-  }
-
-  /** Lê as respostas, já no formato da mensagem para o Hub e do resumo. */
-  function respostas() {
-    const fd = new FormData(form), get = k => String(fd.get(k) || '').trim();
-    const it = intencao();
-    const bairros = fd.getAll('bairros').map(String).filter(b => b !== 'outro');
-    if (fd.getAll('bairros').includes('outro') && get('bairro_outro')) bairros.push(get('bairro_outro'));
-    return {
-      intencao: it, ramo: ramo(),
-      tipo: get('tipo'), quartos: get('quartos'), bairros, faixa: get('faixa'),
-      indispensaveis: fd.getAll('indispensaveis').map(String), prazo: get('prazo'),
-      p_finalidade: get('p_finalidade'), p_tipo: get('p_tipo'), p_bairro: get('p_bairro'), p_area: get('p_area'),
-      p_situacao: get('p_situacao'), p_valor: get('p_valor'), obs: get('obs'),
-      nome: get('nome'), whatsapp: get('whatsapp'), email: get('email'), horario: get('horario'),
-      aceite: fd.get('aceite') === 'on', hp: get('hp')
-    };
-  }
-  const INTENCAO_TXT = { comprar: 'Comprar para morar', alugar: 'Alugar', investir: 'Investir', anunciar: 'Anunciar imóvel' };
-  const FINALIDADE_TXT = { vender: 'Vender', alugar: 'Alugar', avaliar: 'Avaliando vender ou alugar' };
-  function tags(r) {
-    if (r.ramo === 'proprietario') return [FINALIDADE_TXT[r.p_finalidade], r.p_tipo, r.p_bairro, r.p_area && `${r.p_area} m²`, r.p_valor && r.p_valor[0].toUpperCase() + r.p_valor.slice(1), r.prazo && 'Começar ' + r.prazo].filter(Boolean);
-    return [INTENCAO_TXT[r.intencao], r.tipo !== 'Tanto faz' && r.tipo, r.quartos && `${r.quartos} ${r.quartos === '1' ? 'quarto' : 'quartos'}`, r.bairros.length && r.bairros.join(', '), r.faixa, ...r.indispensaveis.map(x => x[0].toUpperCase() + x.slice(1)), r.prazo && 'Fechar ' + r.prazo].filter(Boolean);
-  }
-  function recap() {
-    const r = respostas();
-    $('#recap-tags').innerHTML = tags(r).map(t => `<span>${esc(t)}</span>`).join('');
-  }
-  /** Texto do lead (até 500 caracteres no Hub): perfil primeiro, campanha no fim. */
-  function mensagem(r) {
-    const p = r.ramo === 'proprietario'
-      ? [`Quer: ${(FINALIDADE_TXT[r.p_finalidade] || '').toLowerCase()}`, `Tipo: ${r.p_tipo}`, `Bairro: ${r.p_bairro}`, r.p_area && `Área: ${r.p_area} m²`, r.p_situacao && `Situação: ${r.p_situacao}`, r.p_valor && `Valor: ${r.p_valor}`, r.prazo && `Prazo: ${r.prazo}`, r.obs && `Obs: ${r.obs}`]
-      : [`Quer: ${(INTENCAO_TXT[r.intencao] || '').toLowerCase()}`, r.tipo && `Tipo: ${r.tipo}`, r.quartos && `Quartos: ${r.quartos}`, r.bairros.length && `Bairros: ${r.bairros.join(', ')}`, r.faixa && `Faixa: ${r.faixa}`, r.indispensaveis.length && `Indispensáveis: ${r.indispensaveis.join(', ')}`, r.prazo && `Prazo: ${r.prazo}`];
-    const c = campanhaTxt();
-    return ['Landing page', ...p, r.horario && `Melhor horário: ${r.horario}`, c && `Origem: ${c}`].filter(Boolean).join(' · ');
-  }
-  function linhasWhats(r) {
-    const cab = r.ramo === 'proprietario' ? 'Olá! Quero anunciar meu imóvel pelo AILogic Hub.' : 'Olá! Quero receber uma seleção de imóveis do AILogic Hub.';
-    return [cab, `Nome: ${r.nome}`, `WhatsApp: ${r.whatsapp}`, r.email && `E-mail: ${r.email}`, ...mensagem(r).split(' · ').slice(1).filter(l => !/^Origem:/.test(l))].filter(Boolean);
-  }
-
-  async function enviar() {
-    if (sending) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (sending || !validar()) return;
     sending = true;
-    const r = respostas();
-    const label = $('span', btnNext).textContent;
-    btnNext.disabled = true; $('span', btnNext).textContent = 'Enviando…';
-    const tipo = r.ramo === 'proprietario' ? 'proprietario' : 'cliente';
+    const fd = new FormData(form), get = k => String(fd.get(k) || '').trim();
+    const r = { perfil: perfil(), nome: get('nome'), whatsapp: get('whatsapp'), cidade: get('cidade'), email: get('email'), aceite: fd.get('aceite') === 'on', hp: get('hp') };
+    const P = PERFIS[r.perfil] || PERFIS.acompanhar;
+    const c = campanhaTxt();
+    const mensagem = ['Pré-lançamento: lista de lançamento', `Perfil: ${P.txt}`, `Cidade: ${r.cidade}`, c && `Origem: ${c}`].filter(Boolean).join(' · ');
+    const label = $('span', btn).textContent;
+    btn.disabled = true; $('span', btn).textContent = 'Enviando…';
     let noHub = false;
     try {
       // 1º: o contato entra direto em Leads no Hub; sem resposta do Hub, segue pelo WhatsApp (nada se perde)
@@ -1389,8 +899,8 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
         try {
           const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 12000);
           const res = await fetch(CONFIG.leadUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctrl.signal, body: JSON.stringify({
-            nome: r.nome, whatsapp: r.whatsapp, email: r.email, tipo, origem: 'site-formulario',
-            mensagem: mensagem(r).slice(0, 500), aceite: r.aceite === true, hp: r.hp }) });
+            nome: r.nome, whatsapp: r.whatsapp, email: r.email, tipo: P.tipo, origem: 'site-formulario',
+            mensagem: mensagem.slice(0, 500), aceite: r.aceite === true, hp: r.hp }) });
           clearTimeout(timer);
           const j = await res.json().catch(() => ({}));
           if (res.status === 400 && j.error) { toast(j.error); return; }
@@ -1398,58 +908,66 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
         } catch { noHub = false; }
       }
       const primeiro = r.nome.split(/\s+/)[0];
-      const dono = r.ramo === 'proprietario';
       const waBtn = $('#done-wa');
+      const grupo = safeUrl(CONFIG.grupoUrl);
       if (noHub) {
-        $('#done-title').textContent = primeiro ? `Recebido, ${primeiro}.` : 'Recebido.';
-        $('#done-text').textContent = dono ? 'Os dados do seu imóvel já estão com a equipe do Hub.' : 'Sua busca já está com a curadoria do Hub.';
-        $('#done-steps').innerHTML = (dono
-          ? [['Agora', 'A equipe lê os dados do seu imóvel.'], ['Em até 1 dia útil', 'Um especialista te chama no WhatsApp.'], ['Na sequência', 'Vocês combinam a visita técnica e a apresentação do imóvel.']]
-          : [['Agora', 'A curadoria lê o seu perfil.'], ['Em até 1 dia útil', 'Um especialista te chama no WhatsApp.'], ['Na conversa', 'Você recebe até três imóveis e escolhe o que visitar.']])
+        $('#done-title').textContent = primeiro ? `Você está na lista, ${primeiro}.` : 'Você está na lista.';
+        $('#done-text').textContent = 'Quando o lançamento oficial for aberto, você fica sabendo antes de todo mundo.';
+        $('#done-steps').innerHTML = [['Agora', 'Seu contato entrou na lista de lançamento do Hub.'], ['Pelo WhatsApp', grupo ? 'Entre no grupo exclusivo de lançamento pelo botão abaixo.' : 'A equipe envia o convite para o grupo exclusivo de lançamento.'], ['Antes da abertura', 'Você recebe a data e o convite para a apresentação.']]
           .map((s, i) => `<li><span class="n">${i + 1}</span><span><b>${esc(s[0])}</b>${esc(s[1])}</span></li>`).join('');
-        waBtn.href = waLink((dono ? 'Olá! Acabei de enviar os dados do meu imóvel pela página do AILogic Hub.' : 'Olá! Acabei de pedir minha seleção de imóveis pela página do AILogic Hub.') + (primeiro ? ` Sou ${primeiro}.` : ''));
-        $('span', waBtn).textContent = 'Adiantar pelo WhatsApp';
+        waBtn.href = grupo || waLink(`Olá! Acabei de entrar na lista de lançamento do AI Logic Hub.${primeiro ? ` Sou ${primeiro}` : ''} (${P.txt.toLowerCase()}).`);
+        $('span', waBtn).textContent = grupo ? 'Entrar no grupo exclusivo' : 'Confirmar pelo WhatsApp';
+        $('#done-steps').hidden = false;
       } else {
-        // sem o Hub: a mensagem segue pelo WhatsApp do Hub, já preenchida, e só chega com o envio
-        const url = waLink(linhasWhats(r).join('\n'));
+        // sem o Hub: o cadastro segue pelo WhatsApp do Hub, já preenchido, e só chega com o envio
+        const linhas = ['Olá! Quero entrar na lista de lançamento do AI Logic Hub.', `Nome: ${r.nome}`, `WhatsApp: ${r.whatsapp}`, r.email && `E-mail: ${r.email}`, `Cidade: ${r.cidade}`, `Perfil: ${P.txt}`].filter(Boolean);
+        const url = waLink(linhas.join('\n'));
         window.open(url, '_blank', 'noopener');
         waBtn.href = url;
         $('span', waBtn).textContent = 'Abrir o WhatsApp';
         $('#done-title').textContent = primeiro ? `Falta um toque, ${primeiro}.` : 'Falta um toque.';
-        $('#done-text').textContent = 'Abrimos o WhatsApp do Hub com a sua mensagem pronta. É só enviar por lá para ela chegar ao time. Se o WhatsApp não abriu, toque no botão abaixo.';
-        $('#done-steps').innerHTML = '';
+        $('#done-text').textContent = 'Abrimos o WhatsApp do Hub com o seu cadastro pronto. É só enviar por lá para entrar na lista. Se o WhatsApp não abriu, toque no botão abaixo.';
+        $('#done-steps').hidden = true;
       }
-      $('#done-steps').hidden = !noHub;
-      medir('lead', { tipo, intencao: r.intencao, canal: noHub ? 'hub' : 'whatsapp' });
-      form.reset(); syncOutro(); syncHoods();
-      form.hidden = true; $('.wz-head', wizard).hidden = true; $('#done').hidden = false;
-      wizard.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
+      medir('lead', { perfil: r.perfil, tipo: P.tipo, canal: noHub ? 'hub' : 'whatsapp' });
+      form.reset(); syncWho();
+      form.hidden = true; $('#done').hidden = false;
+      card.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
       $('#done-title').focus({ preventScroll: true });
     } catch {
       toast('Não conseguimos enviar agora. Tente de novo ou fale pelo WhatsApp.');
     } finally {
-      sending = false; btnNext.disabled = false; $('span', btnNext).textContent = label;
+      sending = false; btn.disabled = false; $('span', btn).textContent = label;
     }
-  }
+  });
 
-  /* ================= ATALHOS PARA O FORMULÁRIO ================= */
-  function irParaForm() {
-    if (!$('#done').hidden) { wizard.scrollIntoView({ block: 'start', behavior: scrollBehavior() }); return; }
-    wizard.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
-    setTimeout(() => { const el = stepEl(step); const alvo = step === 1 ? $('input[name="intencao"]', el) : $('.step-title', el); if (alvo) alvo.focus({ preventScroll: true }); }, reduceMotion.matches ? 0 : 450);
+  /* atalhos: CTAs levam ao cadastro; os cards "para quem" já marcam o perfil */
+  function irParaForm(foco) {
+    card.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
+    if (!$('#done').hidden) return;
+    setTimeout(() => { const alvo = foco || $('input[name="perfil"]:checked', form) || $('input[name="perfil"]', form); if (alvo) alvo.focus({ preventScroll: true }); }, reduceMotion.matches ? 0 : 450);
   }
-  function escolherIntencao(v) {
-    const radio = $(`input[name="intencao"][value="${v}"]`, form);
-    if (!radio) return;
-    radio.checked = true; syncRamo();
-    if (step === 1) go(2, { focus: false, medir: false });
+  function escolherPerfil(v) {
+    const radio = $(`input[name="perfil"][value="${CSS.escape(v)}"]`, form);
+    if (!radio) return false;
+    radio.checked = true; setErr($('[data-req]', form), ''); syncWho();
+    return true;
   }
+  function syncWho() {
+    const p = perfil();
+    $$('.who-cta').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.perfil === p)));
+  }
+  $$('.who-cta').forEach(b => b.addEventListener('click', () => {
+    if ($('#done').hidden && escolherPerfil(b.dataset.perfil)) {
+      toast(`Perfil escolhido: ${(PERFIS[b.dataset.perfil] || {}).txt}.`);
+      irParaForm($('#f-nome'));
+    } else irParaForm();
+  }));
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-action]');
     if (!a) return;
     const act = a.dataset.action;
     if (act === 'form') { e.preventDefault(); irParaForm(); }
-    else if (act === 'anunciar') { e.preventDefault(); if ($('#done').hidden) { escolherIntencao('anunciar'); if (step > 2) go(2, { focus: false }); } irParaForm(); }
     else if (act === 'cookies-prefs') openCookiePrefs();
     else if (act === 'cookies-aceitar') Consent.save({ analise: true, personalizacao: true, publicidade: true });
     else if (act === 'cookies-essenciais') Consent.save({});
@@ -1457,59 +975,47 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
     else if (act === 'close') closeDialog();
   });
 
-  /* bairros: o card marca o bairro na busca (ou preenche o bairro do imóvel, para proprietário) */
-  function syncHoods() {
-    const marcados = new Set($$('input[name="bairros"]:checked', form).map(i => i.value));
-    $$('.hood').forEach(h => { const on = marcados.has(h.dataset.bairro); h.classList.toggle('is-picked', on); h.setAttribute('aria-pressed', String(on)); $('.hood-cta', h).firstChild.textContent = on ? 'Na sua busca ' : 'Incluir na busca '; });
-  }
-  $$('.hood').forEach(h => h.addEventListener('click', () => {
-    const nome = h.dataset.bairro;
-    if (!$('#done').hidden) { irParaForm(); return; }
-    if (ramo() === 'proprietario' && intencao()) {
-      $('#f-pbairro').value = nome; toast(`${nome} entrou como bairro do seu imóvel.`); irParaForm(); return;
+  /* ================= REDE DE CONEXÕES (canvas) ================= */
+  // Pontos que se aproximam e se ligam: a ideia de "inteligência que conecta". Para quando sai da tela.
+  function rede(canvas, opts) {
+    const ctx = canvas && canvas.getContext('2d');
+    if (!ctx) return;
+    const o = Object.assign({ densidade: 9000, dist: 140, vel: .18, max: 90 }, opts);
+    let W = 0, H = 0, pts = [], raf = 0, visivel = true;
+    function medirTela() {
+      const dpr = Math.min(2, devicePixelRatio || 1), r = canvas.getBoundingClientRect();
+      W = r.width; H = r.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.min(o.max, Math.round(W * H / o.densidade));
+      pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * o.vel, vy: (Math.random() - .5) * o.vel, r: Math.random() * 1.4 + .6 }));
     }
-    const cb = $(`input[name="bairros"][value="${CSS.escape(nome)}"]`, form);
-    if (!cb) return;
-    if (cb.checked) { cb.checked = false; bairrosChange(cb); toast(`${nome} saiu da sua busca.`); return; }
-    cb.checked = true; bairrosChange(cb);
-    if (cb.checked) { setErr($('[data-req="bairros"]'), ''); toast(`${nome} entrou na sua busca.`); }
-  }));
-
-  /* ================= SAM: CONVERSA DE EXEMPLO ================= */
-  const chat = $('#chat');
-  const U = id => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=240&q=60`;
-  const ROTEIRO = [
-    ['me', 'Oi! Procuro um apartamento de 3 quartos em Pinheiros, perto do metrô.'],
-    ['sam', 'Oi! Pinheiros é ótimo para isso: metrô, cafés e vida de bairro. Até quanto você quer investir?'],
-    ['me', 'Até R$ 2,5 milhões. E tenho um cachorro.'],
-    ['sam', 'Anotado: 3 quartos, perto do metrô, aceita pet, até R$ 2,5 milhões. Separei três opções que combinam com isso:', [U('1600607687939-ce8a6c25118c'), U('1522708323590-d24dbb6b0267'), U('1600210492486-724fe5c67fb0')]],
-    ['me', 'Gostei da segunda. Dá para visitar no sábado?'],
-    ['sam', 'Dá sim. Vou passar para um corretor da equipe confirmar o horário com você.']
-  ];
-  let chatRun = 0;
-  const wait = ms => new Promise(r => setTimeout(r, reduceMotion.matches ? 0 : ms));
-  function bolha([quem, txt, fotos]) {
-    const b = document.createElement('div');
-    b.className = 'msg msg--' + quem; b.textContent = txt;
-    if (fotos) { const g = document.createElement('div'); g.className = 'msg-cards'; fotos.forEach(f => { const s = document.createElement('span'); s.style.backgroundImage = `url("${f}")`; g.appendChild(s); }); b.appendChild(g); }
-    chat.appendChild(b);
-    while (chat.scrollHeight > chat.clientHeight && chat.children.length > 1) chat.firstElementChild.remove();
-  }
-  async function tocarChat() {
-    const id = ++chatRun;
-    chat.innerHTML = '';
-    for (const m of ROTEIRO) {
-      if (id !== chatRun) return;
-      if (m[0] === 'sam') {
-        const t = document.createElement('div'); t.className = 'typing'; t.setAttribute('aria-hidden', 'true'); t.innerHTML = '<i></i><i></i><i></i>';
-        chat.appendChild(t); await wait(1100); t.remove();
-        if (id !== chatRun) return;
-      } else await wait(700);
-      bolha(m);
-      await wait(m[0] === 'sam' ? 1500 : 600);
+    function quadro() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of pts) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+      }
+      ctx.lineWidth = .8;
+      for (let i = 0; i < pts.length; i++) {
+        const a = pts[i];
+        for (let j = i + 1; j < pts.length; j++) {
+          const b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < o.dist) { ctx.strokeStyle = `rgba(76,198,255,${(1 - d / o.dist) * .35})`; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+        }
+      }
+      ctx.fillStyle = 'rgba(159,225,255,.85)';
+      for (const p of pts) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
+      raf = (!reduceMotion.matches && visivel && !document.hidden) ? requestAnimationFrame(quadro) : 0;
     }
+    const iniciar = () => { if (!raf) raf = requestAnimationFrame(quadro); };
+    medirTela(); quadro();
+    let rt = 0; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { medirTela(); if (!raf) quadro(); }, 200); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { visivel = es[0].isIntersecting; if (visivel) iniciar(); }).observe(canvas);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && visivel) iniciar(); });
   }
-  $('#replay').addEventListener('click', tocarChat);
+  rede($('#hero-net'), { densidade: 14000, dist: 150 });
+  rede($('#early-net'), { densidade: 3500, dist: 120, vel: .25 });
 
   /* ================= ROLAGEM: HEADER, REVELAR, BARRA DO CELULAR ================= */
   const header = $('#header'), mbar = $('#mbar');
@@ -1518,9 +1024,6 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .12 });
     $$('[data-reveal],[data-stagger]').forEach(el => io.observe(el));
-    let chatVisto = false;
-    new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting && !chatVisto) { chatVisto = true; tocarChat(); } }), { threshold: .35 }).observe(chat);
-    // barra fixa: aparece longe do formulário e some perto do CTA final
     const vis = new Map();
     const syncBar = () => {
       const on = scrollY > 300 && ![...vis.values()].some(Boolean);
@@ -1529,10 +1032,9 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
       document.documentElement.classList.toggle('has-mbar', on);
     };
     const barIo = new IntersectionObserver(es => { es.forEach(en => vis.set(en.target, en.isIntersecting)); syncBar(); }, { threshold: .05 });
-    [wizard, $('#final'), $('.lp-footer')].forEach(el => barIo.observe(el));
+    [card, $('#final'), $('.lp-footer')].forEach(el => barIo.observe(el));
   } else {
     $$('[data-reveal],[data-stagger]').forEach(el => el.classList.add('is-in'));
-    tocarChat();
   }
 
   /* ================= DIÁLOGO (preferências de cookies) ================= */
@@ -1587,7 +1089,7 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
 
   /* ================= MÉTRICAS E ANÚNCIOS ================= */
   // GA4 (Análise de navegação) e Pixel da Meta (Publicidade) só carregam com autorização e com o ID no CONFIG.
-  // Nenhum dado pessoal entra nos eventos: só a etapa, a intenção e o canal.
+  // Nenhum dado pessoal entra nos eventos: só o perfil escolhido e o canal.
   const FERRAMENTAS = {
     analise: [{ on: () => /^G-[A-Z0-9]{4,}$/.test(CONFIG.ga4 || ''), txt: 'Google Analytics 4 (Google): cookies _ga e _ga_*, por até 2 anos.' }],
     publicidade: [{ on: () => /^\d{6,20}$/.test(String(CONFIG.metaPixel || '')), txt: 'Pixel da Meta (Instagram e Facebook): cookies _fbp e fr, por até 90 dias.' }]
@@ -1609,7 +1111,7 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
           window.gtag = function () { window.dataLayer.push(arguments); };
           gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
           gtag('js', new Date());
-          gtag('config', ga4, { page_title: 'Landing page — seleção' });
+          gtag('config', ga4, { page_title: 'Pré-lançamento' });
           addScript('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga4));
         }
         if (this.ga) gtag('consent', 'update', { analytics_storage: c.analise ? 'granted' : 'denied' });
@@ -1636,17 +1138,15 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
       });
     }
   };
-  // evento da página → nome no GA4 e no Pixel (sem nome no Pixel: fica só no GA4)
   const EVENTOS = {
     inicio: { ga: 'lp_inicio' },
-    etapa: { ga: 'lp_etapa' },
     lead: { ga: 'generate_lead', meta: 'Lead' },
     whatsapp: { ga: 'whatsapp_click', meta: 'Contact' }
   };
   function medir(nome, extra = {}) {
     const c = window.alhConsent || {}, ev = EVENTOS[nome];
     if (!ev || !((c.analise && Rastreio.ga) || (c.publicidade && Rastreio.meta))) return;
-    const dados = { pagina: 'lp', variante: variante || 'padrao', ...extra };
+    const dados = { pagina: 'pre-lancamento', ...extra };
     try {
       if (c.analise && Rastreio.ga && ev.ga) gtag('event', ev.ga, dados);
       if (c.publicidade && Rastreio.meta && ev.meta) fbq('track', ev.meta, dados);
@@ -1655,23 +1155,17 @@ html:not(.js) .wizard form,html:not(.js) .wz-head{display:none}
   document.addEventListener('alh:consent', e => Rastreio.apply(e.detail));
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href]');
-    if (a && /^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(a.href)) medir('whatsapp', { origem: a.dataset.wa || 'pagina' });
+    if (a && /^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//.test(a.href)) medir('whatsapp', { origem: a.dataset.wa || 'pagina' });
   }, true);
   Consent.publish(Consent.get());
   if (!Consent.get()) setTimeout(() => { cookieBar.hidden = false; }, 900);
 
   /* ================= INÍCIO ================= */
   $('#year').textContent = String(new Date().getFullYear());
-  syncRamo();
-  syncHoods();
-  // campanha com intenção definida (?para=...) já abre na segunda etapa; ?bairro=... já marca o bairro
-  if (variante) escolherIntencao(variante);
-  const bairroUrl = String(qs.get('bairro') || '').trim();
-  if (bairroUrl) {
-    const cb = $$('input[name="bairros"]', form).find(i => i.value.toLowerCase() === bairroUrl.toLowerCase());
-    if (cb) { cb.checked = true; syncHoods(); }
-    if (ramo() === 'proprietario') $('#f-pbairro').value = bairroUrl.slice(0, 60);
-  }
+  // campanha por perfil: ?perfil=corretor (ou ?para=...) já marca o perfil no cadastro
+  const ALIAS = { cliente: 'comprar', comprador: 'comprar', alugar: 'comprar', investir: 'comprar', vender: 'proprietario', terreno: 'proprietario', corretora: 'corretor', incorporadora: 'construtora', cartorio: 'juridico' };
+  const pedido = (() => { const v = String(qs.get('perfil') || qs.get('para') || '').toLowerCase().trim(); return ALIAS[v] || v; })();
+  if (pedido) escolherPerfil(pedido);
 })();
 </script>
 </body>
