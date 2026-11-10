@@ -126,3 +126,11 @@ O botão **Compartilhar** gera `https://<site>/imovel/<id>`. As redes não rodam
 - Dependências (`package.json`): `satori`, `@resvg/resvg-js` e `jpeg-js`, com versões fixas. A Vercel instala sozinha no deploy; o site continua sem build.
 - Se os exemplos do `index.html` mudarem, gere de novo `api/_lib/demo.js` (são os mesmos campos do `DEMO`).
 - Para testar: cole um link de imóvel em developers.facebook.com/tools/debug. Fora da Vercel (ou abrindo o arquivo direto), o Compartilhar volta ao link com `#imovel-<id>`.
+
+## Vitrine real e imóveis de exemplo (ajuste de 10/11/2026)
+
+- A vitrine lê `/api/vitrine` do Hub, que responde `{ rows: [...] }` (um card por oferta: venda e locação do mesmo imóvel têm `id` e código próprios, como `VM-1001-V` e `VM-1001-L`). Antes o site só procurava `imoveis`, `data` ou `items` e, por isso, ficava sempre nos exemplos.
+- Com pelo menos um imóvel publicado no Hub, o site mostra **só** os imóveis reais (banner, coleção e vitrine). Publicar, alterar e retirar no Hub vale para o site na próxima visita (o Hub guarda a vitrine por até 2 minutos).
+- Sem imóvel publicado, aparecem os exemplos, marcados como **ilustrativos**: sem preço, sem código, sem Salvar/Compartilhar e sem "Agendar visita"/"Fazer proposta". O único caminho é "Ver os disponíveis com o Sam". Exemplo não vira destaque no banner.
+- Link de um imóvel que saiu do ar (`/?imovel=<id>`) mostra o aviso "Este imóvel não está mais disponível".
+- Os botões claros do banner dizem o que fazem ("Ver imóveis", "Ver como funciona", "Anunciar meu imóvel"). O link "Termos de uso" saiu do rodapé até existir o texto aprovado pelo jurídico.

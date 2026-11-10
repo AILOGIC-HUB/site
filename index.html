@@ -348,6 +348,9 @@ p{text-wrap:pretty}
 .card-specs{max-width:calc(100% - 64px);margin:0;font-size:13.5px;color:rgba(255,255,255,.86);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-price{margin:2px 0 0;font-size:21px;font-weight:700;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
 .card-cta{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.card-cta.card-cta--one,.detail-cta.detail-cta--one{grid-template-columns:1fr}
+.detail-cta--one{flex:1 1 100%;width:100%}.detail-cta--one .cta{width:100%}
+.cta{font-family:inherit;cursor:pointer}
 .cta{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 8px;border:1px solid transparent;border-radius:10px;font-size:13.5px;font-weight:500;white-space:nowrap;text-decoration:none;transition:background-color .2s ease,border-color .2s ease}
 .cta .i{width:17px;height:17px}
 .cta-ghost{border-color:rgba(255,255,255,.55);background:rgba(6,19,38,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff}
@@ -874,7 +877,7 @@ p{text-wrap:pretty}
           <p class="panel-sub reveal d2">Imóveis de alto padrão em São Paulo, escolhidos por quem conhece cada rua. E o Sam, que responde na hora — inclusive às onze da noite.</p>
         </div>
         <div class="panel-actions reveal d3">
-          <a class="btn btn-light" href="#imoveis">Ver detalhes</a>
+          <a class="btn btn-light" href="#imoveis">Ver imóveis</a>
           <button class="btn btn-glass" type="button" data-action="sam">Falar com o Sam</button>
         </div>
       </div>
@@ -953,7 +956,7 @@ p{text-wrap:pretty}
           <p class="panel-sub reveal d3">O Sam conhece cada imóvel da coleção, os bairros e os números. Quando fizer sentido visitar, ele passa a conversa para um corretor da equipe.</p>
         </div>
         <div class="panel-actions reveal d4">
-          <button class="btn btn-light" type="button" data-action="video">Ver detalhes</button>
+          <button class="btn btn-light" type="button" data-action="video">Ver como funciona</button>
           <button class="btn btn-glass" type="button" data-action="sam">Falar com o Sam</button>
         </div>
       </div>
@@ -971,7 +974,7 @@ p{text-wrap:pretty}
           <p class="panel-sub reveal d2">Fotografia profissional, curadoria e compradores que já chegam sabendo o que querem. Você acompanha tudo pelo WhatsApp.</p>
         </div>
         <div class="panel-actions reveal d3">
-          <button class="btn btn-light" type="button" data-action="lead" data-tab="anunciar">Ver detalhes</button>
+          <button class="btn btn-light" type="button" data-action="lead" data-tab="anunciar">Anunciar meu imóvel</button>
           <button class="btn btn-glass" type="button" data-action="sam">Falar com o Sam</button>
         </div>
       </div>
@@ -1049,7 +1052,7 @@ p{text-wrap:pretty}
             <button class="vitrine-pause" type="button" id="vitrine-pause" aria-label="Pausar a vitrine"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausar</span></button>
           </div>
           <div class="vrows" id="grid" role="region" aria-roledescription="carrossel" aria-label="Vitrine de imóveis"></div>
-          <p class="demo-note" id="demo-note">Imóveis de exemplo, para mostrar a experiência. A seleção real entra aqui quando a curadoria do Hub estiver ligada ao site. Para ver o que está disponível hoje, fale com o Sam ou com o time pelo WhatsApp.</p>
+          <p class="demo-note" id="demo-note">Imóveis ilustrativos, só para mostrar a experiência: não estão à venda nem para alugar. Os imóveis reais aparecem aqui assim que as imobiliárias parceiras publicarem. Para ver o que está disponível hoje, fale com o Sam.</p>
       </div>
     </section>
 
@@ -1170,7 +1173,6 @@ p{text-wrap:pretty}
       <div class="foot-col">
         <h3>Legal</h3>
         <ul>
-          <li><a href="#rodape">Termos de uso</a></li>
           <li><a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a></li>
           <li><button type="button" data-action="cookies-prefs">Preferências de cookies</button></li>
         </ul>
@@ -1565,13 +1567,13 @@ p{text-wrap:pretty}
   const firstSentence = t => (String(t || '').match(/^.*?[.!?](\s|$)/) || [String(t || '')])[0].trim();
 
   function normalize(raw) {
-    const arr = Array.isArray(raw) ? raw : (raw && (raw.imoveis || raw.data || raw.items)) || [];
+    const arr = Array.isArray(raw) ? raw : (raw && (raw.rows || raw.imoveis || raw.data || raw.items)) || [];   // o Hub responde { rows: [...] }
     const n = v => (v === null || v === undefined || v === '' ? 0 : Number(v) || 0);
     return arr.map((r, k) => {
       const fotos = Array.isArray(r.fotos) ? r.fotos.map(String).filter(Boolean) : [];
       const foto = String(r.foto || fotos[0] || '');
       return {
-        id: String(r.id ?? r.codigo ?? k), codigo: String(r.codigo ?? r.id ?? ''),
+        id: String(r.id ?? r.codigo ?? k), codigo: String(r.codigo ?? r.id ?? ''), imovel: String(r.imovel_id ?? r.id ?? k),   // venda e locacao do mesmo imovel tem o mesmo imovel_id
         titulo: String(r.titulo || 'Imóvel'), tipo: String(r.tipo || ''),
         finalidade: ['venda', 'locacao', 'temporada'].includes(r.finalidade) ? r.finalidade : 'venda',
         preco: n(r.preco), area: n(r.area), quartos: n(r.quartos), suites: n(r.suites), banheiros: n(r.banheiros), vagas: n(r.vagas),
@@ -1818,9 +1820,10 @@ p{text-wrap:pretty}
   /** Preenche os 3 slides de destaque a partir dos dados (demo ou /api/vitrine). */
   function hydratePanels() {
     const feat = IMOVEIS.filter(i => i.destaque);
-    const list = feat.concat(IMOVEIS.filter(i => !i.destaque)).slice(0, 3);
+    const vistos = new Set();   // um destaque por imovel (venda e locacao do mesmo imovel nao ocupam dois slides)
+    const list = feat.concat(IMOVEIS.filter(i => !i.destaque)).filter(i => !vistos.has(i.imovel) && vistos.add(i.imovel)).slice(0, 3);
     $$('[data-feature]').forEach(panel => {
-      const item = list[+panel.dataset.feature];
+      const item = ehExemplo() ? null : list[+panel.dataset.feature];   // exemplo nao vira destaque no banner
       if (!item) { panel.hidden = true; return; }
       panel.hidden = false;
       panel.dataset.label = item.titulo;
@@ -1920,7 +1923,7 @@ p{text-wrap:pretty}
     const img = sized(i.foto || fotos[0], 900);
     const alt = fotos.find(u => u !== i.foto);
     const faved = favs.has(String(i.id));
-    const id = esc(i.id), t = esc(i.titulo), m = matchLabel(i);
+    const id = esc(i.id), t = esc(i.titulo), m = matchLabel(i), ex = ehExemplo();
     return `
       <article class="card" data-id="${id}" style="--i:${k}">
         <div class="card-photo media"><img src="${esc(img)}" ${alt ? `data-alt-src="${esc(sized(alt, 900))}"` : ''} alt="${esc(`${i.titulo}, ${i.bairro}`)}" width="900" height="1100" loading="lazy" decoding="async"></div>
@@ -1930,20 +1933,20 @@ p{text-wrap:pretty}
           <button class="pill pill-photos" type="button" data-action="gallery" data-id="${id}" aria-label="Ver as ${fotos.length} fotos de ${t}">${ico('photos')}${fotos.length}</button>
         </div>
         <div class="card-actions">
-          <button class="act fav" type="button" data-action="fav" data-id="${id}" aria-pressed="${faved}" aria-label="Salvar ${t}">${ico('heart')}<span aria-hidden="true">Salvar</span></button>
-          <button class="act" type="button" data-action="ask" data-id="${id}" aria-label="Perguntar ao Sam sobre ${t}">${ico('chat')}<span aria-hidden="true">Perguntar<br>ao Sam</span></button>
-          <button class="act" type="button" data-action="share" data-id="${id}" aria-label="Compartilhar ${t}">${ico('forward')}<span aria-hidden="true">Compartilhar</span></button>
+          ${ex ? '' : `<button class="act fav" type="button" data-action="fav" data-id="${id}" aria-pressed="${faved}" aria-label="Salvar ${t}">${ico('heart')}<span aria-hidden="true">Salvar</span></button>`}
+          ${ex ? `<button class="act" type="button" data-action="sam" aria-label="Falar com o Sam">${ico('chat')}<span aria-hidden="true">Falar<br>com o Sam</span></button>` : `<button class="act" type="button" data-action="ask" data-id="${id}" aria-label="Perguntar ao Sam sobre ${t}">${ico('chat')}<span aria-hidden="true">Perguntar<br>ao Sam</span></button>`}
+          ${ex ? '' : `<button class="act" type="button" data-action="share" data-id="${id}" aria-label="Compartilhar ${t}">${ico('forward')}<span aria-hidden="true">Compartilhar</span></button>`}
           <button class="act" type="button" data-action="details" data-id="${id}" aria-label="Ver detalhes de ${t}">${ico('doc')}<span aria-hidden="true">Detalhes</span></button>
         </div>
         <div class="card-info">
           <p class="card-loc">${ico('pin')}<span>${esc(i.bairro)}${i.cidade ? ` • ${esc(i.cidade)}` : ''}</span></p>
           <h3 class="card-title"><button type="button" data-action="details" data-id="${id}">${t}</button></h3>
           <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
-          <p class="card-price">${esc(priceOf(i))}</p>
-          <div class="card-cta">
+          <p class="card-price">${ex ? 'Imóvel ilustrativo' : esc(priceOf(i))}</p>
+          ${ex ? `<div class="card-cta card-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="card-cta">
             <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(i)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
             <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
-          </div>
+          </div>`}
         </div>
       </article>`;
   }
@@ -1985,6 +1988,7 @@ p{text-wrap:pretty}
     try { if (!id && m) id = decodeURIComponent(m[1]); } catch {}
     const item = id && byId(id);
     if (item && !detail.classList.contains('is-open')) openDetail(item);
+    else if (id && !item && !ehExemplo() && !openFromHash.avisado) { openFromHash.avisado = true; toast('Este imóvel não está mais disponível. Veja os outros abaixo ou fale com o Sam.'); }
   }
   /* Vitrine: duas linhas, três imóveis por vez em cada uma (2 no tablet, 1 no celular), girando sem parar.
      A linha de cima anda para a esquerda e a de baixo para a direita, em tempos alternados. */
@@ -2104,7 +2108,7 @@ p{text-wrap:pretty}
       ['suite', 'Suítes', item.suites || '—'],
       ['bath', 'Banheiros', item.banheiros || '—'],
       ['car', 'Vagas', item.vagas || '—'],
-      ['tag', 'Código', item.codigo || '—']
+      ['tag', 'Código', ehExemplo() ? '—' : (item.codigo || '—')]
     ];
     const exemplo = ehExemplo();
     const id = esc(item.id), t = esc(item.titulo);
@@ -2117,21 +2121,21 @@ p{text-wrap:pretty}
         <p class="eyebrow">${esc(tagOf(item))}${exemplo ? ' · Exemplo' : ''}</p>
         <h2 id="detail-title">${esc(item.titulo)}</h2>
         <p class="detail-loc">${esc(item.bairro)}${item.cidade ? `, ${esc(item.cidade)}` : ''}${item.tipo ? ` · ${esc(item.tipo)}` : ''}</p>
-        <p class="detail-price">${esc(priceOf(item))}</p>
+        <p class="detail-price">${exemplo ? 'Imóvel ilustrativo' : esc(priceOf(item))}</p>
         <dl class="specs">${specs.map(([ic, k, v]) => `<div><dt>${ico(ic)}${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
         <p class="detail-desc">${esc(item.descricao)}</p>
-        ${exemplo ? '<p class="detail-by">Imóvel de exemplo, para mostrar a experiência. O time mostra os disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
+        ${exemplo ? '<p class="detail-by">Imóvel ilustrativo, só para mostrar a experiência: não está à venda nem para alugar. O Sam mostra os imóveis disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
         <div class="detail-actions">
-          <div class="detail-quick">
+          ${exemplo ? '' : `<div class="detail-quick">
             <button class="act fav" type="button" data-action="fav" data-id="${id}" aria-pressed="${favs.has(String(item.id))}" aria-label="Salvar ${t}">${ico('heart')}<span aria-hidden="true">Salvar</span></button>
             <button class="act" type="button" data-action="ask" data-id="${id}" aria-label="Perguntar ao Sam sobre ${t}">${ico('chat')}<span aria-hidden="true">Perguntar ao Sam</span></button>
             <button class="act" type="button" data-action="share" data-id="${id}" aria-label="Compartilhar ${t}">${ico('forward')}<span aria-hidden="true">Compartilhar</span></button>
             <button class="act" type="button" data-action="gallery" data-id="${id}" aria-label="Ver as ${fotos.length} fotos de ${t}">${ico('photos')}<span aria-hidden="true">Ver fotos</span></button>
-          </div>
-          <div class="detail-cta">
+          </div>`}
+          ${exemplo ? `<div class="detail-cta detail-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="detail-cta">
             <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(item)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
             <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(item)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
-          </div>
+          </div>`}
         </div>
       </div>`;
     $('.modal-card', detail).scrollTop = 0;

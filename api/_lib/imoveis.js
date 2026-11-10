@@ -29,7 +29,7 @@ export function siteOrigin(req) {
 }
 
 function normalize(raw) {
-  const arr = Array.isArray(raw) ? raw : (raw && (raw.imoveis || raw.data || raw.items)) || [];
+  const arr = Array.isArray(raw) ? raw : (raw && (raw.rows || raw.imoveis || raw.data || raw.items)) || [];   // o Hub responde { rows: [...] }
   const n = v => (v === null || v === undefined || v === '' ? 0 : Number(v) || 0);
   return arr.map((r, k) => {
     const fotos = Array.isArray(r.fotos) ? r.fotos.map(String).filter(Boolean) : [];
