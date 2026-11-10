@@ -662,6 +662,27 @@ p{text-wrap:pretty}
 
 /* formulários de lead */
 .modal-card--form{width:min(600px,100%);padding:clamp(24px,4vw,40px)}
+/* agendar visita: dias e horarios livres da agenda de quem atende o imovel */
+.modal-card--visita{width:min(560px,100%);padding:clamp(24px,4vw,36px)}
+.modal-card--visita .eyebrow{margin:0 0 8px}
+.vis-dias{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin:0 -2px;scrollbar-width:thin}
+.vis-dia,.vis-hora{flex:none;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);color:inherit;font:inherit;cursor:pointer;transition:border-color .2s,background .2s}
+.vis-dia{min-width:74px;padding:10px 8px;text-align:center;font-size:13px;font-weight:600;line-height:1.3}
+.vis-dia b{display:block;font-size:18px;letter-spacing:-.02em}
+.vis-horas{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin:12px 0 4px}
+.vis-hora{padding:11px 6px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.vis-dia:hover,.vis-hora:hover{border-color:rgba(76,198,255,.5)}
+.vis-dia[aria-pressed="true"],.vis-hora[aria-pressed="true"]{border-color:var(--cyan);background:rgba(76,198,255,.16);color:#fff}
+.vis-rot{margin:18px 0 8px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}
+.vis-form{display:grid;gap:12px;margin-top:18px}
+.vis-lgpd{margin:2px 0 0;color:var(--g300);font-size:12.5px;line-height:1.5}
+.vis-msg{margin:14px 0 0;padding:14px 16px;border-radius:12px;background:rgba(76,198,255,.1);font-size:15px;line-height:1.5}
+.vis-msg.erro{background:rgba(255,122,138,.12)}
+.vis-ok{text-align:center;padding:10px 0 4px}
+.vis-ok .i{width:46px;height:46px;padding:10px;border-radius:50%;background:rgba(52,199,89,.18);color:#34c759}
+.vis-ok h3{margin:14px 0 6px;font-size:22px;letter-spacing:-.03em}
+.vis-ok p{margin:0 0 18px;color:var(--g300);line-height:1.5}
+.vis-carrega{padding:28px 0;text-align:center;color:var(--g300)}
 /* compartilhar imovel: WhatsApp, e-mail, mensagem de celular, Instagram e link */
 .modal-card--share{width:min(520px,100%);padding:clamp(24px,4vw,36px)}
 .share-title{margin:0;padding-right:48px;font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-.04em;line-height:1.1}
@@ -1280,6 +1301,17 @@ p{text-wrap:pretty}
 </aside>
 
 <!-- ============ DETALHE DO IMÓVEL ============ -->
+<div class="modal" id="visita" role="dialog" aria-modal="true" aria-labelledby="visita-title">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--visita">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar agendamento"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <p class="eyebrow">Agendar visita</p>
+    <h2 class="share-title" id="visita-title"></h2>
+    <p class="share-sub" id="visita-sub">Horários livres na agenda de quem atende este imóvel.</p>
+    <div id="visita-corpo"></div>
+  </div>
+</div>
+
 <div class="modal" id="share" role="dialog" aria-modal="true" aria-labelledby="share-title">
   <div class="modal-backdrop" data-action="close"></div>
   <div class="modal-card modal-card--share">
@@ -1450,6 +1482,7 @@ p{text-wrap:pretty}
     whatsapp: '5511988021148',
     vitrineUrl: HUB + '/api/vitrine',   // imóveis publicados no Hub; enquanto não houver nenhum, ficam os exemplos
     samUrl: HUB + '/api/sam-web',       // POST {messages:[{role,content}]} -> {reply, sugestoes}; a conversa vira lead no Hub
+    visitaUrl: HUB + '/api/proposta',    // agendar visita: horarios livres da agenda de quem atende o imovel (vis_slots) e o pedido (vis_agendar)
     leadUrl: HUB + '/api/proposta?action=lead_site', // formulários: o contato entra em Leads no Hub; se falhar, segue pelo WhatsApp
     loginUrl: 'https://www.ailogichuboficial.com/', // menu "Entrar": acesso ao sistema do Hub
     // corretor e imobiliária criam o acesso no cadastro do Hub (aprovado pela diretoria); indicador usa o formulário do site
@@ -2017,7 +2050,7 @@ p{text-wrap:pretty}
           <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
           <p class="card-price${!ex && i.ofertas && i.ofertas.length > 1 ? ' duo' : ''}">${ex ? 'Imóvel ilustrativo' : priceHTML(i)}</p>
           ${ex ? `<div class="card-cta card-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="card-cta">
-            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(i)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
+            <button class="cta cta-ghost" type="button" data-action="visit" data-id="${id}">${ico('calendar')}Agendar visita</button>
             <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
           </div>`}
         </div>
@@ -2043,6 +2076,85 @@ p{text-wrap:pretty}
       pill.textContent = m; pill.hidden = !m;
     });
   }
+  /* Agendar visita: abre a agenda de quem atende o imovel (o corretor que cadastrou ou a imobiliaria) com os
+     horarios livres de verdade. O pedido entra na agenda dessa pessoa como pendente e ela e avisada na hora.
+     Sem conexao com o Hub, segue pelo WhatsApp como antes. */
+  const visEl = $('#visita');
+  let visItem = null, visSel = { data: '', hora: '' }, visLivres = null;
+  const visCorpo = () => $('#visita-corpo');
+  function visBase(item) { return { cod: String(item.codigo || '').split(' / ')[0].replace(/-[VLT]$/i, ''), imovel_id: /^[0-9a-f-]{36}$/i.test(item.imovel || '') ? item.imovel : '' }; }
+  function visFallback(msg) {
+    visCorpo().innerHTML = `<p class="vis-msg erro">${esc(msg)}</p><div class="detail-cta detail-cta--one" style="margin-top:16px"><a class="cta cta-primary" href="${esc(waLink(pedidoVisita(visItem)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${esc(visItem.id)}">${ico('wa')}Combinar pelo WhatsApp</a></div>`;
+  }
+  async function abrirVisita(item) {
+    if (!item) return;
+    if (ehExemplo() || !CONFIG.online || !CONFIG.visitaUrl) { window.open(waLink(pedidoVisita(item)), '_blank', 'noopener'); return; }
+    visItem = item; visSel = { data: '', hora: '' }; visLivres = null;
+    $('#visita-title').textContent = item.titulo;
+    visCorpo().innerHTML = '<p class="vis-carrega">Buscando os horários livres…</p>';
+    openDialog(visEl, { focus: $('.modal-x', visEl) });
+    medir('agendar_visita', { etapa: 'abriu' }, item);
+    const b = visBase(item);
+    try {
+      const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 8000);
+      const r = await fetch(`${CONFIG.visitaUrl}?action=vis_slots&cod=${encodeURIComponent(b.cod)}&imovel_id=${encodeURIComponent(b.imovel_id)}`, { signal: ctrl.signal, cache: 'no-store' });
+      clearTimeout(t);
+      const j = await r.json().catch(() => ({}));
+      if (visItem !== item) return;
+      if (!r.ok) return visFallback('Não foi possível abrir a agenda deste imóvel agora. Combine a visita pelo WhatsApp.');
+      visLivres = j;
+      if (!j.dias || !j.dias.length) return visFallback('A agenda deste imóvel não tem horário livre nos próximos dias. Fale com a gente pelo WhatsApp que encontramos um horário.');
+      visSel.data = j.dias[0].data;
+      visPintar();
+    } catch { if (visItem === item) visFallback('Não foi possível abrir a agenda agora. Combine a visita pelo WhatsApp.'); }
+  }
+  function visPintar() {
+    const j = visLivres, dia = j.dias.find(d => d.data === visSel.data) || j.dias[0];
+    const nome = $('#vis-nome') ? $('#vis-nome').value : '', fone = $('#vis-fone') ? $('#vis-fone').value : '';
+    visCorpo().innerHTML = `
+      <p class="vis-rot" id="vis-rot-dia">Escolha o dia</p>
+      <div class="vis-dias" role="group" aria-labelledby="vis-rot-dia">${j.dias.map(d => { const [sem, dm] = String(d.rotulo).split(', '); return `<button type="button" class="vis-dia" data-vis-dia="${esc(d.data)}" aria-pressed="${d.data === dia.data}">${esc(sem || '')}<b>${esc(dm || d.data)}</b></button>`; }).join('')}</div>
+      <p class="vis-rot" id="vis-rot-hora">Escolha o horário <span style="text-transform:none;letter-spacing:0">(${esc(j.fuso || 'Horário de Brasília')}, visita de ${esc(j.duracao_min || 60)} min)</span></p>
+      <div class="vis-horas" role="group" aria-labelledby="vis-rot-hora">${dia.horas.map(h => `<button type="button" class="vis-hora" data-vis-hora="${esc(h)}" aria-pressed="${h === visSel.hora}">${esc(h)}</button>`).join('')}</div>
+      <form class="vis-form" id="vis-form" novalidate>
+        <div class="fields">
+          <div class="field"><label for="vis-nome">Seu nome</label><input id="vis-nome" autocomplete="name" required maxlength="120" value="${esc(nome)}"></div>
+          <div class="field"><label for="vis-fone">WhatsApp com DDD</label><input id="vis-fone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="20" placeholder="(11) 99999-9999" value="${esc(fone)}"></div>
+        </div>
+        <p class="vis-lgpd">Seus dados vão só para quem atende este imóvel, para confirmar a visita pelo WhatsApp (Política de Privacidade no rodapé).</p>
+        <button class="cta cta-primary" type="submit" id="vis-enviar" style="min-height:50px">${ico('calendar')}${visSel.hora ? `Pedir visita: ${esc(dia.rotulo)} às ${esc(visSel.hora)}` : 'Escolha um horário'}</button>
+        <p class="vis-msg erro" id="vis-erro" hidden></p>
+      </form>`;
+  }
+  visEl.addEventListener('click', e => {
+    const d = e.target.closest('[data-vis-dia]'), h = e.target.closest('[data-vis-hora]');
+    if (d) { visSel.data = d.dataset.visDia; visSel.hora = ''; visPintar(); const n = $(`[data-vis-dia="${visSel.data}"]`, visEl); if (n) n.focus(); return; }
+    if (h) { visSel.hora = h.dataset.visHora; visPintar(); const n = $(`[data-vis-hora="${visSel.hora}"]`, visEl); if (n) n.focus(); }
+  });
+  visEl.addEventListener('submit', async e => {
+    if (e.target.id !== 'vis-form') return;
+    e.preventDefault();
+    const err = $('#vis-erro'), bt = $('#vis-enviar');
+    const mostra = m => { err.textContent = m; err.hidden = false; };
+    err.hidden = true;
+    const nome = $('#vis-nome').value.trim(), fone = $('#vis-fone').value.trim();
+    if (!visSel.hora) return mostra('Escolha um horário.');
+    if (nome.length < 2) { $('#vis-nome').focus(); return mostra('Informe seu nome.'); }
+    if (fone.replace(/\D/g, '').length < 10) { $('#vis-fone').focus(); return mostra('Informe seu WhatsApp com DDD.'); }
+    bt.disabled = true; bt.textContent = 'Enviando…';
+    try {
+      const r = await fetch(`${CONFIG.visitaUrl}?action=vis_agendar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...visBase(visItem), data: visSel.data, hora: visSel.hora, nome, whatsapp: fone }) });
+      const j = await r.json().catch(() => ({}));
+      if (r.status === 409) {   // alguem pegou o horario: recarrega a agenda
+        bt.disabled = false; mostra('Este horário acabou de ser ocupado. Escolha outro.');
+        const it = visItem; await abrirVisita(it); return;
+      }
+      if (!r.ok || !j.ok) { bt.disabled = false; bt.textContent = 'Tentar de novo'; return mostra((j && j.error) || 'Não foi possível enviar agora. Tente de novo ou combine pelo WhatsApp.'); }
+      medir('agendar_visita', { etapa: 'pedido_enviado' }, visItem);
+      visCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Pedido de visita enviado</h3><p><b>${esc(j.quando || '')}</b><br>O horário ficou reservado na agenda de quem atende este imóvel. Você recebe a confirmação pelo WhatsApp.</p><button class="cta cta-ghost" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
+    } catch { bt.disabled = false; bt.textContent = 'Tentar de novo'; mostra('Sem conexão agora. Tente de novo ou combine pelo WhatsApp.'); }
+  });
+
   /* Compartilhar: janela com WhatsApp, e-mail, mensagem de celular, Instagram, copiar link e (no celular) o menu
      do aparelho. O Instagram nao aceita receber link pelo navegador: no celular vai pelo menu do aparelho; no
      computador o link e copiado para colar no Direct ou nos Stories. */
@@ -2248,7 +2360,7 @@ p{text-wrap:pretty}
             <button class="act" type="button" data-action="gallery" data-id="${id}" aria-label="Ver as ${fotos.length} fotos de ${t}">${ico('photos')}<span aria-hidden="true">Ver fotos</span></button>
           </div>`}
           ${exemplo ? `<div class="detail-cta detail-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="detail-cta">
-            <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(item)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
+            <button class="cta cta-ghost" type="button" data-action="visit" data-id="${id}">${ico('calendar')}Agendar visita</button>
             <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(item)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
           </div>`}
         </div>
@@ -2843,6 +2955,7 @@ p{text-wrap:pretty}
       case 'gallery': openGallery(byId(id)); break;
       case 'fav': toggleFav(id, a); break;
       case 'share': shareImovel(byId(id)); break;
+      case 'visit': abrirVisita(byId(id)); break;
       case 'lead': closeDrop(); closeMenu(); openLead(a.dataset.tab); break;
       case 'parceiro': closeDrop(); closeMenu(); openLead('parceiro', a.dataset.perfil); break;
       case 'video': openVideo(); break;
