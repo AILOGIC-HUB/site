@@ -856,7 +856,7 @@ p{text-wrap:pretty}
   </nav>
   <div class="menu-actions">
     <button class="btn btn-light" type="button" data-action="sam">Falar com o Sam</button>
-    <a class="btn btn-ghost" href="https://wa.me/5511936238387" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg> WhatsApp</a>
+    <a class="btn btn-ghost" href="https://wa.me/5511988021148" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg> WhatsApp</a>
   </div>
 </div>
 
@@ -1167,7 +1167,7 @@ p{text-wrap:pretty}
         <ul>
           <li><button type="button" data-action="lead" data-tab="anunciar">Anunciar imóvel</button></li>
           <li><button type="button" data-action="lead" data-tab="parceiro">Ser parceiro</button></li>
-          <li><a href="https://wa.me/5511936238387" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="https://wa.me/5511988021148" target="_blank" rel="noopener">WhatsApp</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -1244,7 +1244,7 @@ p{text-wrap:pretty}
       </div>
     </div>
     <button class="icon-btn" type="button" data-action="sam-restart" aria-label="Recomeçar conversa"><svg class="i" aria-hidden="true"><use href="#i-refresh"/></svg></button>
-    <a class="icon-btn" id="sam-wa" href="https://wa.me/5511936238387" target="_blank" rel="noopener" aria-label="Continuar no WhatsApp"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg></a>
+    <a class="icon-btn" id="sam-wa" href="https://wa.me/5511988021148" target="_blank" rel="noopener" aria-label="Continuar no WhatsApp"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg></a>
   </div>
   <div class="sam-log" id="sam-log" role="log" aria-live="polite" aria-label="Mensagens"><span class="day">Hoje</span></div>
   <div class="sam-chips" id="sam-chips" aria-label="Sugestões de resposta"></div>
@@ -1406,7 +1406,7 @@ p{text-wrap:pretty}
   // Sistema do Hub: imóveis reais, Sam e contatos. Na prévia local (localhost) as chamadas vão para /api do próprio servidor.
   const HUB = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '' : 'https://www.ailogichuboficial.com';
   const CONFIG = {
-    whatsapp: '5511936238387',
+    whatsapp: '5511988021148',
     vitrineUrl: HUB + '/api/vitrine',   // imóveis publicados no Hub; enquanto não houver nenhum, ficam os exemplos
     samUrl: HUB + '/api/sam-web',       // POST {messages:[{role,content}]} -> {reply, sugestoes}; a conversa vira lead no Hub
     leadUrl: HUB + '/api/proposta?action=lead_site', // formulários: o contato entra em Leads no Hub; se falhar, segue pelo WhatsApp
