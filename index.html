@@ -662,6 +662,24 @@ p{text-wrap:pretty}
 
 /* formulários de lead */
 .modal-card--form{width:min(600px,100%);padding:clamp(24px,4vw,40px)}
+/* compartilhar imovel: WhatsApp, e-mail, mensagem de celular, Instagram e link */
+.modal-card--share{width:min(520px,100%);padding:clamp(24px,4vw,36px)}
+.share-title{margin:0;padding-right:48px;font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-.04em;line-height:1.1}
+.share-sub{margin:8px 0 22px;color:var(--g300);font-size:15px;line-height:1.45}
+.share-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.share-op{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 8px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:13.5px;font-weight:600;text-align:center;line-height:1.25;text-decoration:none;cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.share-op:hover,.share-op:focus-visible{border-color:rgba(76,198,255,.5);background:rgba(76,198,255,.08);transform:translateY(-2px)}
+.share-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1)}
+.share-ic .i{width:22px;height:22px}
+.share-ic--wa{background:#25d366;color:#fff}.share-ic--mail{background:#0b66ff;color:#fff}.share-ic--sms{background:#34c759;color:#fff}
+.share-ic--ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285aeb 90%);color:#fff}
+.share-note{margin:16px 0 0;padding:12px 14px;border-radius:12px;background:rgba(76,198,255,.1);color:var(--g200,#dbe7f3);font-size:13.5px;line-height:1.45}
+.share-grid.cinco #share-copy{grid-column:span 2;flex-direction:row;justify-content:center}
+@media (max-width:420px){.share-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* imovel a venda e para alugar: os dois valores no mesmo cartao */
+.card-price.duo,.detail-price.duo{display:flex;flex-direction:column;gap:2px}
+.card-price.duo{font-size:17px}.detail-price.duo{font-size:24px}
+.price-l small{display:inline-block;min-width:5.6em;margin-right:6px;color:var(--g300);font-size:.62em;font-weight:600;letter-spacing:.02em;text-transform:uppercase;vertical-align:.12em}
 .lead-tabs{display:inline-grid;grid-template-columns:1fr 1fr;padding:4px;margin-bottom:24px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
 .lead-tabs button{min-height:40px;padding:0 18px;border:0;border-radius:999px;background:transparent;font-size:14px;font-weight:600;color:var(--g300);transition:background-color .25s ease,color .25s ease}
 .lead-tabs button[aria-selected="true"]{background:#fff;color:var(--ink)}
@@ -803,6 +821,11 @@ p{text-wrap:pretty}
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5l11 6.5-11 6.5z"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/></symbol>
   <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4h7A1.5 1.5 0 0 1 14 5.5V21M14 10h4.5a1.5 1.5 0 0 1 1.5 1.5V21M3 21h18M7.5 8h3M7.5 12h3M7.5 16h3"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7.5l7.5 5.5 7.5-5.5"/></symbol>
+  <symbol id="i-sms" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></symbol>
+  <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.4" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-forward" viewBox="0 0 24 24"><path d="M14 5l6 6-6 6"/><path d="M20 11h-8.5A6.5 6.5 0 0 0 5 17.5V19"/></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M12 3.5v17M9.5 12h.01M14.5 12h.01"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
@@ -1257,6 +1280,24 @@ p{text-wrap:pretty}
 </aside>
 
 <!-- ============ DETALHE DO IMÓVEL ============ -->
+<div class="modal" id="share" role="dialog" aria-modal="true" aria-labelledby="share-title">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--share">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar compartilhar"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <h2 class="share-title" id="share-title">Compartilhar imóvel</h2>
+    <p class="share-sub" id="share-sub"></p>
+    <div class="share-grid">
+      <a class="share-op" id="share-wa" target="_blank" rel="noopener" data-share="whatsapp"><span class="share-ic share-ic--wa"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg></span>WhatsApp</a>
+      <a class="share-op" id="share-mail" data-share="email"><span class="share-ic share-ic--mail"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg></span>E-mail</a>
+      <a class="share-op" id="share-sms" data-share="sms"><span class="share-ic share-ic--sms"><svg class="i" aria-hidden="true"><use href="#i-sms"/></svg></span>Mensagem de celular</a>
+      <button class="share-op" type="button" id="share-ig" data-share="instagram"><span class="share-ic share-ic--ig"><svg class="i" aria-hidden="true"><use href="#i-insta"/></svg></span>Instagram</button>
+      <button class="share-op" type="button" id="share-copy" data-share="copiar"><span class="share-ic"><svg class="i" aria-hidden="true"><use href="#i-link"/></svg></span>Copiar link</button>
+      <button class="share-op" type="button" id="share-more" data-share="mais" hidden><span class="share-ic"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></span>Mais opções</button>
+    </div>
+    <p class="share-note" id="share-note" hidden></p>
+  </div>
+</div>
+
 <div class="modal" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
   <div class="modal-backdrop" data-action="close"></div>
   <div class="modal-card modal-card--detail">
@@ -1526,11 +1567,13 @@ p{text-wrap:pretty}
   const pedidoProposta = i => ehExemplo()
     ? `Olá! Vi no site o exemplo ${i.titulo} (${i.bairro}) e quero conversar sobre uma proposta em um imóvel parecido.`
     : `Olá! Quero fazer uma proposta para ${i.titulo} (cód. ${i.codigo}).`;
-  const fitsFaixa = (i, f) => !f || ((f.min === undefined || i.preco >= f.min * 0.9) && (f.max === undefined || i.preco <= f.max * 1.1));
-  const byId = id => IMOVEIS.find(i => String(i.id) === String(id));
+  const fitsFaixa = (i, f) => !f || (i.ofertas && i.ofertas.length > 1 ? i.ofertas : [i]).some(o => (f.min === undefined || o.preco >= f.min * 0.9) && (f.max === undefined || o.preco <= f.max * 1.1));
+  // link antigo de uma oferta (ex.: o codigo de locacao) abre o cartao unico do imovel
+  const byId = id => IMOVEIS.find(i => String(i.id) === String(id) || (i.ofertas || []).some(o => String(o.id) === String(id)));
 
   /** Categorias dos filtros, derivadas dos campos reais da vitrine (ou de `categorias`, se a API enviar). */
   function catsOf(i) {
+    if (i.ofertas && i.ofertas.length > 1) { const u = new Set(); i.ofertas.forEach(o => catsOf({ ...i, ofertas: null, finalidade: o.finalidade, preco: o.preco }).forEach(x => u.add(x))); return u; }
     const c = new Set(Array.isArray(i.categorias) ? i.categorias.map(norm) : []);
     const txt = norm(`${i.tipo} ${i.titulo} ${i.descricao}`);
     const lanc = /lancamento|na planta/.test(txt);
@@ -1544,16 +1587,27 @@ p{text-wrap:pretty}
   function tagOf(i) {
     const c = catsOf(i);
     if (c.has('lancamentos')) return 'Lançamento';
+    if (i.ofertas && i.ofertas.length > 1) return i.ofertas.some(o => o.finalidade === 'temporada') ? 'Venda e temporada' : 'Venda e locação';
     if (i.finalidade === 'temporada') return 'Temporada';
     if (c.has('alugar')) return 'Para alugar';
     if (c.has('alto-padrao')) return 'Alto padrão';
     if (c.has('investir')) return 'Investimento';
     return 'À venda';
   }
+  const FIN_NOME = { venda: 'Venda', locacao: 'Locação', temporada: 'Temporada' };
+  function priceOne(o) {
+    if (!o.preco) return 'Sob consulta';
+    const s = BRL.format(o.preco);
+    return o.finalidade === 'locacao' ? `${s}/mês` : o.finalidade === 'temporada' ? `${s}/diária` : s;
+  }
   function priceOf(i) {
-    if (!i.preco) return 'Sob consulta';
-    const s = BRL.format(i.preco);
-    return i.finalidade === 'locacao' ? `${s}/mês` : i.finalidade === 'temporada' ? `${s}/diária` : s;
+    if (i.ofertas && i.ofertas.length > 1) return i.ofertas.map(o => `${FIN_NOME[o.finalidade]} ${priceOne(o)}`).join(' · ');
+    return priceOne(i);
+  }
+  /** Valor no cartao e no detalhe: com venda e locacao, uma linha para cada (ja escapado). */
+  function priceHTML(i) {
+    if (!(i.ofertas && i.ofertas.length > 1)) return esc(priceOne(i));
+    return i.ofertas.map(o => `<span class="price-l"><small>${esc(FIN_NOME[o.finalidade])}</small>${esc(priceOne(o))}</span>`).join('');
   }
   function specsOf(i) {
     const out = [];
@@ -1569,7 +1623,7 @@ p{text-wrap:pretty}
   function normalize(raw) {
     const arr = Array.isArray(raw) ? raw : (raw && (raw.rows || raw.imoveis || raw.data || raw.items)) || [];   // o Hub responde { rows: [...] }
     const n = v => (v === null || v === undefined || v === '' ? 0 : Number(v) || 0);
-    return arr.map((r, k) => {
+    const itens = arr.map((r, k) => {
       const fotos = Array.isArray(r.fotos) ? r.fotos.map(String).filter(Boolean) : [];
       const foto = String(r.foto || fotos[0] || '');
       return {
@@ -1583,6 +1637,25 @@ p{text-wrap:pretty}
         match: r.match === undefined || r.match === null || r.match === '' ? undefined : Number(r.match)
       };
     });
+    // venda e locacao do mesmo imovel viram UM cartao com os dois valores (cada oferta segue com o seu codigo)
+    const ORD = { venda: 0, locacao: 1, temporada: 2 }, grupos = new Map(), lista = [];
+    itens.forEach(it => {
+      const of = { id: it.id, codigo: it.codigo, finalidade: it.finalidade, preco: it.preco };
+      const g = grupos.get(it.imovel);
+      if (!g) { it.ofertas = [of]; grupos.set(it.imovel, it); lista.push(it); return; }
+      g.ofertas.push(of);
+      if (it.fotos.length > g.fotos.length) { g.fotos = it.fotos; g.foto = g.foto || it.foto; }
+      g.destaque = g.destaque || it.destaque;
+    });
+    lista.forEach(g => {
+      if (g.ofertas.length < 2) { delete g.ofertas; return; }
+      g.ofertas.sort((a, b) => ORD[a.finalidade] - ORD[b.finalidade]);
+      const p = g.ofertas[0];
+      // codigo do imovel (sem o -V/-L da oferta): AP-001003-V e AP-001003-L -> AP-001003
+      const bases = Array.from(new Set(g.ofertas.map(o => String(o.codigo).replace(/-[VLT]$/i, ''))));
+      Object.assign(g, { id: p.id, finalidade: p.finalidade, preco: p.preco, codigo: bases.length === 1 ? bases[0] : g.ofertas.map(o => o.codigo).join(' / ') });
+    });
+    return lista;
   }
 
   async function loadVitrine() {
@@ -1942,7 +2015,7 @@ p{text-wrap:pretty}
           <p class="card-loc">${ico('pin')}<span>${esc(i.bairro)}${i.cidade ? ` • ${esc(i.cidade)}` : ''}</span></p>
           <h3 class="card-title"><button type="button" data-action="details" data-id="${id}">${t}</button></h3>
           <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
-          <p class="card-price">${ex ? 'Imóvel ilustrativo' : esc(priceOf(i))}</p>
+          <p class="card-price${!ex && i.ofertas && i.ofertas.length > 1 ? ' duo' : ''}">${ex ? 'Imóvel ilustrativo' : priceHTML(i)}</p>
           ${ex ? `<div class="card-cta card-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="card-cta">
             <a class="cta cta-ghost" href="${esc(waLink(pedidoVisita(i)))}" target="_blank" rel="noopener" data-track="agendar_visita" data-id="${id}">${ico('calendar')}Agendar visita</a>
             <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
@@ -1970,17 +2043,59 @@ p{text-wrap:pretty}
       pill.textContent = m; pill.hidden = !m;
     });
   }
-  async function shareImovel(item) {
-    if (!item) return;
-    const url = CONFIG.linkImovel
+  /* Compartilhar: janela com WhatsApp, e-mail, mensagem de celular, Instagram, copiar link e (no celular) o menu
+     do aparelho. O Instagram nao aceita receber link pelo navegador: no celular vai pelo menu do aparelho; no
+     computador o link e copiado para colar no Direct ou nos Stories. */
+  const shareEl = $('#share');
+  let shareItem = null;
+  function linkDoImovel(item) {
+    return CONFIG.linkImovel
       ? new URL(CONFIG.linkImovel + encodeURIComponent(item.id), location.origin).href
-      : `${location.href.split('#')[0]}#imovel-${encodeURIComponent(item.id)}`;
-    try {
-      if (navigator.share) { await navigator.share({ title: `${item.titulo} · AI Logic Hub`, text: `${item.titulo}, ${item.bairro} — ${priceOf(item)}`, url }); medir('compartilhar', { metodo: 'compartilhar' }, item); return; }
-    } catch (e) { if (e && e.name === 'AbortError') return; }
-    try { await navigator.clipboard.writeText(url); toast('Link do imóvel copiado'); medir('compartilhar', { metodo: 'copiar_link' }, item); }
-    catch { toast('Não deu para copiar o link agora'); }
+      : `${location.href.split('#')[0].split('?')[0]}#imovel-${encodeURIComponent(item.id)}`;
   }
+  function textoDoImovel(item) {
+    // o titulo ja costuma trazer o bairro: nao repete
+    const onde = norm(item.titulo).includes(norm(item.bairro || '~')) ? '' : [item.bairro, item.cidade].filter(Boolean).join(', ');
+    return `${item.titulo}${onde ? ` · ${onde}` : ''} · ${priceOf(item)}`;
+  }
+  function shareImovel(item) {
+    if (!item) return;
+    shareItem = item;
+    const url = linkDoImovel(item), txt = textoDoImovel(item);
+    $('#share-sub').textContent = txt;
+    $('#share-wa').href = `https://wa.me/?text=${encodeURIComponent(`Olha este imóvel no AILogic Hub: ${txt}\n${url}`)}`;
+    $('#share-mail').href = `mailto:?subject=${encodeURIComponent(`${item.titulo} · AILogic Hub`)}&body=${encodeURIComponent(`Olha este imóvel no AILogic Hub:\n\n${txt}\n${url}`)}`;
+    $('#share-sms').href = `sms:?&body=${encodeURIComponent(`Olha este imóvel no AILogic Hub: ${txt} ${url}`)}`;
+    $('#share-more').hidden = !navigator.share;
+    $('.share-grid', shareEl).classList.toggle('cinco', !navigator.share);   // sem o menu do aparelho: "Copiar link" ocupa a linha
+    $('#share-note').hidden = true;
+    openDialog(shareEl);
+  }
+  async function copiarLink(item, nota) {
+    try { await navigator.clipboard.writeText(linkDoImovel(item)); }
+    catch { const n = $('#share-note'); n.textContent = `Copie o link: ${linkDoImovel(item)}`; n.hidden = false; return false; }
+    if (nota) { const n = $('#share-note'); n.textContent = nota; n.hidden = false; } else toast('Link do imóvel copiado');
+    return true;
+  }
+  shareEl.addEventListener('click', async e => {
+    const op = e.target.closest('[data-share]'); if (!op || !shareItem) return;
+    const k = op.dataset.share, item = shareItem;
+    medir('compartilhar', { metodo: k }, item);
+    if (k === 'whatsapp' || k === 'email' || k === 'sms') { setTimeout(() => closeDialog(shareEl), 150); return; }   // o link do proprio botao abre o app
+    if (k === 'copiar') { if (await copiarLink(item)) closeDialog(shareEl); return; }
+    if (k === 'instagram') {
+      if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+        try { await navigator.share({ title: `${item.titulo} · AILogic Hub`, text: textoDoImovel(item), url: linkDoImovel(item) }); closeDialog(shareEl); return; }
+        catch (err) { if (err && err.name === 'AbortError') return; }
+      }
+      copiarLink(item, 'Link copiado. Abra o Instagram e cole no Direct ou nos Stories (figurinha "Link").');
+      return;
+    }
+    if (k === 'mais' && navigator.share) {
+      try { await navigator.share({ title: `${item.titulo} · AILogic Hub`, text: textoDoImovel(item), url: linkDoImovel(item) }); closeDialog(shareEl); }
+      catch (err) { /* cancelado */ }
+    }
+  });
   /** Link compartilhado abre o detalhe do imóvel: /imovel/<id> chega como ?imovel=<id>; o formato antigo é #imovel-<id>. */
   function openFromHash() {
     const m = /^#imovel-(.+)$/.exec(location.hash);
@@ -2121,7 +2236,7 @@ p{text-wrap:pretty}
         <p class="eyebrow">${esc(tagOf(item))}${exemplo ? ' · Exemplo' : ''}</p>
         <h2 id="detail-title">${esc(item.titulo)}</h2>
         <p class="detail-loc">${esc(item.bairro)}${item.cidade ? `, ${esc(item.cidade)}` : ''}${item.tipo ? ` · ${esc(item.tipo)}` : ''}</p>
-        <p class="detail-price">${exemplo ? 'Imóvel ilustrativo' : esc(priceOf(item))}</p>
+        <p class="detail-price${!exemplo && item.ofertas && item.ofertas.length > 1 ? ' duo' : ''}">${exemplo ? 'Imóvel ilustrativo' : priceHTML(item)}</p>
         <dl class="specs">${specs.map(([ic, k, v]) => `<div><dt>${ico(ic)}${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
         <p class="detail-desc">${esc(item.descricao)}</p>
         ${exemplo ? '<p class="detail-by">Imóvel ilustrativo, só para mostrar a experiência: não está à venda nem para alugar. O Sam mostra os imóveis disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
