@@ -15,22 +15,8 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/cadastro",
-      "destination": "/cadastro.html"
-    },
-    {
-      "source": "/parceiros",
-      "destination": "/cadastro.html"
-    },
-    {
-      "source": "/imovel/:id/foto.jpg",
-      "destination": "/api/og?id=:id"
-    },
-    {
-      "source": "/imovel/:id",
-      "destination": "/api/imovel?id=:id"
-    }
+    { "source": "/imovel/:id/foto.jpg", "destination": "/api/og?id=:id" },
+    { "source": "/imovel/:id", "destination": "/api/imovel?id=:id" }
   ],
   "functions": {
     "api/og.js": {
