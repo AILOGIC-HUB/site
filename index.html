@@ -345,6 +345,8 @@ p{text-wrap:pretty}
 /* o título quebra em até duas linhas inteiras, sem cortar no meio da palavra */
 .card-loc,.card-title{text-shadow:0 1px 4px rgba(6,19,38,.6)}
 .card-title-t{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.card-kw{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;font-size:22px;font-weight:700;letter-spacing:-.035em}
+.card-sub{display:block;margin-top:2px;font-size:14px;font-weight:500;letter-spacing:-.01em;color:rgba(255,255,255,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-title button{padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-align:left}
 /* o título cobre o card inteiro (alvo de toque grande); ações, selos e botões ficam por cima */
 .card-title button::after{content:"";position:absolute;inset:0;z-index:1}
@@ -644,6 +646,25 @@ p{text-wrap:pretty}
 .specs dt .i{width:15px;height:15px}
 .specs dd{margin:6px 0 0;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
 .detail-desc{margin:0 0 24px;font-size:15.5px;color:var(--g200)}
+.detail-sub{margin:10px 0 0;font-size:18px;font-weight:500;line-height:1.3;letter-spacing:-.01em;color:var(--g200)}
+.detail-sobre{margin:0 0 24px}
+.detail-lead{margin:0;font-size:16.5px;line-height:1.6;color:var(--g100,#eef4fb)}
+.detail-chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.detail-chips li{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:rgba(76,198,255,.07);font-size:13px;font-weight:500;color:var(--g200)}
+.detail-chips li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.detail-chips li.mais::before{display:none}
+.detail-chips li.mais{padding:0;border-color:rgba(76,198,255,.4)}
+.detail-chips li.mais button{min-height:32px;padding:0 12px;border:0;background:none;color:var(--cyan);font:inherit;font-weight:600;cursor:pointer;border-radius:999px}
+.detail-full{margin-top:18px;font-size:15px;line-height:1.6;color:var(--g200)}
+.detail-full p{margin:0 0 12px}
+.detail-full h4{margin:20px 0 8px;font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--cyan)}
+.detail-full h4:first-child{margin-top:0}
+.detail-full ul{margin:0 0 12px;padding:0;list-style:none;display:grid;gap:6px}
+.detail-full li{position:relative;padding-left:18px}
+.detail-full li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.detail-full li b{color:var(--g100,#eef4fb);font-weight:600}
+.detail-more{margin-top:14px;padding:0;border:0;background:none;color:var(--cyan);font:inherit;font-size:15px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.detail-more:hover{color:#fff}
 .detail-by{margin:-8px 0 24px;font-size:13px;color:var(--g400)}
 .detail-actions{position:sticky;bottom:0;z-index:2;display:flex;flex-direction:column;gap:12px;margin:auto calc(var(--dpad) * -1) 0;padding:14px var(--dpad) calc(18px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
 .detail-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
@@ -1730,6 +1751,8 @@ p{text-wrap:pretty}
         finalidade: ['venda', 'locacao', 'temporada'].includes(r.finalidade) ? r.finalidade : 'venda',
         preco: n(r.preco), area: n(r.area), quartos: n(r.quartos), suites: n(r.suites), banheiros: n(r.banheiros), vagas: n(r.vagas),
         bairro: String(r.bairro || ''), cidade: String(r.cidade || ''), descricao: String(r.descricao || ''),
+        palavra: String(r.palavra_destaque || '').trim(), curta: String(r.descricao_curta || '').trim(),
+        comodidades: Array.isArray(r.comodidades) ? r.comodidades.map(String).filter(Boolean).slice(0, 30) : [],
         destaque: !!r.destaque, foto, fotos: fotos.length ? fotos : (foto ? [foto] : []),
         imobiliaria: String(r.imobiliaria || ''), categorias: Array.isArray(r.categorias) ? r.categorias : undefined,
         match: r.match === undefined || r.match === null || r.match === '' ? undefined : Number(r.match)
@@ -2114,7 +2137,7 @@ p{text-wrap:pretty}
         </div>
         <div class="card-info">
           <p class="card-loc">${ico('pin')}<span>${esc(i.bairro)}${i.cidade ? ` • ${esc(i.cidade)}` : ''}</span></p>
-          <h3 class="card-title"><button type="button" data-action="details" data-id="${id}"><span class="card-title-t">${t}</span></button></h3>
+          <h3 class="card-title"><button type="button" data-action="details" data-id="${id}">${i.palavra ? `<span class="card-kw">${esc(i.palavra)}</span><span class="card-sub">${t}</span>` : `<span class="card-title-t">${t}</span>`}</button></h3>
           <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
           <p class="card-price${!ex && i.ofertas && i.ofertas.length > 1 ? ' duo' : ''}">${ex ? 'Imóvel ilustrativo' : priceHTML(i)}</p>
           ${ex ? `<div class="card-cta card-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="card-cta">
@@ -2777,6 +2800,47 @@ p{text-wrap:pretty}
 
   /* ================= DETALHE ================= */
   const detail = $('#detail');
+  /* Descricao no detalhe (reuniao de 13/11/2026): primeiro a descricao curta (ou o paragrafo de abertura), depois as
+     comodidades em etiquetas e o resto em "Ler mais", organizado em titulos, paragrafos e listas (nada de bloco corrido). */
+  function descFmt(t) {
+    const linhas = String(t || '').replace(/\r/g, '').replace(/\*\*?/g, '').split('\n').map(x => x.trim()).filter(Boolean);
+    const titulo = x => x.length <= 70 && /[A-ZÀ-Ý]/.test(x) && x === x.toLocaleUpperCase('pt-BR') && !/[.!?]$/.test(x);
+    const marcador = /^[•·\-–*]\s*/;
+    const item = x => { x = x.replace(marcador, ''); const m = /^([^:]{2,40}):\s+(.+)$/.exec(x); return m ? `<li><b>${esc(m[1])}:</b> ${esc(m[2])}</li>` : `<li>${esc(x)}</li>`; };
+    let html = '', lista = [];
+    const fecha = () => { if (!lista.length) return; html += lista.length > 1 || marcador.test(lista[0]) ? `<ul>${lista.map(item).join('')}</ul>` : `<p>${esc(lista[0])}</p>`; lista = []; };
+    linhas.forEach(x => {
+      if (titulo(x)) { fecha(); html += `<h4>${esc(x)}</h4>`; return; }
+      if (marcador.test(x) || x.length <= 110) { lista.push(x); return; }
+      fecha(); html += `<p>${esc(x)}</p>`;
+    });
+    fecha();
+    return html;
+  }
+  function descDetalhe(item) {
+    const desc = String(item.descricao || '').replace(/\r/g, '').trim();
+    let lead = item.curta, resto = desc;
+    if (!lead && desc) {   // sem descricao curta: o paragrafo de abertura faz o papel dela
+      lead = desc.split('\n').map(x => x.trim()).find(Boolean) || '';
+      resto = desc.slice(desc.indexOf(lead) + lead.length).trim();
+      if (lead.length > 420) { const c = lead.slice(0, 400).lastIndexOf('. '); if (c > 150) { resto = lead.slice(c + 2) + '\n' + resto; lead = lead.slice(0, c + 1); } }
+    }
+    const com = item.comodidades || [];
+    return `<div class="detail-sobre">
+      ${lead ? `<p class="detail-lead">${esc(lead.replace(/\*\*?/g, ''))}</p>` : ''}
+      ${com.length ? `<ul class="detail-chips" aria-label="Comodidades">${com.map((c, k) => `<li${k >= 10 ? ' class="extra" hidden' : ''}>${esc(c)}</li>`).join('')}${com.length > 10 ? `<li class="mais"><button type="button" data-chips-mais aria-label="Ver mais ${com.length - 10} comodidades">+${com.length - 10}</button></li>` : ''}</ul>` : ''}
+      ${resto ? `<div class="detail-full" id="detail-full" hidden>${descFmt(resto)}</div><button class="detail-more" type="button" data-ler-mais aria-expanded="false" aria-controls="detail-full">Ler mais</button>` : ''}
+    </div>`;
+  }
+  const chipsTodos = () => { $$('#detail .detail-chips .extra').forEach(li => { li.hidden = false; }); const m = $('#detail .detail-chips .mais'); if (m) m.parentNode.removeChild(m); };
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-chips-mais]')) { chipsTodos(); return; }
+    const b = e.target.closest('[data-ler-mais]'); if (!b) return;
+    const box = document.getElementById(b.getAttribute('aria-controls')); if (!box) return;
+    const abrir = box.hidden; box.hidden = !abrir; b.setAttribute('aria-expanded', String(abrir)); b.textContent = abrir ? 'Mostrar menos' : 'Ler mais';
+    if (abrir) chipsTodos();
+    if (!abrir) b.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
   function openDetail(item) {
     if (!item) return;
     medir('ver_imovel', {}, item);
@@ -2799,11 +2863,11 @@ p{text-wrap:pretty}
       </div>
       <div class="detail-body">
         <p class="eyebrow">${esc(tagOf(item))}${exemplo ? ' · Exemplo' : ''}</p>
-        <h2 id="detail-title">${esc(item.titulo)}</h2>
+        <h2 id="detail-title">${esc(item.palavra || item.titulo)}</h2>${item.palavra ? `<p class="detail-sub">${esc(item.titulo)}</p>` : ''}
         <p class="detail-loc">${esc(item.bairro)}${item.cidade ? `, ${esc(item.cidade)}` : ''}${item.tipo ? ` · ${esc(item.tipo)}` : ''}</p>
         <p class="detail-price${!exemplo && item.ofertas && item.ofertas.length > 1 ? ' duo' : ''}">${exemplo ? 'Imóvel ilustrativo' : priceHTML(item)}</p>
         <dl class="specs">${specs.map(([ic, k, v]) => `<div><dt>${ico(ic)}${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-        <p class="detail-desc">${esc(item.descricao)}</p>
+        ${descDetalhe(item)}
         ${exemplo ? '<p class="detail-by">Imóvel ilustrativo, só para mostrar a experiência: não está à venda nem para alugar. O Sam mostra os imóveis disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
         <div class="detail-actions">
           ${exemplo ? '' : `<div class="detail-quick">
@@ -2830,7 +2894,7 @@ p{text-wrap:pretty}
     if (!item) return;
     G.item = item; G.fotos = photosOf(item); G.i = start;
     if (!G.fotos.length) return;
-    $('#lb-title').textContent = `${item.titulo} · ${item.bairro}`;
+    $('#lb-title').textContent = `${item.palavra ? item.palavra + ' · ' : ''}${item.titulo} · ${item.bairro}`;
     lbThumbs.innerHTML = G.fotos.map((u, k) =>
       `<button class="thumb media" type="button" data-thumb="${k}" aria-label="Foto ${k + 1} de ${G.fotos.length}"><img src="${esc(sized(u, 240))}" alt="" width="88" height="62" loading="lazy" decoding="async"></button>`).join('');
     showPhoto(start);
