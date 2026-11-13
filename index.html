@@ -2290,7 +2290,7 @@ p{text-wrap:pretty}
       const extra = loc ? `${esc(body.prazo)} · ${esc(body.garantia)}` : (pag ? esc((PR_PAG.find(x => x[0] === pag) || [])[1] || '') : '');
       const jaFoi = j.ficha === 'enviado';
       prCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(valorTxt)}</b>${extra ? `<br>${extra}` : ''}</p>
-        <p class="vis-msg" style="text-align:left;margin:0 0 4px">${jaFoi ? `Enviamos a ficha de proposta para você assinar: confira o e-mail <b>${esc(email)}</b> e o seu WhatsApp (mensagem da D4Sign).` : `A ficha de proposta chega para você assinar no e-mail <b>${esc(email)}</b> (D4Sign) assim que o time do Hub conferir os dados do imóvel.`}</p>
+        <p class="vis-msg" style="text-align:left;margin:0 0 4px">${jaFoi ? `Enviamos a ficha de proposta para você assinar: confira o e-mail <b>${esc(email)}</b> e o seu WhatsApp (mensagem da D4Sign).` : `A ficha de proposta chega para você assinar no e-mail <b>${esc(email)}</b> e no seu WhatsApp (D4Sign) em alguns minutos.`}</p>
         <ol class="pr-passos">
           <li><i>1</i><span>Você assina a ficha de proposta pela D4Sign.</span></li>
           <li><i>2</i><span>Em seguida, o proprietário assina: a assinatura dele é o aceite da proposta. Se ele quiser contrapropor, o time do Hub fala com você pelo WhatsApp.</span></li>
