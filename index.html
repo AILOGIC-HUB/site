@@ -2228,7 +2228,7 @@ p{text-wrap:pretty}
   function prPintar() {
     const item = prItem, ofs = prOfertas(item), loc = prOf.finalidade !== 'venda';
     const keep = id => { const e = $('#' + id); return e ? e.value : ''; };
-    const nome = keep('pr-nome'), fone = keep('pr-fone'), valor = keep('pr-valor');
+    const nome = keep('pr-nome'), fone = keep('pr-fone'), valor = keep('pr-valor'), email = keep('pr-email'), cpf = keep('pr-cpf');
     prCorpo().innerHTML = `
       ${ofs.length > 1 ? `<p class="vis-rot" id="pr-rot-of" style="margin-top:0">Sua proposta é para</p>
       <div class="pr-ofs" role="group" aria-labelledby="pr-rot-of">${ofs.map((o, k) => `<button type="button" class="pr-of" data-pr-of="${k}" aria-pressed="${o === prOf}"><b>${o.finalidade === 'venda' ? 'Comprar' : o.finalidade === 'temporada' ? 'Temporada' : 'Alugar'}</b><span>${esc(priceOne(o))}</span></button>`).join('')}</div>`
@@ -2237,6 +2237,8 @@ p{text-wrap:pretty}
         <div class="fields">
           <div class="field"><label for="pr-nome">Nome completo</label><input id="pr-nome" autocomplete="name" required maxlength="120" value="${esc(nome)}"></div>
           <div class="field"><label for="pr-fone">WhatsApp com DDD</label><input id="pr-fone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="20" placeholder="(11) 99999-9999" value="${esc(fone)}"></div>
+          <div class="field"><label for="pr-email">E-mail</label><input id="pr-email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@email.com" value="${esc(email)}"></div>
+          <div class="field"><label for="pr-cpf">CPF</label><input id="pr-cpf" inputmode="numeric" autocomplete="off" required maxlength="14" placeholder="000.000.000-00" value="${esc(cpf)}"></div>
           <div class="field full"><label for="pr-valor">Valor da sua proposta${loc ? (prOf.finalidade === 'temporada' ? ' (por diária)' : ' (aluguel por mês)') : ''}</label><input id="pr-valor" inputmode="numeric" required maxlength="16" placeholder="R$" value="${esc(valor)}"></div>
           ${loc ? `
           <div class="field"><label for="pr-prazo">Prazo do contrato</label><select id="pr-prazo"><option>12 meses</option><option selected>30 meses</option></select></div>
@@ -2245,8 +2247,8 @@ p{text-wrap:pretty}
           <div class="field"><label for="pr-sinal">Entrada / sinal (opcional)</label><input id="pr-sinal" inputmode="numeric" maxlength="16" placeholder="R$"></div>`}
         </div>
         <label class="consent"><input type="checkbox" id="pr-ok"><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp sobre esta proposta e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
-        <p class="vis-lgpd">A proposta não obriga você a fechar negócio. O time do Hub apresenta ao proprietário e responde pelo WhatsApp. Com o aceite, o contrato é preparado no Hub para assinatura digital.</p>
-        <button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Enviar proposta</button>
+        <p class="vis-lgpd">Você assina a ficha de proposta de forma eletrônica, pela D4Sign: o link chega no seu e-mail e no WhatsApp. Depois da sua assinatura, ela segue para o proprietário; a assinatura dele é o aceite da proposta.</p>
+        <button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Enviar e assinar a proposta</button>
         <p class="vis-msg erro" id="pr-erro" hidden></p>
       </form>`;
   }
@@ -2255,7 +2257,11 @@ p{text-wrap:pretty}
     prOf = prOfertas(prItem)[Number(o.dataset.prOf)] || prOf; prPintar();
     const n = $(`[data-pr-of="${o.dataset.prOf}"]`, prEl); if (n) n.focus();
   });
-  prEl.addEventListener('input', e => { if (e.target.id === 'pr-valor' || e.target.id === 'pr-sinal') { const f = prMoeda(e.target.value); if (f !== e.target.value) e.target.value = f; } });
+  const prCpfOk = d => { if (!/^\d{11}$/.test(d) || /^(\d)\1{10}$/.test(d)) return false; for (let t = 9; t < 11; t++) { let s = 0; for (let i = 0; i < t; i++) s += +d[i] * (t + 1 - i); if (((s * 10) % 11) % 10 !== +d[t]) return false; } return true; };
+  prEl.addEventListener('input', e => {
+    if (e.target.id === 'pr-valor' || e.target.id === 'pr-sinal') { const f = prMoeda(e.target.value); if (f !== e.target.value) e.target.value = f; }
+    if (e.target.id === 'pr-cpf') { const d = e.target.value.replace(/\D/g, '').slice(0, 11); const f = d.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3').replace(/(\d{3})(\d{1,2})$/, '$1-$2'); if (f !== e.target.value) e.target.value = f; }
+  });
   prEl.addEventListener('submit', async e => {
     if (e.target.id !== 'pr-form') return;
     e.preventDefault();
@@ -2265,10 +2271,13 @@ p{text-wrap:pretty}
     const nome = $('#pr-nome').value.trim().replace(/\s+/g, ' '), fone = $('#pr-fone').value.trim(), valor = $('#pr-valor').value.replace(/\D/g, '');
     if (nome.split(' ').length < 2) return mostra('Informe seu nome completo.', '#pr-nome');
     if (fone.replace(/\D/g, '').length < 10) return mostra('Informe seu WhatsApp com DDD.', '#pr-fone');
+    const email = $('#pr-email').value.trim(), cpf = $('#pr-cpf').value.replace(/\D/g, '');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)) return mostra('Informe um e-mail válido: é por ele que chega o pedido de assinatura.', '#pr-email');
+    if (!prCpfOk(cpf)) return mostra('Confira o CPF.', '#pr-cpf');
     if (!Number(valor)) return mostra('Informe o valor da sua proposta.', '#pr-valor');
     if (!$('#pr-ok').checked) return mostra('Marque a autorização de contato para enviar.');
     const loc = prOf.finalidade !== 'venda', pag = $('#pr-pag') ? $('#pr-pag').value : '';
-    const body = { ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], cliente: nome, whatsapp: fone, valor,
+    const body = { ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], cliente: nome, whatsapp: fone, email, cpf, valor,
       finalidade: loc ? 'locacao' : 'venda', prazo: loc ? $('#pr-prazo').value : '', garantia: loc ? $('#pr-gar').value : '',
       pagamento: pag, sinal: $('#pr-sinal') ? $('#pr-sinal').value.replace(/\D/g, '') : '' };
     bt.disabled = true; bt.textContent = 'Enviando…';
@@ -2279,10 +2288,12 @@ p{text-wrap:pretty}
       medir('fazer_proposta', { etapa: 'enviada' }, prItem);
       const valorTxt = BRL.format(Number(valor)) + (loc ? (prOf.finalidade === 'temporada' ? '/diária' : '/mês') : '');
       const extra = loc ? `${esc(body.prazo)} · ${esc(body.garantia)}` : (pag ? esc((PR_PAG.find(x => x[0] === pag) || [])[1] || '') : '');
+      const jaFoi = j.ficha === 'enviado';
       prCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(valorTxt)}</b>${extra ? `<br>${extra}` : ''}</p>
+        <p class="vis-msg" style="text-align:left;margin:0 0 4px">${jaFoi ? `Enviamos a ficha de proposta para você assinar: confira o e-mail <b>${esc(email)}</b> e o seu WhatsApp (mensagem da D4Sign).` : `A ficha de proposta chega para você assinar no e-mail <b>${esc(email)}</b> (D4Sign) assim que o time do Hub conferir os dados do imóvel.`}</p>
         <ol class="pr-passos">
-          <li><i>1</i><span>O time do Hub apresenta a sua proposta ao proprietário.</span></li>
-          <li><i>2</i><span>Você recebe a resposta pelo WhatsApp: aceite, contraproposta ou recusa.</span></li>
+          <li><i>1</i><span>Você assina a ficha de proposta pela D4Sign.</span></li>
+          <li><i>2</i><span>Em seguida, o proprietário assina: a assinatura dele é o aceite da proposta. Se ele quiser contrapropor, o time do Hub fala com você pelo WhatsApp.</span></li>
           <li><i>3</i><span>Com o aceite, o contrato é preparado no Hub e você assina de forma digital.</span></li>
         </ol>
         <button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
