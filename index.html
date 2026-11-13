@@ -713,6 +713,22 @@ p{text-wrap:pretty}
 .pr-of b{display:block;font-size:15px}.pr-of span{display:block;margin-top:2px;color:var(--g300);font-size:13px}
 .pr-of[aria-pressed="true"]{border-color:var(--cyan);background:rgba(76,198,255,.16)}
 .pr-ref{margin:0 0 2px;color:var(--g300);font-size:13.5px}.pr-ref b{color:#fff}
+.pr-steps{display:flex;gap:8px;margin:16px 0 0;padding:0;list-style:none}
+.pr-steps li{flex:1;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;color:var(--g300);font-size:13.5px;font-weight:600}
+.pr-steps li i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);font-style:normal;font-size:12px}
+.pr-steps li.on{border-color:var(--cyan);color:#fff;background:rgba(76,198,255,.1)}.pr-steps li.on i{background:var(--cyan);color:#05121f}
+.pr-steps li.ok i{background:rgba(52,199,89,.22);color:#34c759}
+.pr-dica{font-size:12.5px;color:var(--g300);line-height:1.4}
+.pr-resumo{display:grid;gap:6px}.pr-resumo:empty{display:none}
+.pr-resumo div{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04);font-size:14px;color:var(--g300)}
+.pr-resumo b{color:#fff;white-space:nowrap}
+.pr-pessoa{margin-top:2px}
+#proposta .field{align-content:start}
+.pr-ferr{margin:0;font-size:13px;line-height:1.4;color:#ff9aa6}
+.consent .pr-ferr{grid-column:2}
+.pr-acts{display:grid;grid-template-columns:auto 1fr;gap:10px}
+.pr-acts .cta-ghost{min-width:128px}
+@media (max-width:520px){.pr-acts{grid-template-columns:1fr}.pr-resumo div{flex-direction:column;gap:2px}}
 #proposta .field select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#9fb3c8 50%),linear-gradient(135deg,#9fb3c8 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 15px) 21px;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
 #proposta .field select option{color:#0b1f44}
 .pr-passos{margin:16px 0 18px;padding:0;list-style:none;display:grid;gap:10px;text-align:left}
@@ -1343,7 +1359,7 @@ p{text-wrap:pretty}
     <button class="modal-x" type="button" data-action="close" aria-label="Fechar a proposta"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
     <p class="eyebrow">Ficha de proposta</p>
     <h2 class="share-title" id="proposta-title"></h2>
-    <p class="share-sub" id="proposta-sub">Preencha e envie: a proposta vai direto para o time do Hub apresentar ao proprietário.</p>
+    <p class="share-sub" id="proposta-sub">Preencha e assine pela D4Sign: a proposta segue para o proprietário com as mesmas condições.</p>
     <div id="proposta-corpo"></div>
   </div>
 </div>
@@ -1767,6 +1783,8 @@ p{text-wrap:pretty}
   function openDialog(el, { modal = true, focus } = {}) {
     if (stack.some(d => d.el === el)) return;
     stack.push({ el, modal, opener: document.activeElement });
+    // a janela aberta por cima de outra (proposta ou visita a partir do detalhe do imovel) fica na frente dela
+    el.style.zIndex = String(70 + stack.length);
     el.classList.add('is-open');
     el.setAttribute('aria-modal', String(modal));
     if (modal) document.documentElement.classList.add('lock');
@@ -1778,6 +1796,7 @@ p{text-wrap:pretty}
     if (i < 0) return;
     const [d] = stack.splice(i, 1);
     el.classList.remove('is-open');
+    setTimeout(() => { if (!stack.some(x => x.el === el)) el.style.zIndex = ''; }, 400);   // depois da animacao de saida
     if (!stack.some(x => x.modal)) document.documentElement.classList.remove('lock');
     const cb = onClose.get(el); if (cb) cb();
     if (restoreFocus && d.opener && document.contains(d.opener) && d.opener.getClientRects().length) d.opener.focus({ preventScroll: true });
@@ -2209,42 +2228,56 @@ p{text-wrap:pretty}
      o time apresenta ao proprietario e a resposta (aceite, contraproposta ou recusa) volta pelo WhatsApp. O valor minimo
      do proprietario nunca e revelado: a resposta do Hub e sempre a mesma para o visitante. */
   const prEl = $('#proposta');
-  let prItem = null, prOf = null;
-  const PR_PAG = [['', 'Ainda vou decidir'], ['a_vista', 'À vista, com recursos próprios'], ['financiamento', 'Financiamento bancário'], ['financiamento_fgts', 'Financiamento com FGTS'], ['consorcio', 'Carta de consórcio']];
+  let prItem = null, prOf = null, prV = null;
+  const PR_PAG = [['a_vista', 'À vista'], ['financiamento', 'Financiamento'], ['financiamento_fgts', 'Financiamento + FGTS'], ['consorcio', 'Consórcio']];
+  const PR_PAG_LONGO = { a_vista: 'À vista, com recursos próprios', financiamento: 'Financiamento bancário', financiamento_fgts: 'Financiamento com FGTS', consorcio: 'Carta de consórcio' };
+  const PR_ENT = [['compromisso', 'No compromisso'], ['cinco_dias', 'Até 5 dias úteis do aceite'], ['data', 'Em uma data']];
+  const PR_POSSE = [['escritura', 'Na escritura definitiva'], ['compromisso', 'Na assinatura do compromisso'], ['quitacao', 'Depois de quitar o preço']];
+  const PR_EC = ['Solteiro(a)', 'Casado(a)', 'Divorciado(a)', 'Separado(a) judicialmente', 'Viúvo(a)'];
+  const PR_REG = ['Comunhão parcial de bens', 'Comunhão universal de bens', 'Separação total de bens', 'Participação final nos aquestos'];
+  const PR_UF = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
   const prCorpo = () => $('#proposta-corpo');
   const prMoeda = v => { const d = String(v || '').replace(/\D/g, '').replace(/^0+(?=\d)/, ''); return d ? Number(d).toLocaleString('pt-BR') : ''; };
+  const prNum = v => Number(String(v || '').replace(/\D/g, '')) || 0;
+  const prHoje = (dias = 0) => new Date(Date.now() + dias * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+  const prBRL2 = n => Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
   function prOfertas(item) {
     return item.ofertas && item.ofertas.length > 1 ? item.ofertas : [{ id: item.id, codigo: item.codigo, finalidade: item.finalidade, preco: item.preco }];
   }
+  function prNovoV() { return { passo: 1, d: { entrada_quando: 'compromisso', posse: 'escritura', validade_data: prHoje(3), validade_hora: '18:00', credito_ate: prHoje(30), pessoa: 'pf', nacionalidade: 'Brasileira', uniao_estavel: 'nao' } }; }
   function abrirProposta(item) {
     if (!item) return;
     if (ehExemplo() || !CONFIG.online || !CONFIG.propostaUrl) { window.open(waLink(pedidoProposta(item)), '_blank', 'noopener'); return; }
-    prItem = item; prOf = prOfertas(item)[0];
+    prItem = item; prOf = prOfertas(item)[0]; prV = prNovoV();
     $('#proposta-title').textContent = item.titulo;
     prPintar();
     openDialog(prEl, { focus: $('.modal-x', prEl) });
     medir('fazer_proposta', { etapa: 'abriu' }, item);
   }
+  // guarda o que ja foi digitado (campos com data-k) antes de redesenhar
+  function prColetar() { if (!prV) return; $$('[data-k]', prEl).forEach(el => { prV.d[el.dataset.k] = el.type === 'checkbox' ? el.checked : el.value; }); }
+  const prVal = k => esc(prV && prV.d[k] != null ? prV.d[k] : '');
+  const prSel = (k, ops, vazio) => `${vazio ? `<option value="">${esc(vazio)}</option>` : ''}${ops.map(o => { const [v, n] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}"${String(prV.d[k] || '') === v ? ' selected' : ''}>${esc(n)}</option>`; }).join('')}`;
+  function prTopo() {
+    const item = prItem, ofs = prOfertas(item);
+    return ofs.length > 1 ? `<p class="vis-rot" id="pr-rot-of" style="margin-top:0">Sua proposta é para</p>
+      <div class="pr-ofs" role="group" aria-labelledby="pr-rot-of">${ofs.map((o, k) => `<button type="button" class="pr-of" data-pr-of="${k}" aria-pressed="${o === prOf}"><b>${o.finalidade === 'venda' ? 'Comprar' : o.finalidade === 'temporada' ? 'Temporada' : 'Alugar'}</b><span>${esc(priceOne(o))}</span></button>`).join('')}</div>`
+      : `<p class="pr-ref">Valor anunciado: <b>${esc(priceOne(prOf))}</b> (${esc((FIN_NOME[prOf.finalidade] || 'venda').toLowerCase())})${item.codigo ? ` · cód. ${esc(String(item.codigo).split(' / ')[0])}` : ''}</p>`;
+  }
   function prPintar() {
-    const item = prItem, ofs = prOfertas(item), loc = prOf.finalidade !== 'venda';
+    if (prOf.finalidade === 'venda') return prPintarVenda();
     const keep = id => { const e = $('#' + id); return e ? e.value : ''; };
     const nome = keep('pr-nome'), fone = keep('pr-fone'), valor = keep('pr-valor'), email = keep('pr-email'), cpf = keep('pr-cpf');
-    prCorpo().innerHTML = `
-      ${ofs.length > 1 ? `<p class="vis-rot" id="pr-rot-of" style="margin-top:0">Sua proposta é para</p>
-      <div class="pr-ofs" role="group" aria-labelledby="pr-rot-of">${ofs.map((o, k) => `<button type="button" class="pr-of" data-pr-of="${k}" aria-pressed="${o === prOf}"><b>${o.finalidade === 'venda' ? 'Comprar' : o.finalidade === 'temporada' ? 'Temporada' : 'Alugar'}</b><span>${esc(priceOne(o))}</span></button>`).join('')}</div>`
-      : `<p class="pr-ref">Valor anunciado: <b>${esc(priceOne(prOf))}</b> (${esc((FIN_NOME[prOf.finalidade] || 'venda').toLowerCase())})${item.codigo ? ` · cód. ${esc(String(item.codigo).split(' / ')[0])}` : ''}</p>`}
+    prCorpo().innerHTML = `${prTopo()}
       <form class="vis-form" id="pr-form" novalidate>
         <div class="fields">
           <div class="field"><label for="pr-nome">Nome completo</label><input id="pr-nome" autocomplete="name" required maxlength="120" value="${esc(nome)}"></div>
           <div class="field"><label for="pr-fone">WhatsApp com DDD</label><input id="pr-fone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="20" placeholder="(11) 99999-9999" value="${esc(fone)}"></div>
           <div class="field"><label for="pr-email">E-mail</label><input id="pr-email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@email.com" value="${esc(email)}"></div>
           <div class="field"><label for="pr-cpf">CPF</label><input id="pr-cpf" inputmode="numeric" autocomplete="off" required maxlength="14" placeholder="000.000.000-00" value="${esc(cpf)}"></div>
-          <div class="field full"><label for="pr-valor">Valor da sua proposta${loc ? (prOf.finalidade === 'temporada' ? ' (por diária)' : ' (aluguel por mês)') : ''}</label><input id="pr-valor" inputmode="numeric" required maxlength="16" placeholder="R$" value="${esc(valor)}"></div>
-          ${loc ? `
+          <div class="field full"><label for="pr-valor">Valor da sua proposta${prOf.finalidade === 'temporada' ? ' (por diária)' : ' (aluguel por mês)'}</label><input id="pr-valor" inputmode="numeric" required maxlength="16" placeholder="R$" value="${esc(valor)}"></div>
           <div class="field"><label for="pr-prazo">Prazo do contrato</label><select id="pr-prazo"><option>12 meses</option><option selected>30 meses</option></select></div>
-          <div class="field"><label for="pr-gar">Garantia</label><select id="pr-gar"><option>Caução</option><option>Seguro fiança</option></select></div>` : `
-          <div class="field"><label for="pr-pag">Forma de pagamento</label><select id="pr-pag">${PR_PAG.map(([v, n]) => `<option value="${v}">${esc(n)}</option>`).join('')}</select></div>
-          <div class="field"><label for="pr-sinal">Entrada / sinal (opcional)</label><input id="pr-sinal" inputmode="numeric" maxlength="16" placeholder="R$"></div>`}
+          <div class="field"><label for="pr-gar">Garantia</label><select id="pr-gar"><option>Caução</option><option>Seguro fiança</option></select></div>
         </div>
         <label class="consent"><input type="checkbox" id="pr-ok"><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp sobre esta proposta e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
         <p class="vis-lgpd">Você assina a ficha de proposta de forma eletrônica, pela D4Sign: o link chega no seu e-mail e no WhatsApp. Depois da sua assinatura, ela segue para o proprietário; a assinatura dele é o aceite da proposta.</p>
@@ -2252,22 +2285,222 @@ p{text-wrap:pretty}
         <p class="vis-msg erro" id="pr-erro" hidden></p>
       </form>`;
   }
+  // compra: proposta em duas etapas (oferta e dados do comprador), no modelo do Hub (termo do comprador e aceite do vendedor)
+  function prPassos() { return `<ol class="pr-steps" aria-label="Etapas da proposta"><li class="${prV.passo === 1 ? 'on' : 'ok'}"><i>1</i>Sua oferta</li><li class="${prV.passo === 2 ? 'on' : ''}"><i>2</i>Seus dados</li></ol>`; }
+  function prPintarVenda() {
+    const d = prV.d, cred = d.pagamento && d.pagamento !== 'a_vista', fgts = d.pagamento === 'financiamento_fgts', cons = d.pagamento === 'consorcio';
+    if (prV.passo === 1) {
+      prCorpo().innerHTML = `${prTopo()}${prPassos()}
+      <form class="vis-form" id="pr-form" data-passo="1" novalidate>
+        <div class="fields">
+          <div class="field"><label for="pr-valor">Valor da sua proposta</label><input id="pr-valor" data-k="valor" inputmode="numeric" maxlength="16" placeholder="R$" value="${prVal('valor')}"></div>
+          <div class="field"><label for="pr-pag">Forma de pagamento</label><select id="pr-pag" data-k="pagamento" data-redesenha>${prSel('pagamento', PR_PAG, 'Escolha')}</select></div>
+          <div class="field"><label for="pr-entrada">Entrada</label><input id="pr-entrada" data-k="entrada" inputmode="numeric" maxlength="16" placeholder="R$" value="${prVal('entrada')}" aria-describedby="pr-dica-ent"><small class="pr-dica" id="pr-dica-ent">Mínimo de 10% do valor da proposta.</small></div>
+          <div class="field"><label for="pr-ent-q">Pagamento da entrada</label><select id="pr-ent-q" data-k="entrada_quando" data-redesenha>${prSel('entrada_quando', PR_ENT)}</select></div>
+          ${d.entrada_quando === 'data' ? `<div class="field full"><label for="pr-ent-d">Data da entrada</label><input id="pr-ent-d" data-k="entrada_data" type="date" min="${prHoje()}" value="${prVal('entrada_data')}"></div>` : ''}
+          ${cred ? `<div class="field${fgts ? '' : ' full'}"><label for="pr-cred">${cons ? 'Valor da carta de consórcio' : 'Valor do financiamento'}</label><input id="pr-cred" data-k="credito_valor" inputmode="numeric" maxlength="16" placeholder="R$" value="${prVal('credito_valor')}"></div>
+          ${fgts ? `<div class="field"><label for="pr-fgts">Valor do FGTS</label><input id="pr-fgts" data-k="fgts_valor" inputmode="numeric" maxlength="16" placeholder="R$" value="${prVal('fgts_valor')}"></div>` : ''}
+          <div class="field full"><label for="pr-cred-ate">${cons ? 'Carta liberada até' : 'Crédito aprovado até'}</label><input id="pr-cred-ate" data-k="credito_ate" type="date" min="${prHoje(1)}" value="${prVal('credito_ate')}"><small class="pr-dica">Se o crédito for negado sem culpa sua até essa data, você desiste sem multa.</small></div>` : ''}
+          <div class="field full"><label for="pr-posse">Posse e chaves</label><select id="pr-posse" data-k="posse">${prSel('posse', PR_POSSE)}</select></div>
+          <div class="field"><label for="pr-val-d">Oferta válida até</label><input id="pr-val-d" data-k="validade_data" type="date" min="${prHoje(1)}" max="${prHoje(30)}" value="${prVal('validade_data')}"></div>
+          <div class="field"><label for="pr-val-h">Horário (Brasília)</label><input id="pr-val-h" data-k="validade_hora" type="time" step="1800" value="${prVal('validade_hora')}"></div>
+          <div class="field full"><label for="pr-obs">Observações <span class="opt">(opcional)</span></label><textarea id="pr-obs" data-k="obs" maxlength="1500" rows="3" placeholder="Ex.: que os armários planejados fiquem no imóvel">${prVal('obs')}</textarea></div>
+        </div>
+        <div class="pr-resumo" id="pr-resumo" aria-live="polite"></div>
+        <button class="cta cta-primary" type="submit" style="min-height:50px">Continuar</button>
+        <p class="vis-msg erro" id="pr-erro" hidden></p>
+      </form>`;
+      prResumo();
+      return;
+    }
+    const pj = d.pessoa === 'pj', reg = d.estado_civil === 'Casado(a)' || d.uniao_estavel === 'sim';
+    prCorpo().innerHTML = `${prTopo()}${prPassos()}
+      <form class="vis-form" id="pr-form" data-passo="2" novalidate>
+        <div class="pr-ofs pr-pessoa" role="group" aria-label="Você compra como"><button type="button" class="pr-of" data-pr-pessoa="pf" aria-pressed="${!pj}"><b>Pessoa física</b><span>Com CPF</span></button><button type="button" class="pr-of" data-pr-pessoa="pj" aria-pressed="${pj}"><b>Empresa</b><span>Com CNPJ</span></button></div>
+        <div class="fields">
+          <div class="field"><label for="pr-nome">${pj ? 'Razão social' : 'Nome completo'}</label><input id="pr-nome" data-k="nome" autocomplete="${pj ? 'organization' : 'name'}" maxlength="160" value="${prVal('nome')}"></div>
+          <div class="field"><label for="pr-doc">${pj ? 'CNPJ' : 'CPF'}</label><input id="pr-doc" data-k="doc" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="${pj ? '00.000.000/0000-00' : '000.000.000-00'}" value="${prVal('doc')}"></div>
+          ${pj ? `
+          <div class="field"><label for="pr-rep">Representante da empresa</label><input id="pr-rep" data-k="representante_nome" maxlength="120" placeholder="Nome completo" value="${prVal('representante_nome')}"></div>
+          <div class="field"><label for="pr-rep-cpf">CPF do representante</label><input id="pr-rep-cpf" data-k="representante_cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" value="${prVal('representante_cpf')}"></div>
+          <div class="field full"><label for="pr-rep-pod">Documento que dá os poderes</label><input id="pr-rep-pod" data-k="representante_poderes" maxlength="120" placeholder="Ex.: contrato social, procuração" value="${prVal('representante_poderes')}"></div>` : `
+          <div class="field"><label for="pr-nac">Nacionalidade</label><input id="pr-nac" data-k="nacionalidade" maxlength="40" value="${prVal('nacionalidade')}"></div>
+          <div class="field"><label for="pr-prof">Profissão</label><input id="pr-prof" data-k="profissao" maxlength="80" value="${prVal('profissao')}"></div>
+          <div class="field"><label for="pr-rg">RG ou documento de identidade</label><input id="pr-rg" data-k="rg" maxlength="30" value="${prVal('rg')}"></div>
+          <div class="field"><label for="pr-rg-o">Órgão emissor</label><input id="pr-rg-o" data-k="rg_orgao" maxlength="20" placeholder="Ex.: SSP/SP" value="${prVal('rg_orgao')}"></div>
+          <div class="field"><label for="pr-ec">Estado civil</label><select id="pr-ec" data-k="estado_civil" data-redesenha>${prSel('estado_civil', PR_EC, 'Escolha')}</select></div>
+          <div class="field"><label for="pr-ue">União estável</label><select id="pr-ue" data-k="uniao_estavel" data-redesenha>${prSel('uniao_estavel', [['nao', 'Não'], ['sim', 'Sim']])}</select></div>
+          ${reg ? `<div class="field full"><label for="pr-reg">Regime de bens</label><select id="pr-reg" data-k="regime">${prSel('regime', PR_REG, 'Escolha')}</select></div>` : ''}`}
+          <div class="field"><label for="pr-cep">CEP</label><input id="pr-cep" data-k="cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" value="${prVal('cep')}"></div>
+          <div class="field"><label for="pr-num">Número</label><input id="pr-num" data-k="numero" maxlength="12" value="${prVal('numero')}"></div>
+          <div class="field full"><label for="pr-rua">Rua</label><input id="pr-rua" data-k="rua" autocomplete="address-line1" maxlength="120" value="${prVal('rua')}"></div>
+          <div class="field"><label for="pr-comp">Complemento <span class="opt">(opcional)</span></label><input id="pr-comp" data-k="complemento" maxlength="60" value="${prVal('complemento')}"></div>
+          <div class="field"><label for="pr-bai">Bairro</label><input id="pr-bai" data-k="bairro" maxlength="80" value="${prVal('bairro')}"></div>
+          <div class="field"><label for="pr-cid">Cidade</label><input id="pr-cid" data-k="cidade" autocomplete="address-level2" maxlength="80" value="${prVal('cidade')}"></div>
+          <div class="field"><label for="pr-uf">UF</label><select id="pr-uf" data-k="uf">${prSel('uf', PR_UF, 'UF')}</select></div>
+          <div class="field"><label for="pr-email">E-mail</label><input id="pr-email" data-k="email" type="email" autocomplete="email" maxlength="120" placeholder="voce@email.com" value="${prVal('email')}"></div>
+          <div class="field"><label for="pr-fone">WhatsApp com DDD</label><input id="pr-fone" data-k="fone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 99999-9999" value="${prVal('fone')}"></div>
+        </div>
+        <label class="consent"><input type="checkbox" id="pr-ok" data-k="ok"${d.ok ? ' checked' : ''}><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp sobre esta proposta e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
+        <p class="vis-lgpd">Você assina a <b>Proposta do comprador</b> pela D4Sign (link no e-mail e no WhatsApp). Depois, o vendedor assina o <b>Aceite do vendedor</b>, com as mesmas condições, até a validade da sua oferta.</p>
+        <div class="pr-acts"><button class="cta cta-ghost" type="button" data-pr-voltar>Voltar</button><button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Enviar e assinar a proposta</button></div>
+        <p class="vis-msg erro" id="pr-erro" hidden></p>
+      </form>`;
+  }
+  // resumo ao vivo da etapa 1: saldo, recursos proprios na escritura e a multa (10% da entrada)
+  function prResumo() {
+    const box = $('#pr-resumo'); if (!box || !prV) return;
+    prColetar();
+    const d = prV.d, v = prNum(d.valor), ent = prNum(d.entrada), cred = d.pagamento && d.pagamento !== 'a_vista' ? prNum(d.credito_valor) + (d.pagamento === 'financiamento_fgts' ? prNum(d.fgts_valor) : 0) : 0;
+    const dica = $('#pr-dica-ent'); if (dica) dica.textContent = v ? `Mínimo de 10%: ${BRL.format(Math.ceil(v * 0.1))}.` : 'Mínimo de 10% do valor da proposta.';
+    if (!v || !ent || ent > v) { box.innerHTML = ''; return; }
+    const saldo = v - ent, prop = saldo - cred;
+    box.innerHTML = `<div><span>Saldo</span><b>${BRL.format(saldo)}</b></div>${cred && prop > 0 ? `<div><span>Recursos próprios na escritura</span><b>${BRL.format(prop)}</b></div>` : ''}<div><span>Multa se alguém desistir depois do aceite (10% da entrada)</span><b>${prBRL2(Math.round(ent * 10) / 100)}</b></div>`;
+  }
   prEl.addEventListener('click', e => {
-    const o = e.target.closest('[data-pr-of]'); if (!o) return;
-    prOf = prOfertas(prItem)[Number(o.dataset.prOf)] || prOf; prPintar();
-    const n = $(`[data-pr-of="${o.dataset.prOf}"]`, prEl); if (n) n.focus();
+    const o = e.target.closest('[data-pr-of]');
+    if (o) { prColetar(); prOf = prOfertas(prItem)[Number(o.dataset.prOf)] || prOf; if (prOf.finalidade === 'venda' && prV) prV.passo = 1; prPintar(); const n = $(`[data-pr-of="${o.dataset.prOf}"]`, prEl); if (n) n.focus(); return; }
+    const p = e.target.closest('[data-pr-pessoa]');
+    if (p) { prColetar(); if (prV.d.pessoa !== p.dataset.prPessoa) { prV.d.pessoa = p.dataset.prPessoa; prV.d.doc = ''; } prPintarVenda(); const n = $(`[data-pr-pessoa="${p.dataset.prPessoa}"]`, prEl); if (n) n.focus(); return; }
+    if (e.target.closest('[data-pr-voltar]')) { prColetar(); prV.passo = 1; prPintarVenda(); const f = $('#pr-valor'); if (f) f.focus(); }
+  });
+  prEl.addEventListener('change', e => {
+    if (!e.target.matches('[data-redesenha]')) return;
+    const id = e.target.id; prColetar(); prPintarVenda(); const n = $('#' + id); if (n) n.focus();
   });
   const prCpfOk = d => { if (!/^\d{11}$/.test(d) || /^(\d)\1{10}$/.test(d)) return false; for (let t = 9; t < 11; t++) { let s = 0; for (let i = 0; i < t; i++) s += +d[i] * (t + 1 - i); if (((s * 10) % 11) % 10 !== +d[t]) return false; } return true; };
+  const prCnpjOk = d => { if (!/^\d{14}$/.test(d) || /^(\d)\1{13}$/.test(d)) return false; const c = n => { const p = n === 12 ? [5,4,3,2,9,8,7,6,5,4,3,2] : [6,5,4,3,2,9,8,7,6,5,4,3,2]; let s = 0; for (let i = 0; i < n; i++) s += +d[i] * p[i]; const r = s % 11; return r < 2 ? 0 : 11 - r; }; return c(12) === +d[12] && c(13) === +d[13]; };
+  const prFmtCpf = v => v.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  const prFmtCnpj = v => v.replace(/\D/g, '').slice(0, 14).replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d)/, '.$1/$2').replace(/(\d{4})(\d)/, '$1-$2');
+  let prCepUlt = '';
   prEl.addEventListener('input', e => {
-    if (e.target.id === 'pr-valor' || e.target.id === 'pr-sinal') { const f = prMoeda(e.target.value); if (f !== e.target.value) e.target.value = f; }
-    if (e.target.id === 'pr-cpf') { const d = e.target.value.replace(/\D/g, '').slice(0, 11); const f = d.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3').replace(/(\d{3})(\d{1,2})$/, '$1-$2'); if (f !== e.target.value) e.target.value = f; }
+    const id = e.target.id;
+    // corrigiu o campo: o aviso de erro dele sai
+    if (e.target.getAttribute('aria-invalid') === 'true') { e.target.removeAttribute('aria-invalid'); const fe = $('#pr-ferr'); if (fe) fe.parentNode.removeChild(fe); }
+    if (['pr-valor', 'pr-sinal', 'pr-entrada', 'pr-cred', 'pr-fgts'].indexOf(id) >= 0) { const f = prMoeda(e.target.value); if (f !== e.target.value) e.target.value = f; prResumo(); }
+    if (id === 'pr-cpf' || id === 'pr-rep-cpf' || (id === 'pr-doc' && prV && prV.d.pessoa !== 'pj')) { const f = prFmtCpf(e.target.value); if (f !== e.target.value) e.target.value = f; }
+    if (id === 'pr-doc' && prV && prV.d.pessoa === 'pj') { const f = prFmtCnpj(e.target.value); if (f !== e.target.value) e.target.value = f; }
+    if (id === 'pr-cep') {
+      const c = e.target.value.replace(/\D/g, '').slice(0, 8), f = c.length > 5 ? c.slice(0, 5) + '-' + c.slice(5) : c; if (f !== e.target.value) e.target.value = f;
+      if (c.length === 8 && c !== prCepUlt) {
+        prCepUlt = c;
+        fetch(`https://viacep.com.br/ws/${c}/json/`).then(r => r.ok ? r.json() : null).then(j => {
+          if (!j || j.erro) return;
+          const pre = (sel, v) => { const el = $(sel); if (el && v && !el.value) el.value = v; };
+          pre('#pr-rua', j.logradouro); pre('#pr-bai', j.bairro); pre('#pr-cid', j.localidade); const uf = $('#pr-uf'); if (uf && j.uf && !uf.value) uf.value = j.uf;
+          const nu = $('#pr-num'); if (nu && !nu.value) nu.focus();
+        }).catch(() => {});
+      }
+    }
   });
+  function prVendaPasso1() {
+    const d = prV.d, v = prNum(d.valor), ent = prNum(d.entrada), credito = d.pagamento && d.pagamento !== 'a_vista';
+    if (!v) return ['Informe o valor da sua proposta.', '#pr-valor'];
+    if (!d.pagamento) return ['Escolha a forma de pagamento.', '#pr-pag'];
+    if (!ent || ent < Math.ceil(v * 0.1)) return [`A entrada precisa ser de pelo menos 10% do valor da proposta (${BRL.format(Math.ceil(v * 0.1))}).`, '#pr-entrada'];
+    if (ent > v) return ['A entrada não pode ser maior que o valor da proposta.', '#pr-entrada'];
+    if (d.entrada_quando === 'data' && (!d.entrada_data || d.entrada_data < prHoje())) return ['Informe a data de pagamento da entrada.', '#pr-ent-d'];
+    if (credito) {
+      const c = prNum(d.credito_valor), f = d.pagamento === 'financiamento_fgts' ? prNum(d.fgts_valor) : 0;
+      if (!c) return [d.pagamento === 'consorcio' ? 'Informe o valor da carta de consórcio.' : 'Informe o valor do financiamento.', '#pr-cred'];
+      if (d.pagamento === 'financiamento_fgts' && !f) return ['Informe o valor do FGTS.', '#pr-fgts'];
+      if (c + f > v - ent) return [`O crédito não pode passar do saldo (${BRL.format(v - ent)}).`, '#pr-cred'];
+      if (!d.credito_ate || d.credito_ate <= prHoje()) return ['Informe até quando o crédito deve estar aprovado.', '#pr-cred-ate'];
+      if (d.credito_ate < d.validade_data) return ['A aprovação do crédito precisa ser depois da validade da oferta.', '#pr-cred-ate'];
+    }
+    const vEm = new Date((d.validade_data || '') + 'T' + (d.validade_hora || '18:00') + ':00-03:00').getTime();
+    if (!d.validade_data || !(vEm >= Date.now() + 24 * 3600000)) return ['A oferta precisa valer por pelo menos 24 horas, para o vendedor ter tempo de responder.', '#pr-val-d'];
+    if (d.validade_data > prHoje(30)) return ['A validade da oferta pode ser de até 30 dias.', '#pr-val-d'];
+    return null;
+  }
+  function prVendaPasso2() {
+    const d = prV.d, pj = d.pessoa === 'pj', doc = String(d.doc || '').replace(/\D/g, '');
+    const nome = String(d.nome || '').trim().replace(/\s+/g, ' ');
+    if (nome.split(' ').length < 2) return [pj ? 'Informe a razão social completa.' : 'Informe seu nome completo.', '#pr-nome'];
+    if (pj ? !prCnpjOk(doc) : !prCpfOk(doc)) return [pj ? 'Confira o CNPJ.' : 'Confira o CPF.', '#pr-doc'];
+    if (pj) {
+      if (String(d.representante_nome || '').trim().split(/\s+/).length < 2) return ['Informe o nome completo do representante.', '#pr-rep'];
+      if (!prCpfOk(String(d.representante_cpf || '').replace(/\D/g, ''))) return ['Confira o CPF do representante.', '#pr-rep-cpf'];
+      if (String(d.representante_poderes || '').trim().length < 3) return ['Informe o documento que dá os poderes ao representante.', '#pr-rep-pod'];
+    } else {
+      if (String(d.profissao || '').trim().length < 3) return ['Informe sua profissão.', '#pr-prof'];
+      if (String(d.rg || '').replace(/\W/g, '').length < 4) return ['Informe o documento de identidade.', '#pr-rg'];
+      if (String(d.rg_orgao || '').trim().length < 2) return ['Informe o órgão emissor (ex.: SSP/SP).', '#pr-rg-o'];
+      if (!d.estado_civil) return ['Escolha o estado civil.', '#pr-ec'];
+      if ((d.estado_civil === 'Casado(a)' || d.uniao_estavel === 'sim') && !d.regime) return ['Escolha o regime de bens.', '#pr-reg'];
+    }
+    if (String(d.cep || '').replace(/\D/g, '').length !== 8) return ['Informe o CEP.', '#pr-cep'];
+    if (String(d.rua || '').trim().length < 3) return ['Informe a rua.', '#pr-rua'];
+    if (!String(d.numero || '').trim()) return ['Informe o número.', '#pr-num'];
+    if (!String(d.cidade || '').trim()) return ['Informe a cidade.', '#pr-cid'];
+    if (!d.uf) return ['Escolha a UF.', '#pr-uf'];
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(String(d.email || '').trim())) return ['Informe um e-mail válido: é por ele que chega o pedido de assinatura.', '#pr-email'];
+    if (String(d.fone || '').replace(/\D/g, '').length < 10) return ['Informe seu WhatsApp com DDD.', '#pr-fone'];
+    if (!d.ok) return ['Marque a autorização de contato para enviar.', '#pr-ok'];
+    return null;
+  }
+  async function prEnviar(body, resumoOk) {
+    const bt = $('#pr-enviar'), err = $('#pr-erro');
+    bt.disabled = true; bt.textContent = 'Enviando…';
+    try {
+      const r = await fetch(CONFIG.propostaUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || '');
+      medir('fazer_proposta', { etapa: 'enviada' }, prItem);
+      prCorpo().innerHTML = resumoOk(j.ficha === 'enviado');
+    } catch (ex) {
+      bt.disabled = false; bt.innerHTML = `${ico('doc')}Enviar e assinar a proposta`;
+      err.innerHTML = `${esc(ex.message || 'Não foi possível enviar agora.')} <a href="${esc(waLink(pedidoProposta(prItem)))}" target="_blank" rel="noopener" style="color:var(--cyan)">Enviar pelo WhatsApp do Hub</a>`; err.hidden = false;
+    }
+  }
   prEl.addEventListener('submit', async e => {
     if (e.target.id !== 'pr-form') return;
     e.preventDefault();
-    const err = $('#pr-erro'), bt = $('#pr-enviar');
-    const mostra = (m, campo) => { err.innerHTML = m; err.hidden = false; if (campo) $(campo).focus(); };
+    const err = $('#pr-erro');
+    // o erro aparece junto do campo (o formulario e longo: no fim da janela ele ficaria fora da vista)
+    $$('.pr-ferr', prEl).forEach(x => x.parentNode.removeChild(x)); $$('[aria-invalid="true"]', prEl).forEach(x => x.removeAttribute('aria-invalid'));
+    const mostra = (m, campo) => {
+      const el = campo && $(campo);
+      if (!el) { err.innerHTML = esc(m); err.hidden = false; err.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+      const p = document.createElement('p'); p.className = 'pr-ferr'; p.id = 'pr-ferr'; p.setAttribute('role', 'alert'); p.textContent = m;
+      (el.closest('.field') || el.closest('.consent') || el.parentNode).appendChild(p);
+      el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', 'pr-ferr'); el.focus({ preventScroll: true });
+      p.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    };
     err.hidden = true;
+    if (prOf.finalidade === 'venda') {
+      prColetar();
+      if (Number(e.target.dataset.passo) === 1) {
+        const x = prVendaPasso1(); if (x) return mostra(x[0], x[1]);
+        // o Hub confere o minimo do proprietario para a forma de pagamento antes dos dados pessoais (o envio confere de novo)
+        const btc = e.target.querySelector('[type="submit"]'); btc.disabled = true; btc.textContent = 'Conferindo…';
+        try {
+          const rc = await fetch(`${CONFIG.visitaUrl}?action=proposta_conferir`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], valor: String(prNum(prV.d.valor)), pagamento: prV.d.pagamento, entrada: String(prNum(prV.d.entrada)) }) });
+          const jc = await rc.json().catch(() => ({}));
+          if (rc.ok && jc.ok === false) { btc.disabled = false; btc.textContent = 'Continuar'; return mostra(jc.erro || 'Revise a oferta.', jc.motivo === 'entrada_minima' ? '#pr-entrada' : (jc.motivo === 'sem_pagamento' ? '#pr-pag' : '#pr-valor')); }
+        } catch { /* sem conexao agora: o envio final confere */ }
+        prV.passo = 2; prPintarVenda(); const n = $('#pr-nome'); if (n) n.focus(); medir('fazer_proposta', { etapa: 'oferta_ok' }, prItem); return;
+      }
+      const x = prVendaPasso2(); if (x) return mostra(x[0], x[1]);
+      const d = prV.d, num = v => String(prNum(v) || '');
+      const body = { ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], finalidade: 'venda',
+        cliente: d.nome.trim().replace(/\s+/g, ' '), whatsapp: d.fone.trim(), email: d.email.trim(), cpf: String(d.doc).replace(/\D/g, ''), valor: num(d.valor),
+        oferta: { pagamento: d.pagamento, entrada: num(d.entrada), entrada_quando: d.entrada_quando, entrada_data: d.entrada_data || '', credito_valor: num(d.credito_valor), fgts_valor: num(d.fgts_valor),
+          credito_ate: d.credito_ate || '', posse: d.posse, validade_data: d.validade_data, validade_hora: d.validade_hora || '18:00', obs: String(d.obs || '').trim() },
+        comprador: { pessoa: d.pessoa, nome: d.nome, doc: d.doc, nacionalidade: d.nacionalidade, profissao: d.profissao, rg: d.rg, rg_orgao: d.rg_orgao, estado_civil: d.estado_civil,
+          uniao_estavel: d.uniao_estavel, regime: d.regime || '', cep: d.cep, rua: d.rua, numero: d.numero, complemento: d.complemento, bairro: d.bairro, cidade: d.cidade, uf: d.uf,
+          representante_nome: d.representante_nome, representante_cpf: d.representante_cpf, representante_poderes: d.representante_poderes } };
+      const ent = prNum(d.entrada), validade = new Date(d.validade_data + 'T' + (d.validade_hora || '18:00') + ':00-03:00').toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' às');
+      return prEnviar(body, jaFoi => `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(BRL.format(prNum(d.valor)))}</b><br>${esc(PR_PAG_LONGO[d.pagamento] || '')} · entrada de ${esc(BRL.format(ent))}<br>Válida até ${esc(validade)}</p>
+        <p class="vis-msg" style="text-align:left;margin:0 0 4px">${jaFoi ? `Enviamos a <b>Proposta do comprador</b> para você assinar: confira o e-mail <b>${esc(d.email.trim())}</b> e o seu WhatsApp (mensagem da D4Sign).` : `A <b>Proposta do comprador</b> chega para você assinar no e-mail <b>${esc(d.email.trim())}</b> e no seu WhatsApp (D4Sign) em alguns minutos.`}</p>
+        <ol class="pr-passos">
+          <li><i>1</i><span>Você assina a Proposta do comprador pela D4Sign.</span></li>
+          <li><i>2</i><span>O vendedor assina o Aceite do vendedor, com as mesmas condições, até a validade da sua oferta. Se ele quiser mudar algo, vira contraproposta e o Hub fala com você pelo WhatsApp.</span></li>
+          <li><i>3</i><span>Com o aceite, o jurídico do Hub confere os documentos e prepara o compromisso de compra e venda.</span></li>
+        </ol>
+        <button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`);
+    }
     const nome = $('#pr-nome').value.trim().replace(/\s+/g, ' '), fone = $('#pr-fone').value.trim(), valor = $('#pr-valor').value.replace(/\D/g, '');
     if (nome.split(' ').length < 2) return mostra('Informe seu nome completo.', '#pr-nome');
     if (fone.replace(/\D/g, '').length < 10) return mostra('Informe seu WhatsApp com DDD.', '#pr-fone');
@@ -2276,31 +2509,17 @@ p{text-wrap:pretty}
     if (!prCpfOk(cpf)) return mostra('Confira o CPF.', '#pr-cpf');
     if (!Number(valor)) return mostra('Informe o valor da sua proposta.', '#pr-valor');
     if (!$('#pr-ok').checked) return mostra('Marque a autorização de contato para enviar.');
-    const loc = prOf.finalidade !== 'venda', pag = $('#pr-pag') ? $('#pr-pag').value : '';
     const body = { ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], cliente: nome, whatsapp: fone, email, cpf, valor,
-      finalidade: loc ? 'locacao' : 'venda', prazo: loc ? $('#pr-prazo').value : '', garantia: loc ? $('#pr-gar').value : '',
-      pagamento: pag, sinal: $('#pr-sinal') ? $('#pr-sinal').value.replace(/\D/g, '') : '' };
-    bt.disabled = true; bt.textContent = 'Enviando…';
-    try {
-      const r = await fetch(CONFIG.propostaUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok || !j.ok) throw new Error(j.error || '');
-      medir('fazer_proposta', { etapa: 'enviada' }, prItem);
-      const valorTxt = BRL.format(Number(valor)) + (loc ? (prOf.finalidade === 'temporada' ? '/diária' : '/mês') : '');
-      const extra = loc ? `${esc(body.prazo)} · ${esc(body.garantia)}` : (pag ? esc((PR_PAG.find(x => x[0] === pag) || [])[1] || '') : '');
-      const jaFoi = j.ficha === 'enviado';
-      prCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(valorTxt)}</b>${extra ? `<br>${extra}` : ''}</p>
+      finalidade: 'locacao', prazo: $('#pr-prazo').value, garantia: $('#pr-gar').value };
+    const valorTxt = BRL.format(Number(valor)) + (prOf.finalidade === 'temporada' ? '/diária' : '/mês');
+    prEnviar(body, jaFoi => `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(valorTxt)}</b><br>${esc(body.prazo)} · ${esc(body.garantia)}</p>
         <p class="vis-msg" style="text-align:left;margin:0 0 4px">${jaFoi ? `Enviamos a ficha de proposta para você assinar: confira o e-mail <b>${esc(email)}</b> e o seu WhatsApp (mensagem da D4Sign).` : `A ficha de proposta chega para você assinar no e-mail <b>${esc(email)}</b> e no seu WhatsApp (D4Sign) em alguns minutos.`}</p>
         <ol class="pr-passos">
           <li><i>1</i><span>Você assina a ficha de proposta pela D4Sign.</span></li>
           <li><i>2</i><span>Em seguida, o proprietário assina: a assinatura dele é o aceite da proposta. Se ele quiser contrapropor, o time do Hub fala com você pelo WhatsApp.</span></li>
           <li><i>3</i><span>Com o aceite, o contrato é preparado no Hub e você assina de forma digital.</span></li>
         </ol>
-        <button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
-    } catch (ex) {
-      bt.disabled = false; bt.innerHTML = `${ico('doc')}Enviar proposta`;
-      mostra(`${esc(ex.message || 'Não foi possível enviar agora.')} <a href="${esc(waLink(pedidoProposta(prItem)))}" target="_blank" rel="noopener" style="color:var(--cyan)">Enviar pelo WhatsApp do Hub</a>`);
-    }
+        <button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`);
   });
 
   /* Ficha de visita: sobe na mesma janela, logo depois do pedido. O cliente confere os dados do imovel e a declaracao
