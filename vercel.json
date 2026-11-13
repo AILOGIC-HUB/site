@@ -15,8 +15,18 @@
     }
   ],
   "rewrites": [
-    { "source": "/imovel/:id/foto.jpg", "destination": "/api/og?id=:id" },
-    { "source": "/imovel/:id", "destination": "/api/imovel?id=:id" }
+    {
+      "source": "/novidade",
+      "destination": "/novidade.html"
+    },
+    {
+      "source": "/imovel/:id/foto.jpg",
+      "destination": "/api/og?id=:id"
+    },
+    {
+      "source": "/imovel/:id",
+      "destination": "/api/imovel?id=:id"
+    }
   ],
   "functions": {
     "api/og.js": {
