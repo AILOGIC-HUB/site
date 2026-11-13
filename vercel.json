@@ -2,6 +2,16 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/novidade",
+      "destination": "/pre-lancamento",
+      "permanent": true
+    },
+    {
+      "source": "/novidade.html",
+      "destination": "/pre-lancamento",
+      "permanent": true
+    },
+    {
       "source": "/imovel/:id",
       "missing": [
         {
@@ -16,8 +26,8 @@
   ],
   "rewrites": [
     {
-      "source": "/novidade",
-      "destination": "/novidade.html"
+      "source": "/pre-lancamento",
+      "destination": "/pre-lancamento.html"
     },
     {
       "source": "/imovel/:id/foto.jpg",
