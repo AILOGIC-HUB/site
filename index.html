@@ -707,6 +707,17 @@ p{text-wrap:pretty}
 .fv-depois{margin:2px 0 0;text-align:center;font-size:13px;color:var(--g300)}
 .fv-depois a,.fv-depois button{color:var(--cyan);background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .vis-ok-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+/* ficha de proposta */
+.pr-ofs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.pr-of{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.pr-of b{display:block;font-size:15px}.pr-of span{display:block;margin-top:2px;color:var(--g300);font-size:13px}
+.pr-of[aria-pressed="true"]{border-color:var(--cyan);background:rgba(76,198,255,.16)}
+.pr-ref{margin:0 0 2px;color:var(--g300);font-size:13.5px}.pr-ref b{color:#fff}
+#proposta .field select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#9fb3c8 50%),linear-gradient(135deg,#9fb3c8 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 15px) 21px;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
+#proposta .field select option{color:#0b1f44}
+.pr-passos{margin:16px 0 18px;padding:0;list-style:none;display:grid;gap:10px;text-align:left}
+.pr-passos li{display:flex;gap:12px;align-items:flex-start;color:var(--g200,#dbe7f3);font-size:14px;line-height:1.45}
+.pr-passos li i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(76,198,255,.16);color:var(--cyan);font-style:normal;font-weight:700;font-size:13px}
 .vis-ok .vis-ok-acts .i{width:17px;height:17px;padding:0;border-radius:0;background:none;color:inherit}
 @media (max-width:520px){.fv-dados{grid-template-columns:1fr}.fv .fields{grid-template-columns:1fr}}
 /* compartilhar imovel: WhatsApp, e-mail, mensagem de celular, Instagram e link */
@@ -1326,6 +1337,17 @@ p{text-wrap:pretty}
   <p class="sam-note">O Sam é um assistente virtual e pode errar; um corretor confirma tudo antes da visita. <a href="politica-de-privacidade.html" data-action="privacidade">Privacidade</a></p>
 </aside>
 
+<div class="modal" id="proposta" role="dialog" aria-modal="true" aria-labelledby="proposta-title">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--visita">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar a proposta"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <p class="eyebrow">Ficha de proposta</p>
+    <h2 class="share-title" id="proposta-title"></h2>
+    <p class="share-sub" id="proposta-sub">Preencha e envie: a proposta vai direto para o time do Hub apresentar ao proprietário.</p>
+    <div id="proposta-corpo"></div>
+  </div>
+</div>
+
 <!-- ============ DETALHE DO IMÓVEL ============ -->
 <div class="modal" id="visita" role="dialog" aria-modal="true" aria-labelledby="visita-title">
   <div class="modal-backdrop" data-action="close"></div>
@@ -1508,6 +1530,7 @@ p{text-wrap:pretty}
     whatsapp: '5511988021148',
     vitrineUrl: HUB + '/api/vitrine',   // imóveis publicados no Hub; enquanto não houver nenhum, ficam os exemplos
     samUrl: HUB + '/api/sam-web',       // POST {messages:[{role,content}]} -> {reply, sugestoes}; a conversa vira lead no Hub
+    propostaUrl: HUB + '/api/proposta?action=proposta_site',   // ficha de proposta: a proposta entra direto em Propostas no Hub
     visitaUrl: HUB + '/api/proposta',    // agendar visita: horarios livres da agenda de quem atende o imovel (vis_slots) e o pedido (vis_agendar)
     leadUrl: HUB + '/api/proposta?action=lead_site', // formulários: o contato entra em Leads no Hub; se falhar, segue pelo WhatsApp
     loginUrl: 'https://www.ailogichuboficial.com/', // menu "Entrar": acesso ao sistema do Hub
@@ -2077,7 +2100,7 @@ p{text-wrap:pretty}
           <p class="card-price${!ex && i.ofertas && i.ofertas.length > 1 ? ' duo' : ''}">${ex ? 'Imóvel ilustrativo' : priceHTML(i)}</p>
           ${ex ? `<div class="card-cta card-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="card-cta">
             <button class="cta cta-ghost" type="button" data-action="visit" data-id="${id}">${ico('calendar')}Agendar visita</button>
-            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(i)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
+            <button class="cta cta-primary" type="button" data-action="proposta" data-id="${id}">Fazer proposta</button>
           </div>`}
         </div>
       </article>`;
@@ -2180,6 +2203,93 @@ p{text-wrap:pretty}
       if (j.ficha && j.ficha.t) return fichaAbrir(j, nome, fone);
       visCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Pedido de visita enviado</h3><p><b>${esc(j.quando || '')}</b><br>O horário ficou reservado na agenda de quem atende este imóvel. Você recebe a confirmação pelo WhatsApp.</p><button class="cta cta-ghost" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
     } catch { bt.disabled = false; bt.textContent = 'Tentar de novo'; mostra('Sem conexão agora. Tente de novo ou combine pelo WhatsApp.'); }
+  });
+
+  /* Ficha de proposta: abre na propria pagina (nada de WhatsApp). A proposta entra direto em Propostas no Hub, com o lead;
+     o time apresenta ao proprietario e a resposta (aceite, contraproposta ou recusa) volta pelo WhatsApp. O valor minimo
+     do proprietario nunca e revelado: a resposta do Hub e sempre a mesma para o visitante. */
+  const prEl = $('#proposta');
+  let prItem = null, prOf = null;
+  const PR_PAG = [['', 'Ainda vou decidir'], ['a_vista', 'À vista, com recursos próprios'], ['financiamento', 'Financiamento bancário'], ['financiamento_fgts', 'Financiamento com FGTS'], ['consorcio', 'Carta de consórcio']];
+  const prCorpo = () => $('#proposta-corpo');
+  const prMoeda = v => { const d = String(v || '').replace(/\D/g, '').replace(/^0+(?=\d)/, ''); return d ? Number(d).toLocaleString('pt-BR') : ''; };
+  function prOfertas(item) {
+    return item.ofertas && item.ofertas.length > 1 ? item.ofertas : [{ id: item.id, codigo: item.codigo, finalidade: item.finalidade, preco: item.preco }];
+  }
+  function abrirProposta(item) {
+    if (!item) return;
+    if (ehExemplo() || !CONFIG.online || !CONFIG.propostaUrl) { window.open(waLink(pedidoProposta(item)), '_blank', 'noopener'); return; }
+    prItem = item; prOf = prOfertas(item)[0];
+    $('#proposta-title').textContent = item.titulo;
+    prPintar();
+    openDialog(prEl, { focus: $('.modal-x', prEl) });
+    medir('fazer_proposta', { etapa: 'abriu' }, item);
+  }
+  function prPintar() {
+    const item = prItem, ofs = prOfertas(item), loc = prOf.finalidade !== 'venda';
+    const keep = id => { const e = $('#' + id); return e ? e.value : ''; };
+    const nome = keep('pr-nome'), fone = keep('pr-fone'), valor = keep('pr-valor');
+    prCorpo().innerHTML = `
+      ${ofs.length > 1 ? `<p class="vis-rot" id="pr-rot-of" style="margin-top:0">Sua proposta é para</p>
+      <div class="pr-ofs" role="group" aria-labelledby="pr-rot-of">${ofs.map((o, k) => `<button type="button" class="pr-of" data-pr-of="${k}" aria-pressed="${o === prOf}"><b>${o.finalidade === 'venda' ? 'Comprar' : o.finalidade === 'temporada' ? 'Temporada' : 'Alugar'}</b><span>${esc(priceOne(o))}</span></button>`).join('')}</div>`
+      : `<p class="pr-ref">Valor anunciado: <b>${esc(priceOne(prOf))}</b> (${esc((FIN_NOME[prOf.finalidade] || 'venda').toLowerCase())})${item.codigo ? ` · cód. ${esc(String(item.codigo).split(' / ')[0])}` : ''}</p>`}
+      <form class="vis-form" id="pr-form" novalidate>
+        <div class="fields">
+          <div class="field"><label for="pr-nome">Nome completo</label><input id="pr-nome" autocomplete="name" required maxlength="120" value="${esc(nome)}"></div>
+          <div class="field"><label for="pr-fone">WhatsApp com DDD</label><input id="pr-fone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="20" placeholder="(11) 99999-9999" value="${esc(fone)}"></div>
+          <div class="field full"><label for="pr-valor">Valor da sua proposta${loc ? (prOf.finalidade === 'temporada' ? ' (por diária)' : ' (aluguel por mês)') : ''}</label><input id="pr-valor" inputmode="numeric" required maxlength="16" placeholder="R$" value="${esc(valor)}"></div>
+          ${loc ? `
+          <div class="field"><label for="pr-prazo">Prazo do contrato</label><select id="pr-prazo"><option>12 meses</option><option selected>30 meses</option></select></div>
+          <div class="field"><label for="pr-gar">Garantia</label><select id="pr-gar"><option>Caução</option><option>Seguro fiança</option></select></div>` : `
+          <div class="field"><label for="pr-pag">Forma de pagamento</label><select id="pr-pag">${PR_PAG.map(([v, n]) => `<option value="${v}">${esc(n)}</option>`).join('')}</select></div>
+          <div class="field"><label for="pr-sinal">Entrada / sinal (opcional)</label><input id="pr-sinal" inputmode="numeric" maxlength="16" placeholder="R$"></div>`}
+        </div>
+        <label class="consent"><input type="checkbox" id="pr-ok"><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp sobre esta proposta e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
+        <p class="vis-lgpd">A proposta não obriga você a fechar negócio. O time do Hub apresenta ao proprietário e responde pelo WhatsApp. Com o aceite, o contrato é preparado no Hub para assinatura digital.</p>
+        <button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Enviar proposta</button>
+        <p class="vis-msg erro" id="pr-erro" hidden></p>
+      </form>`;
+  }
+  prEl.addEventListener('click', e => {
+    const o = e.target.closest('[data-pr-of]'); if (!o) return;
+    prOf = prOfertas(prItem)[Number(o.dataset.prOf)] || prOf; prPintar();
+    const n = $(`[data-pr-of="${o.dataset.prOf}"]`, prEl); if (n) n.focus();
+  });
+  prEl.addEventListener('input', e => { if (e.target.id === 'pr-valor' || e.target.id === 'pr-sinal') { const f = prMoeda(e.target.value); if (f !== e.target.value) e.target.value = f; } });
+  prEl.addEventListener('submit', async e => {
+    if (e.target.id !== 'pr-form') return;
+    e.preventDefault();
+    const err = $('#pr-erro'), bt = $('#pr-enviar');
+    const mostra = (m, campo) => { err.innerHTML = m; err.hidden = false; if (campo) $(campo).focus(); };
+    err.hidden = true;
+    const nome = $('#pr-nome').value.trim().replace(/\s+/g, ' '), fone = $('#pr-fone').value.trim(), valor = $('#pr-valor').value.replace(/\D/g, '');
+    if (nome.split(' ').length < 2) return mostra('Informe seu nome completo.', '#pr-nome');
+    if (fone.replace(/\D/g, '').length < 10) return mostra('Informe seu WhatsApp com DDD.', '#pr-fone');
+    if (!Number(valor)) return mostra('Informe o valor da sua proposta.', '#pr-valor');
+    if (!$('#pr-ok').checked) return mostra('Marque a autorização de contato para enviar.');
+    const loc = prOf.finalidade !== 'venda', pag = $('#pr-pag') ? $('#pr-pag').value : '';
+    const body = { ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], cliente: nome, whatsapp: fone, valor,
+      finalidade: loc ? 'locacao' : 'venda', prazo: loc ? $('#pr-prazo').value : '', garantia: loc ? $('#pr-gar').value : '',
+      pagamento: pag, sinal: $('#pr-sinal') ? $('#pr-sinal').value.replace(/\D/g, '') : '' };
+    bt.disabled = true; bt.textContent = 'Enviando…';
+    try {
+      const r = await fetch(CONFIG.propostaUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || '');
+      medir('fazer_proposta', { etapa: 'enviada' }, prItem);
+      const valorTxt = BRL.format(Number(valor)) + (loc ? (prOf.finalidade === 'temporada' ? '/diária' : '/mês') : '');
+      const extra = loc ? `${esc(body.prazo)} · ${esc(body.garantia)}` : (pag ? esc((PR_PAG.find(x => x[0] === pag) || [])[1] || '') : '');
+      prCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(valorTxt)}</b>${extra ? `<br>${extra}` : ''}</p>
+        <ol class="pr-passos">
+          <li><i>1</i><span>O time do Hub apresenta a sua proposta ao proprietário.</span></li>
+          <li><i>2</i><span>Você recebe a resposta pelo WhatsApp: aceite, contraproposta ou recusa.</span></li>
+          <li><i>3</i><span>Com o aceite, o contrato é preparado no Hub e você assina de forma digital.</span></li>
+        </ol>
+        <button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
+    } catch (ex) {
+      bt.disabled = false; bt.innerHTML = `${ico('doc')}Enviar proposta`;
+      mostra(`${esc(ex.message || 'Não foi possível enviar agora.')} <a href="${esc(waLink(pedidoProposta(prItem)))}" target="_blank" rel="noopener" style="color:var(--cyan)">Enviar pelo WhatsApp do Hub</a>`);
+    }
   });
 
   /* Ficha de visita: sobe na mesma janela, logo depois do pedido. O cliente confere os dados do imovel e a declaracao
@@ -2474,7 +2584,7 @@ p{text-wrap:pretty}
           </div>`}
           ${exemplo ? `<div class="detail-cta detail-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="detail-cta">
             <button class="cta cta-ghost" type="button" data-action="visit" data-id="${id}">${ico('calendar')}Agendar visita</button>
-            <a class="cta cta-primary" href="${esc(waLink(pedidoProposta(item)))}" target="_blank" rel="noopener" data-track="fazer_proposta" data-id="${id}">Fazer proposta</a>
+            <button class="cta cta-primary" type="button" data-action="proposta" data-id="${id}">Fazer proposta</button>
           </div>`}
         </div>
       </div>`;
@@ -3069,6 +3179,7 @@ p{text-wrap:pretty}
       case 'fav': toggleFav(id, a); break;
       case 'share': shareImovel(byId(id)); break;
       case 'visit': abrirVisita(byId(id)); break;
+      case 'proposta': abrirProposta(byId(id)); break;
       case 'lead': closeDrop(); closeMenu(); openLead(a.dataset.tab); break;
       case 'parceiro': closeDrop(); closeMenu(); openLead('parceiro', a.dataset.perfil); break;
       case 'video': openVideo(); break;
