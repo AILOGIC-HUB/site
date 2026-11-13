@@ -686,6 +686,29 @@ p{text-wrap:pretty}
 .vis-ok h3{margin:14px 0 6px;font-size:22px;letter-spacing:-.03em}
 .vis-ok p{margin:0 0 18px;color:var(--g300);line-height:1.5}
 .vis-carrega{padding:28px 0;text-align:center;color:var(--g300)}
+/* ficha de visita: sobe na mesma janela logo depois do pedido, para o cliente conferir e assinar */
+.vis-pedido{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.28)}
+.vis-pedido .i{flex:none;width:34px;height:34px;padding:8px;border-radius:50%;background:rgba(52,199,89,.2);color:#34c759}
+.vis-pedido b{display:block;font-size:15px}.vis-pedido span{display:block;color:var(--g300);font-size:13px;line-height:1.4}
+.fv{margin-top:20px}
+.fv-tit{margin:0;font-size:22px;letter-spacing:-.03em}
+.fv-sub{margin:6px 0 0;color:var(--g300);font-size:14px;line-height:1.5}
+.fv-dados{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin:16px 0 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.fv-dados div{min-width:0}.fv-dados .full{grid-column:1/-1}
+.fv-dados dt{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}
+.fv-dados dd{margin:3px 0 0;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.fv-texto{max-height:190px;overflow:auto;margin:12px 0 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);font-size:13px;line-height:1.55;color:var(--g200,#dbe7f3)}
+.fv-texto p{margin:0 0 10px}.fv-texto p:last-child{margin:0}.fv-texto .fv-nota{color:var(--g300);font-size:12px}
+.fv-texto:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.fv .vis-form{margin-top:16px}
+.fv-mais summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--cyan);padding:4px 0}
+.fv-mais .fields{margin-top:10px}
+.fv .consent{margin-top:2px}
+.fv-depois{margin:2px 0 0;text-align:center;font-size:13px;color:var(--g300)}
+.fv-depois a,.fv-depois button{color:var(--cyan);background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.vis-ok-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.vis-ok .vis-ok-acts .i{width:17px;height:17px;padding:0;border-radius:0;background:none;color:inherit}
+@media (max-width:520px){.fv-dados{grid-template-columns:1fr}.fv .fields{grid-template-columns:1fr}}
 /* compartilhar imovel: WhatsApp, e-mail, mensagem de celular, Instagram e link */
 .modal-card--share{width:min(520px,100%);padding:clamp(24px,4vw,36px)}
 .share-title{margin:0;padding-right:48px;font-size:clamp(22px,2.6vw,28px);font-weight:700;letter-spacing:-.04em;line-height:1.1}
@@ -2154,8 +2177,95 @@ p{text-wrap:pretty}
       }
       if (!r.ok || !j.ok) { bt.disabled = false; bt.textContent = 'Tentar de novo'; return mostra((j && j.error) || 'Não foi possível enviar agora. Tente de novo ou combine pelo WhatsApp.'); }
       medir('agendar_visita', { etapa: 'pedido_enviado' }, visItem);
+      if (j.ficha && j.ficha.t) return fichaAbrir(j, nome, fone);
       visCorpo().innerHTML = `<div class="vis-ok">${ico('check')}<h3>Pedido de visita enviado</h3><p><b>${esc(j.quando || '')}</b><br>O horário ficou reservado na agenda de quem atende este imóvel. Você recebe a confirmação pelo WhatsApp.</p><button class="cta cta-ghost" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
     } catch { bt.disabled = false; bt.textContent = 'Tentar de novo'; mostra('Sem conexão agora. Tente de novo ou combine pelo WhatsApp.'); }
+  });
+
+  /* Ficha de visita: sobe na mesma janela, logo depois do pedido. O cliente confere os dados do imovel e a declaracao
+     (texto vigente, vindo do Hub) e assina com o nome completo. O aceite fica registrado no Hub com data, aparelho e versao. */
+  let fvAtual = null;
+  function fvData(iso) { try { return new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' às'); } catch { return ''; } }
+  function fvValor(im) {
+    const brl = v => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+    if (im.ofertas && im.ofertas.length > 1) return im.ofertas.map(o => `${o.nome}: ${o.valor != null ? brl(o.valor) + (o.tipo === 'venda' ? '' : o.tipo === 'locacao' ? '/mês' : '/diária') : 'sob consulta'}`).join(' · ');
+    return im.valor != null ? brl(im.valor) + (im.operacao === 'Locação' ? '/mês' : '') : 'Sob consulta';
+  }
+  async function fichaAbrir(pedido, nome, fone) {
+    const t = pedido.ficha.t, url = pedido.ficha.url || '';
+    fvAtual = { t, url, fone };
+    visCorpo().innerHTML = `
+      <div class="vis-pedido">${ico('check')}<div><b>Pedido de visita enviado</b><span>${esc(pedido.quando || '')} · aguardando a confirmação de quem atende o imóvel, pelo WhatsApp</span></div></div>
+      <div class="fv" id="fv">
+        <p class="vis-rot" style="margin-top:0">Último passo</p>
+        <h3 class="fv-tit">Ficha de visita</h3>
+        <p class="fv-sub">Confira e assine agora: leva menos de um minuto. A ficha registra a sua visita pelo AiLogic Hub e garante o seu atendimento até o fim da negociação.</p>
+        <p class="vis-carrega" id="fv-carrega">Carregando a ficha…</p>
+      </div>`;
+    try {
+      const ctrl = new AbortController(), tm = setTimeout(() => ctrl.abort(), 8000);
+      const r = await fetch(`${CONFIG.visitaUrl}?action=ficha_ver&t=${encodeURIComponent(t)}`, { signal: ctrl.signal, cache: 'no-store' });
+      clearTimeout(tm);
+      const f = await r.json().catch(() => ({}));
+      if (!fvAtual || fvAtual.t !== t) return;
+      if (!r.ok) throw new Error(f.error || '');
+      fichaPintar(f, nome);
+    } catch {
+      const box = $('#fv-carrega'); if (!box) return;
+      box.outerHTML = `<p class="vis-msg">Não foi possível abrir a ficha aqui agora.${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener" style="color:var(--cyan)">Abrir a ficha em uma nova guia</a>.` : ' O corretor envia o link antes da visita.'}</p><div class="vis-ok-acts" style="margin-top:16px"><button class="cta cta-ghost" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
+    }
+  }
+  function fichaPintar(f, nome) {
+    const im = f.imovel || {}, co = f.corretor || {};
+    const corretor = co.nome ? co.nome + (co.creci ? ` · CRECI ${co.creci}` : '') : 'Definido pelo Hub na confirmação';
+    const local = [im.bairro, im.cidade].filter(Boolean).join(', ');
+    const clausulas = (f.clausulas || []).map(c => { const k = c.indexOf('. '); return f.versao === 'v1' || k < 0 ? `<p>${esc(c)}</p>` : `<p><b>${esc(c.slice(0, k + 1))}</b> ${esc(c.slice(k + 2))}</p>`; }).join('');
+    const fv = $('#fv'); if (!fv) return;
+    fv.querySelector('#fv-carrega').outerHTML = `
+      <dl class="fv-dados">
+        <div class="full"><dt>Imóvel</dt><dd>${esc(im.titulo || '')}${im.codigo ? ` · ${esc(im.codigo)}` : ''}</dd></div>
+        <div><dt>Localização</dt><dd>${esc(local || 'A confirmar')}</dd></div>
+        <div><dt>${esc(im.operacao || 'Valor')}</dt><dd>${esc(fvValor(im))}</dd></div>
+        <div class="full"><dt>Corretor responsável</dt><dd>${esc(corretor)}</dd></div>
+      </dl>
+      <div class="fv-texto" tabindex="0" role="region" aria-label="Texto da ficha de visita">${clausulas}<p class="fv-nota">O corretor responsável confirma o CRECI e este compromisso pela plataforma ao confirmar a visita.</p></div>
+      <form class="vis-form" id="fv-form" novalidate>
+        <div class="fields">
+          <div class="field"><label for="fv-nome">Nome completo</label><input id="fv-nome" autocomplete="name" required maxlength="120" value="${esc(nome || '')}"></div>
+          <div class="field"><label for="fv-cpf">CPF (opcional)</label><input id="fv-cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00"></div>
+        </div>
+        <details class="fv-mais"><summary>Vai mais alguém na visita?</summary>
+          <div class="fields">
+            <div class="field"><label for="fv-nome2">Nome completo</label><input id="fv-nome2" maxlength="120"></div>
+            <div class="field"><label for="fv-cpf2">CPF (opcional)</label><input id="fv-cpf2" inputmode="numeric" maxlength="14"></div>
+          </div>
+        </details>
+        <label class="consent"><input type="checkbox" id="fv-ok"><span>Conferi os dados e aceito esta ficha de visita (versão ${esc(f.versao || '')}).</span></label>
+        <button class="cta cta-primary" type="submit" id="fv-assinar" style="min-height:50px">${ico('doc')}Assinar ficha de visita</button>
+        <p class="vis-msg erro" id="fv-erro" hidden></p>
+        <p class="fv-depois">${fvAtual.url ? `<a href="${esc(fvAtual.url)}" target="_blank" rel="noopener">Ver a ficha completa</a> · ` : ''}<button type="button" data-action="close">Assinar depois</button></p>
+      </form>`;
+  }
+  visEl.addEventListener('submit', async e => {
+    if (e.target.id !== 'fv-form' || !fvAtual) return;
+    e.preventDefault();
+    const err = $('#fv-erro'), bt = $('#fv-assinar');
+    const mostra = m => { err.textContent = m; err.hidden = false; };
+    err.hidden = true;
+    const nome = $('#fv-nome').value.trim().replace(/\s+/g, ' '), cpf = $('#fv-cpf').value.replace(/\D/g, ''), nome2 = $('#fv-nome2').value.trim(), cpf2 = $('#fv-cpf2').value.replace(/\D/g, '');
+    if (nome.split(' ').length < 2) { $('#fv-nome').focus(); return mostra('Informe seu nome completo.'); }
+    if (cpf && cpf.length !== 11) { $('#fv-cpf').focus(); return mostra('Confira o CPF (11 números) ou deixe em branco.'); }
+    if (nome2 && nome2.split(/\s+/).length < 2) { $('#fv-nome2').focus(); return mostra('Informe o nome completo de quem vai junto.'); }
+    if (!$('#fv-ok').checked) return mostra('Marque que conferiu os dados e aceita a ficha.');
+    bt.disabled = true; bt.textContent = 'Assinando…';
+    try {
+      const r = await fetch(`${CONFIG.visitaUrl}?action=ficha_aceitar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: fvAtual.t, nome, cpf, aceito: true, telefone: fvAtual.fone || '', nome2, cpf2 }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar ficha de visita`; return mostra(j.error || 'Não foi possível registrar a assinatura. Tente de novo.'); }
+      medir('agendar_visita', { etapa: 'ficha_assinada' }, visItem);
+      const a = j.aceite || {};
+      $('#fv').innerHTML = `<div class="vis-ok">${ico('check')}<h3>Ficha assinada</h3><p>Por <b>${esc(a.nome || nome)}</b>${a.visitante2 ? ` e ${esc(a.visitante2)}` : ''}${a.em ? ` em ${esc(fvData(a.em))}` : ''}.<br>Você recebe a confirmação da visita pelo WhatsApp.</p><div class="vis-ok-acts">${fvAtual.url ? `<a class="cta cta-ghost" href="${esc(fvAtual.url)}" target="_blank" rel="noopener" style="min-width:160px">${ico('doc')}Ver a ficha</a>` : ''}<button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div></div>`;
+    } catch { bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar ficha de visita`; mostra('Sem conexão agora. Tente de novo.'); }
   });
 
   /* Compartilhar: janela com WhatsApp, e-mail, mensagem de celular, Instagram, copiar link e (no celular) o menu
