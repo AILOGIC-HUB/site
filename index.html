@@ -341,7 +341,10 @@ p{text-wrap:pretty}
 .card-loc{display:flex;align-items:center;gap:5px;max-width:calc(100% - 64px);margin:0;font-size:12.5px;color:rgba(255,255,255,.88)}
 .card-loc span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-loc .i{width:14px;height:14px}
-.card-title{max-width:calc(100% - 64px);margin:0;font-size:20px;font-weight:600;line-height:1.2;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-title{max-width:calc(100% - 64px);margin:0;font-size:20px;font-weight:600;line-height:1.2;letter-spacing:-.03em;text-wrap:balance}
+/* o título quebra em até duas linhas inteiras, sem cortar no meio da palavra */
+.card-loc,.card-title{text-shadow:0 1px 4px rgba(6,19,38,.6)}
+.card-title-t{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
 .card-title button{padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-align:left}
 /* o título cobre o card inteiro (alvo de toque grande); ações, selos e botões ficam por cima */
 .card-title button::after{content:"";position:absolute;inset:0;z-index:1}
@@ -2046,7 +2049,7 @@ p{text-wrap:pretty}
         </div>
         <div class="card-info">
           <p class="card-loc">${ico('pin')}<span>${esc(i.bairro)}${i.cidade ? ` • ${esc(i.cidade)}` : ''}</span></p>
-          <h3 class="card-title"><button type="button" data-action="details" data-id="${id}">${t}</button></h3>
+          <h3 class="card-title"><button type="button" data-action="details" data-id="${id}"><span class="card-title-t">${t}</span></button></h3>
           <p class="card-specs">${esc(specsOf(i).join(' • '))}</p>
           <p class="card-price${!ex && i.ofertas && i.ofertas.length > 1 ? ' duo' : ''}">${ex ? 'Imóvel ilustrativo' : priceHTML(i)}</p>
           ${ex ? `<div class="card-cta card-cta--one"><button class="cta cta-primary" type="button" data-action="sam">${ico('chat')}Ver os disponíveis com o Sam</button></div>` : `<div class="card-cta">
