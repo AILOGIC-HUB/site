@@ -552,6 +552,26 @@ p{text-wrap:pretty}
 @media (hover:none){.hood-cta{opacity:1;transform:none}}
 @media (max-width:1024px){.hood-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hood{aspect-ratio:4/5}}
 @media (max-width:420px){.hood-grid{gap:10px}.hood-body{left:14px;right:14px;bottom:14px}.hood-name{font-size:18px}.hood-line{font-size:13px}}
+/* regioes montadas a partir dos imoveis publicados: a grade se ajusta a quantas houver */
+.hood.sem-foto{background:radial-gradient(80% 70% at 20% 10%,rgba(15,139,255,.38),transparent 65%),linear-gradient(160deg,#10325a,#061326)}
+.hood-grid.n1{grid-template-columns:1fr}.hood-grid.n1 .hood{aspect-ratio:21/8}
+.hood-grid.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.hood-grid.n2 .hood{aspect-ratio:16/10}
+.hood-grid.n3{grid-template-columns:repeat(3,minmax(0,1fr))}.hood-grid.n3 .hood{aspect-ratio:4/5}
+.hood-grid.n1 .hood-body{left:clamp(20px,3vw,40px);right:clamp(20px,3vw,40px);bottom:clamp(20px,3vw,36px)}
+.hood-grid.n1 .hood-name{font-size:clamp(24px,2.6vw,34px)}.hood-grid.n1 .hood-line{font-size:15px}
+.hood-more{display:flex;justify-content:center;margin-top:28px}
+@media (max-width:1024px){.hood-grid.n1 .hood{aspect-ratio:16/9}.hood-grid.n2 .hood{aspect-ratio:4/5}.hood-grid.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.hood-grid.n3 .hood:first-child{grid-column:1/-1;aspect-ratio:16/9}}
+@media (max-width:640px){.hood-grid.n1 .hood{aspect-ratio:4/3}.hood-grid.n2 .hood{aspect-ratio:3/4}.hood-grid.n3 .hood:first-child{aspect-ratio:4/3}}
+/* vitrine filtrada por uma regiao */
+.regiao-bar{display:flex;flex-wrap:wrap;gap:8px;margin:-2px 0 18px}
+.regiao-bar button{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06);font-size:13px;font-weight:500;color:#fff;transition:border-color .2s ease,background-color .2s ease}
+.regiao-bar button:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.regiao-bar .i{width:14px;height:14px;flex:none}
+.regiao-bar [data-action="regiao-sam"] .i{color:var(--cyan)}
+@media (max-width:640px){.regiao-bar{margin-bottom:14px}.regiao-bar button{min-height:40px;padding:0 13px}.rb-extra{display:none}}
+.hood-ico{position:absolute;top:20px;left:20px;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:var(--cyan)}
+.hood-ico .i{width:22px;height:22px}
+@media (max-width:420px){.hood-ico{top:14px;left:14px;width:40px;height:40px}}
 
 /* rodapé */
 .site-footer{padding:72px 0 calc(32px + env(safe-area-inset-bottom));background:var(--ink);border-top:1px solid var(--line);color:var(--g300)}
@@ -1189,6 +1209,10 @@ p{text-wrap:pretty}
             </div>
             <button class="vitrine-pause" type="button" id="vitrine-pause" aria-label="Pausar a vitrine"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausar</span></button>
           </div>
+          <div class="regiao-bar" id="regiao-bar" hidden>
+            <button type="button" data-action="regiao-limpar"><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg>Todas as regiões</button>
+            <button type="button" data-action="regiao-sam"><svg class="i" aria-hidden="true"><use href="#i-chat"/></svg><span>Perguntar ao Sam<span class="rb-extra"></span></span></button>
+          </div>
           <div class="vrows" id="grid" role="region" aria-roledescription="carrossel" aria-label="Vitrine de imóveis"></div>
           <p class="demo-note" id="demo-note">Imóveis ilustrativos, só para mostrar a experiência: não estão à venda nem para alugar. Os imóveis reais aparecem aqui assim que as imobiliárias parceiras publicarem. Para ver o que está disponível hoje, fale com o Sam.</p>
       </div>
@@ -1238,44 +1262,45 @@ p{text-wrap:pretty}
     <section class="section section-dark" id="bairros" aria-labelledby="bairros-title">
       <div class="wrap">
         <header class="section-head" data-reveal>
-          <p class="eyebrow">Bairros</p>
+          <p class="eyebrow">Regiões</p>
           <h2 class="section-title" id="bairros-title">Conhecemos cada rua.</h2>
-          <p class="section-sub">Escolha um bairro e o Sam conta o que só quem mora lá sabe: onde bate sol, onde tem barulho, quanto tempo leva de manhã.</p>
+          <p class="section-sub">Escolha uma região e veja os imóveis que temos lá. Quer saber como é a vida no lugar? O Sam conta.</p>
         </header>
         <div class="hood-grid" data-reveal data-stagger>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Pinheiros">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Pinheiros">
             <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Pinheiros</span><span class="hood-line">Cafés, galerias e metrô na porta.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Pinheiros</span><span class="hood-line">Cafés, galerias e metrô na porta.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Itaim Bibi">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Itaim Bibi">
             <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Itaim Bibi</span><span class="hood-line">Tudo a pé, do escritório ao jantar.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Itaim Bibi</span><span class="hood-line">Tudo a pé, do escritório ao jantar.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Vila Nova Conceição">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Vila Nova Conceição">
             <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Vila Nova Conceição</span><span class="hood-line">O Ibirapuera como quintal.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Vila Nova Conceição</span><span class="hood-line">O Ibirapuera como quintal.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Jardim Europa">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Jardim Europa">
             <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Jardim Europa</span><span class="hood-line">Ruas arborizadas e casas amplas.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Jardim Europa</span><span class="hood-line">Ruas arborizadas e casas amplas.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Moema">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Moema">
             <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Moema</span><span class="hood-line">Plano, verde e perto do parque.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Moema</span><span class="hood-line">Plano, verde e perto do parque.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Higienópolis">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Higienópolis">
             <img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Higienópolis</span><span class="hood-line">Prédios clássicos e vida de bairro.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Higienópolis</span><span class="hood-line">Prédios clássicos e vida de bairro.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Alto de Pinheiros">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Alto de Pinheiros">
             <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Alto de Pinheiros</span><span class="hood-line">Silêncio a dez minutos de tudo.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Alto de Pinheiros</span><span class="hood-line">Silêncio a dez minutos de tudo.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
-          <button class="hood media" type="button" data-action="hood" data-bairro="Jardins">
+          <button class="hood media" type="button" data-action="regiao" data-bairro="Jardins">
             <img src="https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=70" alt="" width="700" height="933" loading="lazy" decoding="async">
-            <span class="hood-body"><span class="hood-name">Jardins</span><span class="hood-line">A Oscar Freire a uma quadra.</span><span class="hood-cta">Conversar sobre o bairro <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
+            <span class="hood-body"><span class="hood-name">Jardins</span><span class="hood-line">A Oscar Freire a uma quadra.</span><span class="hood-cta">Ver os imóveis <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></span>
           </button>
         </div>
+        <div class="hood-more" id="hood-more" hidden><button class="btn btn-ghost" type="button" data-action="hood-mais"></button></div>
       </div>
     </section>
 </main>
@@ -1295,7 +1320,7 @@ p{text-wrap:pretty}
         <h3>Explorar</h3>
         <ul>
           <li><a href="#imoveis">Imóveis</a></li>
-          <li><a href="#bairros">Bairros</a></li>
+          <li><a href="#bairros">Regiões</a></li>
           <li><a href="#como-funciona">Como funciona</a></li>
           <li><button type="button" data-action="sam">Falar com o Sam</button></li>
         </ul>
@@ -1666,6 +1691,14 @@ p{text-wrap:pretty}
   const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
   const ico = n => `<svg class="i" aria-hidden="true"><use href="#i-${n}"/></svg>`;
   const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+  /** Nome de lugar digitado todo em maiúsculas ("FAZENDA ALVORADA") vira título ("Fazenda Alvorada"); o resto fica como veio. */
+  const MINUSC = new Set(['de', 'da', 'do', 'das', 'dos', 'e']);
+  function lugar(v) {
+    const t = String(v ?? '').replace(/\s+/g, ' ').trim();
+    if (!t || !/\p{L}/u.test(t) || t !== t.toLocaleUpperCase('pt-BR')) return t;
+    return t.toLocaleLowerCase('pt-BR').split(' ').map((w, k) => (k && MINUSC.has(w)) ? w : /^[ivx]{1,4}$/.test(w) ? w.toUpperCase()
+      : w.split('-').map(p => p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1)).join('-')).join(' ');
+  }
   const listPt = a => a.length > 1 ? `${a.slice(0, -1).join(', ')} e ${a[a.length - 1]}` : (a[0] || '');
   const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
   const NUM = new Intl.NumberFormat('pt-BR');
@@ -1801,7 +1834,7 @@ p{text-wrap:pretty}
         titulo: String(r.titulo || 'Imóvel'), tipo: String(r.tipo || ''),
         finalidade: ['venda', 'locacao', 'temporada'].includes(r.finalidade) ? r.finalidade : 'venda',
         preco: n(r.preco), area: n(r.area), quartos: n(r.quartos), suites: n(r.suites), banheiros: n(r.banheiros), vagas: n(r.vagas),
-        bairro: String(r.bairro || ''), cidade: String(r.cidade || ''), descricao: String(r.descricao || ''),
+        bairro: lugar(r.bairro), cidade: lugar(r.cidade), descricao: String(r.descricao || ''),
         palavra: String(r.palavra_destaque || '').trim(), curta: String(r.descricao_curta || '').trim(),
         comodidades: Array.isArray(r.comodidades) ? r.comodidades.map(String).filter(Boolean).slice(0, 30) : [],
         destaque: !!r.destaque, foto, fotos: fotos.length ? fotos : (foto ? [foto] : []),
@@ -1843,7 +1876,9 @@ p{text-wrap:pretty}
       const nota = $('#demo-note'); if (nota) nota.hidden = true;
       hydratePanels();
       renderGrid();
+      renderHoods();
       openFromHash();
+      regiaoDoHash();
     } catch { /* sem API: mantém os dados demo */ }
     finally { clearTimeout(t); }
   }
@@ -2751,14 +2786,74 @@ p{text-wrap:pretty}
   const V = { rows: [], paused: false, inView: false, tick: 0, settleT: 0 };
   const ROW_MS = 900, ROW_EASE = 'cubic-bezier(.65,0,.35,1)';
   const ROW_SHIFT = 'translate3d(calc((100% + var(--vgap)) / var(--per) * -1),0,0)';
+  /* Regiões (reunião de 13/11/2026: "um botão para escolher qual rua eu quero conhecer", só com as dos imóveis cadastrados).
+     A região é o bairro do imóvel (ou a cidade, se o bairro não veio), nunca o endereço: a rua exata fica só no Hub. */
+  let regiao = null, hoodTodas = false;
+  const HOOD_MAX = 8, hoodGrid = $('.hood-grid');
+  const regKey = i => `${norm(i.bairro || i.cidade)}|${norm(i.cidade)}`;
+  const slugDe = t => norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  // foto e frase dos cartoes de exemplo (bairros de Sao Paulo), usadas enquanto a vitrine mostra os exemplos
+  const HOOD_FIX = new Map($$('.hood', hoodGrid).map(b => [norm(b.dataset.bairro), { img: $('img', b).getAttribute('src'), linha: $('.hood-line', b).textContent }]));
+  function regioes() {
+    const m = new Map();
+    IMOVEIS.forEach(i => {
+      if (!i.bairro && !i.cidade) return;
+      const k = regKey(i);
+      if (!m.has(k)) m.set(k, { key: k, nome: i.bairro || i.cidade, cidade: i.bairro ? i.cidade : '', slug: slugDe(`${i.bairro || i.cidade} ${i.bairro ? i.cidade : ''}`), itens: [] });
+      m.get(k).itens.push(i);
+    });
+    return [...m.values()].sort((a, b) => b.itens.length - a.itens.length || a.nome.localeCompare(b.nome, 'pt-BR'));
+  }
+  function hoodHTML(r) {
+    const n = r.itens.length, fix = ehExemplo() ? HOOD_FIX.get(norm(r.nome)) : null;
+    const capa = r.itens.find(i => i.destaque && photosOf(i).length) || r.itens.find(i => photosOf(i).length);
+    const img = fix ? fix.img : capa ? sized(photosOf(capa)[0], 1200) : '';
+    const linha = fix ? fix.linha : [r.cidade, plural(n, 'imóvel', 'imóveis')].filter(Boolean).join(' · ');
+    const rot = `Ver os imóveis em ${r.nome}${r.cidade ? `, ${r.cidade}` : ''} (${plural(n, 'imóvel', 'imóveis')})`;
+    return `<button class="hood media${img ? '' : ' sem-foto'}" type="button" data-action="regiao" data-regiao="${esc(r.key)}" aria-label="${esc(rot)}">`
+      + (img ? `<img src="${esc(img)}" alt="" width="1200" height="900" loading="lazy" decoding="async">` : `<span class="hood-ico">${ico('pin')}</span>`)
+      + `<span class="hood-body"><span class="hood-name">${esc(r.nome)}</span><span class="hood-line">${esc(linha)}</span><span class="hood-cta">Ver os imóveis ${ico('arrow')}</span></span></button>`;
+  }
+  /** Monta os cartões das regiões a partir dos imóveis publicados (com os exemplos, ficam os bairros de exemplo da página). */
+  function renderHoods() {
+    if (ehExemplo()) return;
+    const lista = regioes(); if (!lista.length) return;
+    const mostrar = hoodTodas ? lista : lista.slice(0, HOOD_MAX);
+    ['n1', 'n2', 'n3'].forEach(c => hoodGrid.classList.toggle(c, c === `n${mostrar.length}`));
+    hoodGrid.innerHTML = mostrar.map(hoodHTML).join('');
+    const mais = $('#hood-more'); mais.hidden = mostrar.length === lista.length;
+    $('button', mais).textContent = `Ver todas as regiões (${lista.length})`;
+  }
+  function syncRegiao() {
+    const r = regiao && regioes().find(x => x.key === regiao);
+    $('#vitrine-title').innerHTML = r ? `Imóveis em <span>${esc(r.nome)}</span>` : 'Imóveis selecionados <span>para você</span>';
+    const bar = $('#regiao-bar'); bar.hidden = !r;
+    if (r) $('.rb-extra', bar).textContent = ` sobre ${r.nome}`;
+    return r;
+  }
+  function escolherRegiao(key, { rolar = true } = {}) {
+    const r = key ? regioes().find(x => x.key === key) : null;
+    regiao = r ? r.key : null;
+    if (r) medir('regiao', { regiao: r.nome });
+    renderGrid();
+    try { history.replaceState(null, '', r ? `#regiao=${r.slug}` : location.pathname + location.search); } catch {}
+    if (rolar) vitrineSec.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
+  }
+  // link direto para uma regiao (ex.: ailogichub.com.br/#regiao=fazenda-alvorada-porto-feliz)
+  function regiaoDoHash() {
+    const m = /^#regiao=([a-z0-9-]+)$/.exec(location.hash); if (!m) return;
+    const r = regioes().find(x => x.slug === m[1]);
+    if (r) escolherRegiao(r.key);
+  }
   // depois da entrada, os cards param de animar (mover um card no carrossel reiniciaria a animação)
   function settleSoon() { clearTimeout(V.settleT); V.settleT = setTimeout(() => grid.classList.add('settled'), 1700); }
   function renderGrid() {
-    const list = IMOVEIS.filter(i => filter === 'todos' ? true : filter === 'salvos' ? favs.has(String(i.id)) : catsOf(i).has(filter));
-    const n = list.length;
-    $('#result-count').textContent = n ? `${plural(n, 'imóvel', 'imóveis')}${ehExemplo() ? ' de exemplo' : ''}` : '';
+    if (regiao && !IMOVEIS.some(i => regKey(i) === regiao)) regiao = null;   // a vitrine mudou (exemplos -> imoveis reais)
+    const list = IMOVEIS.filter(i => (filter === 'todos' ? true : filter === 'salvos' ? favs.has(String(i.id)) : catsOf(i).has(filter)) && (!regiao || regKey(i) === regiao));
+    const n = list.length, rg = syncRegiao();
+    $('#result-count').textContent = n ? `${plural(n, 'imóvel', 'imóveis')}${ehExemplo() ? ' de exemplo' : ''}${rg && rg.cidade ? ` · ${rg.cidade}` : ''}` : '';
     if (!n) {
-      grid.innerHTML = `<div class="empty"><p>${filter === 'salvos' ? 'Você ainda não salvou nenhum imóvel.' : 'Nada nesta categoria agora. Entra coisa nova toda semana.'}</p>
+      grid.innerHTML = `<div class="empty"><p>${filter === 'salvos' ? 'Você ainda não salvou nenhum imóvel.' : regiao ? 'Nada nesta categoria nesta região agora. Entra coisa nova toda semana.' : 'Nada nesta categoria agora. Entra coisa nova toda semana.'}</p>
        <button class="btn btn-primary" type="button" data-action="sam">Pedir para o Sam me avisar</button></div>`;
       V.rows = [];
     } else {
@@ -3548,7 +3643,10 @@ p{text-wrap:pretty}
       case 'cookies-aceitar': Consent.save({ analise: true, personalizacao: true, publicidade: true }); break;
       case 'cookies-essenciais': Consent.save({}); break;
       case 'cookies-salvar': Consent.save(Object.fromEntries(OPCIONAIS.map(k => [k, $(`[name="${k}"]`, cookiePrefs).checked]))); break;
-      case 'hood': Sam.open({ bairro: a.dataset.bairro }); break;
+      case 'regiao': { const r = a.dataset.regiao ? { key: a.dataset.regiao } : regioes().find(x => norm(x.nome) === norm(a.dataset.bairro)); if (r) escolherRegiao(r.key); else Sam.open({ bairro: a.dataset.bairro }); break; }
+      case 'regiao-limpar': escolherRegiao(null, { rolar: false }); break;
+      case 'regiao-sam': { const r = regioes().find(x => x.key === regiao); Sam.open(r ? { bairro: r.nome } : {}); break; }
+      case 'hood-mais': hoodTodas = true; renderHoods(); break;
       case 'ask': { const it = byId(id); closeDialog(detail, { restoreFocus: false }); Sam.open({ imovel: it }); break; }
       case 'sam-restart': Sam.reset(); break;
       case 'menu': burger.setAttribute('aria-expanded', 'true'); openDialog(menu); break;
@@ -3723,6 +3821,7 @@ p{text-wrap:pretty}
     sam_abrir: { ga: 'sam_abrir', metaCustom: 'ConversaSam' },
     sam_mensagem: { ga: 'sam_mensagem' },
     filtro: { ga: 'filtro_vitrine' },
+    regiao: { ga: 'regiao_vitrine' },
     video: { ga: 'video_sam' },
     entrar: { ga: 'entrar_click' }
   };
@@ -3772,6 +3871,7 @@ p{text-wrap:pretty}
   const hashSlide = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
   if (hashSlide && hashSlide.classList.contains('panel')) Hero.go(Hero.list().indexOf(hashSlide), 1, { instant: true });
   openFromHash();
+  if (!CONFIG.online) regiaoDoHash();
   // o primeiro slide entra animado depois da primeira pintura
   const firstSlide = Hero.list()[Hero.cur];
   firstSlide.classList.remove('is-active');
