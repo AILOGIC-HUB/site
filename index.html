@@ -802,6 +802,17 @@ p{text-wrap:pretty}
 .consent input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--blue)}
 .consent a{color:var(--cyan)}
 .consent .field-error{grid-column:2}
+.consent.consent-2{margin-top:10px}
+.consent-nota{margin:10px 0 0 28px;font-size:12px;line-height:1.5;color:var(--g300)}
+.consent-nota a{color:var(--cyan)}
+/* proprietario: mensagem final (reuniao de 13/11/2026) */
+.lead-prop{max-width:460px;margin:16px auto 0;text-align:center}
+.lead-prop p{margin:0 0 10px;font-size:15px;line-height:1.6;color:var(--g200)}
+.lead-prop .lp-passo{margin:14px 0;padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);text-align:left;font-size:14px;line-height:1.55;color:var(--g200)}
+.lead-prop .lp-passo b,.lead-prop p b{color:#fff}
+.lead-prop .lp-ass{margin-top:16px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--cyan)}
+.termos-v{margin:-6px 0 18px;font-size:13px;color:#61768b}
+.termos-reg{margin-top:18px;padding:14px 16px;border:1px solid #dfe7ee;border-radius:14px;background:#f5f9fc;font-size:14px;line-height:1.6;color:#203b55}
 .hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
 .form-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:22px}
 .form-foot small{flex:1;min-width:200px;font-size:12.5px;color:var(--g400)}
@@ -1305,6 +1316,14 @@ p{text-wrap:pretty}
 </div>
 
 <!-- ============ PRIVACIDADE E COOKIES ============ -->
+<div class="modal" id="termos-modal" role="dialog" aria-modal="true" aria-label="Termos de Autorização">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--doc">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar os Termos de Autorização"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div id="termos-body" class="al-privacy-content"><p class="doc-loading">Carregando os Termos de Autorização…</p></div>
+  </div>
+</div>
+
 <div class="modal" id="politica-modal" role="dialog" aria-modal="true" aria-label="Política de Privacidade">
   <div class="modal-backdrop" data-action="close"></div>
   <div class="modal-card modal-card--doc">
@@ -1452,11 +1471,13 @@ p{text-wrap:pretty}
           <div class="field full"><label for="a-bairro">Bairro</label><input id="a-bairro" name="bairro" autocomplete="address-level3" required maxlength="60" data-msg="Em qual bairro fica?"><p class="field-error" aria-live="polite"></p></div>
           <div class="field full"><label for="a-msg">Algo que devemos saber?</label><textarea id="a-msg" name="mensagem" maxlength="600" placeholder="Metragem, andar, se está ocupado…"></textarea></div>
         </div>
-        <label class="consent"><input type="checkbox" name="aceite" required data-msg="Para seguir, autorize o contato."><span>Autorizo o AI Logic Hub a falar comigo pelo WhatsApp e por e-mail sobre este anúncio. <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a></span><p class="field-error" aria-live="polite"></p></label>
+        <label class="consent"><input type="checkbox" name="aceite_propriedade" required data-msg="Para finalizar, marque a declaração de propriedade."><span>Declaro ser o proprietário do imóvel ou seu representante legal devidamente autorizado e confirmo a veracidade das informações fornecidas.</span><p class="field-error" aria-live="polite"></p></label>
+        <label class="consent consent-2"><input type="checkbox" name="aceite_divulgacao" required data-msg="Para finalizar, marque a autorização de divulgação."><span>Autorizo a AiLogic Hub e seus profissionais parceiros a divulgar as informações e imagens do imóvel para fins de venda e/ou locação, conforme os <a href="https://www.ailogichuboficial.com/termos-autorizacao" data-action="termos" target="_blank" rel="noopener">Termos de Autorização</a>.</span><p class="field-error" aria-live="polite"></p></label>
+        <p class="consent-nota">Leia os <a href="https://www.ailogichuboficial.com/termos-autorizacao" data-action="termos" target="_blank" rel="noopener">Termos de Autorização</a> e a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a> antes de finalizar. O seu aceite fica registrado com a data, a hora e a versão dos termos.</p>
         <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-foot">
           <small>Usamos seus dados só para falar sobre este anúncio.</small>
-          <button class="btn btn-primary" type="submit">Enviar</button>
+          <button class="btn btn-primary" type="submit">Finalizar cadastro</button>
         </div>
       </form>
 
@@ -1493,10 +1514,17 @@ p{text-wrap:pretty}
       <div class="check"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></div>
       <h2 class="lead-title" id="lead-success-title" tabindex="-1">Recebido.</h2>
       <p class="lead-sub" id="lead-success-text">Um especialista vai te chamar no WhatsApp em até 1 dia útil.</p>
+      <div class="lead-prop" id="lead-success-prop" hidden>
+        <p>Obrigado por confiar na <b>AiLogic Hub</b>.</p>
+        <p>Seu imóvel foi recebido e seguirá para análise e validação pela nossa equipe.</p>
+        <div class="lp-passo"><b>Próximo passo:</b> após a aprovação, ele estará apto à divulgação e à apresentação para potenciais interessados por nossa rede de profissionais parceiros.</div>
+        <p>Você será informado sobre as próximas etapas.</p>
+        <p class="lp-ass">AILOGIC HUB · Inteligência que conecta</p>
+      </div>
       <div class="btns">
         <a class="btn btn-wa" id="lead-wa" href="#" target="_blank" rel="noopener" hidden>Abrir o WhatsApp</a>
-        <button class="btn btn-light" type="button" data-action="close">Fechar</button>
-        <button class="btn btn-ghost" type="button" data-action="sam">Falar com o Sam agora</button>
+        <button class="btn btn-light" type="button" data-action="close" id="lead-fechar">Fechar</button>
+        <button class="btn btn-ghost" type="button" data-action="sam" id="lead-sam">Falar com o Sam agora</button>
       </div>
     </div>
   </div>
@@ -1563,6 +1591,8 @@ p{text-wrap:pretty}
   /* ================= CONFIG ================= */
   // Sistema do Hub: imóveis reais, Sam e contatos. Na prévia local (localhost) as chamadas vão para /api do próprio servidor.
   const HUB = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '' : 'https://www.ailogichuboficial.com';
+  // versao dos Termos de Autorizacao do proprietario que este formulario mostra (o Hub confere com a atual e registra o aceite)
+  const TERMO_VERSAO = '2026-11-13.v1';
   const CONFIG = {
     whatsapp: '5511988021148',
     vitrineUrl: HUB + '/api/vitrine',   // imóveis publicados no Hub; enquanto não houver nenhum, ficam os exemplos
@@ -3303,7 +3333,7 @@ p{text-wrap:pretty}
       const waBtn = $('#lead-wa');
       const linhas = (parceiro
         ? [data.perfil === 'indicador' ? 'Olá! Quero indicar um imóvel para o AILogic Hub.' : 'Olá! Quero ser parceiro do AILogic Hub.', `Perfil: ${(PERFIS[data.perfil] || PERFIS.corretor).nome}`, `Nome: ${data.nome}`, data.empresa ? `Imobiliária: ${data.empresa}` : '', data.creci ? `CRECI: ${data.creci}` : '', `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Cidade: ${data.cidade}`, data.indicacao ? `Imóvel indicado: ${data.indicacao}` : '']
-        : ['Olá! Quero anunciar meu imóvel pelo AILogic Hub.', `Nome: ${data.nome}`, `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Tipo: ${data.tipo}`, `Quero: ${data.finalidade === 'locacao' ? 'alugar' : 'vender'}`, `Bairro: ${data.bairro}`, data.mensagem ? `Observações: ${data.mensagem}` : '']).filter(Boolean);
+        : ['Olá! Quero anunciar meu imóvel pelo AILogic Hub.', `Nome: ${data.nome}`, `WhatsApp: ${data.whatsapp}`, data.email ? `E-mail: ${data.email}` : '', `Tipo: ${data.tipo}`, `Quero: ${data.finalidade === 'locacao' ? 'alugar' : 'vender'}`, `Bairro: ${data.bairro}`, data.mensagem ? `Observações: ${data.mensagem}` : '', `Confirmações: declaração de propriedade e autorização de divulgação (Termos de Autorização, versão ${TERMO_VERSAO})`]).filter(Boolean);
       try {
         // 1º: o contato entra direto em Leads no Hub; sem resposta do Hub, segue pelo WhatsApp (nada se perde)
         let noHub = false;
@@ -3312,14 +3342,27 @@ p{text-wrap:pretty}
             const res = await fetch(CONFIG.leadUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
               nome: String(data.nome || '').trim(), whatsapp: String(data.whatsapp || ''), email: String(data.email || '').trim(),
               tipo: parceiro ? (data.perfil === 'indicador' ? 'indicador' : 'parceiro') : 'proprietario', origem: 'site-formulario',
-              mensagem: linhas.slice(1).filter(l => !/^(Nome|WhatsApp|E-mail):/.test(l)).join(' · ').slice(0, 500),
-              aceite: data.aceite === 'on', hp: String(data.hp || '') }) });
+              mensagem: linhas.slice(1).filter(l => !/^(Nome|WhatsApp|E-mail|Confirmações):/.test(l)).join(' · ').slice(0, 500),
+              // aceite: o Hub antigo pedia so a autorizacao de contato; as duas confirmacoes (obrigatorias no formulario) a incluem
+              aceite: parceiro ? data.aceite === 'on' : (data.aceite_propriedade === 'on' && data.aceite_divulgacao === 'on'),
+              // proprietario: as duas confirmacoes e a versao dos termos que a pessoa viu (o Hub registra o aceite)
+              aceite_propriedade: parceiro ? undefined : data.aceite_propriedade === 'on',
+              aceite_divulgacao: parceiro ? undefined : data.aceite_divulgacao === 'on',
+              termo_versao: parceiro ? undefined : TERMO_VERSAO, pagina: location.origin + location.pathname,
+              hp: String(data.hp || '') }) });
             const j = await res.json().catch(() => ({}));
-            if (res.status === 400 && j.error) { toast(j.error); return; }
+            if ((res.status === 400 || res.status === 409) && j.error) { toast(j.error); return; }
             noHub = res.ok && j.ok !== false;
           } catch { noHub = false; }
         }
-        if (noHub) {
+        // proprietario no Hub: a mensagem final do Alessandro (confirma o recebimento; a divulgacao vem depois da validacao)
+        const propOk = noHub && !parceiro;
+        $('#lead-success-prop').hidden = !propOk; $('#lead-success-text').hidden = propOk;
+        $('#lead-fechar').textContent = propOk ? 'Concluir' : 'Fechar'; $('#lead-sam').hidden = propOk;
+        if (propOk) {
+          $('#lead-success-title').textContent = 'Imóvel cadastrado com sucesso!';
+          waBtn.hidden = true;
+        } else if (noHub) {
           $('#lead-success-title').textContent = nome ? `Recebido, ${nome}.` : 'Recebido.';
           $('#lead-success-text').textContent = parceiro
             ? 'Nossa equipe de parcerias te chama no WhatsApp em até 1 dia útil.'
@@ -3478,6 +3521,7 @@ p{text-wrap:pretty}
       case 'parceiro': closeDrop(); closeMenu(); openLead('parceiro', a.dataset.perfil); break;
       case 'video': openVideo(); break;
       case 'privacidade': e.preventDefault(); openPolicy(); break;
+      case 'termos': e.preventDefault(); openTermos(); break;
       case 'cookies-prefs': openCookiePrefs(); break;
       case 'cookies-aceitar': Consent.save({ analise: true, personalizacao: true, publicidade: true }); break;
       case 'cookies-essenciais': Consent.save({}); break;
@@ -3495,6 +3539,28 @@ p{text-wrap:pretty}
   // O texto da política fica só em politica-de-privacidade.html (a página abre sozinha pelo link);
   // aqui ele é lido e mostrado numa janela. Aberto como arquivo (sem servidor), o link abre a página.
   const POLITICA_URL = 'politica-de-privacidade.html';
+  // Termos de Autorizacao do proprietario: o texto vem do Hub (o mesmo que o aceite registra, com versao e hash)
+  const TERMOS_URL = 'https://www.ailogichuboficial.com/termos-autorizacao';
+  const termosModal = $('#termos-modal'), termosBody = $('#termos-body');
+  let termosLoaded = false;
+  async function openTermos() {
+    if (!CONFIG.online) { window.open(TERMOS_URL, '_blank', 'noopener'); return; }
+    openDialog(termosModal, { focus: $('.modal-x', termosModal) });
+    $('.modal-card', termosModal).scrollTop = 0;
+    if (termosLoaded) return;
+    try {
+      const res = await fetch(HUB + '/api/proposta?action=termos_proprietario');
+      if (!res.ok) throw new Error(String(res.status));
+      const t = await res.json();
+      if (!t || !Array.isArray(t.paragrafos)) throw new Error('sem conteúdo');
+      termosBody.innerHTML = `<h2 class="al-document-title">${esc(t.titulo)}</h2><p class="termos-v">Termos de Autorização · ${esc(t.versao_rotulo)}</p>`
+        + t.paragrafos.map(p => `<p>${esc(p).replace('Política de Privacidade', '<a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>')}</p>`).join('')
+        + '<div class="termos-reg">Ao finalizar o cadastro, registramos a data e a hora, o nome e o contato informados, a versão destes termos e os dados técnicos do aceite (endereço IP e navegador). O cadastro segue para análise e validação antes de qualquer divulgação.</div>';
+      termosLoaded = true;
+    } catch {
+      termosBody.innerHTML = `<p class="doc-loading">Não foi possível carregar o texto aqui. <a href="${esc(TERMOS_URL)}" target="_blank" rel="noopener">Abrir os Termos de Autorização</a>.</p>`;
+    }
+  }
   const policyModal = $('#politica-modal'), policyBody = $('#politica-body');
   let policyLoaded = false;
   async function openPolicy() {
