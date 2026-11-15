@@ -776,6 +776,7 @@ p{text-wrap:pretty}
 .pr-ferr{margin:0;font-size:13px;line-height:1.4;color:#ff9aa6}
 .consent .pr-ferr{grid-column:2}
 .pr-acts{display:grid;grid-template-columns:auto 1fr;gap:10px}
+.pr-hp{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
 .pr-acts .cta-ghost{min-width:128px}
 @media (max-width:520px){.pr-acts{grid-template-columns:1fr}.pr-resumo div{flex-direction:column;gap:2px}}
 #proposta .field select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#9fb3c8 50%),linear-gradient(135deg,#9fb3c8 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 15px) 21px;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
@@ -2403,6 +2404,7 @@ p{text-wrap:pretty}
         </div>
         <label class="consent"><input type="checkbox" id="pr-ok"><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp sobre esta proposta e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
         <p class="vis-lgpd">Você assina a ficha de proposta de forma eletrônica, pela D4Sign: o link chega no seu e-mail e no WhatsApp. Depois da sua assinatura, ela segue para o proprietário; a assinatura dele é o aceite da proposta.</p>
+        <input class="pr-hp" id="pr-hp" name="site_url" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Enviar e assinar a proposta</button>
         <p class="vis-msg erro" id="pr-erro" hidden></p>
       </form>`;
@@ -2465,6 +2467,7 @@ p{text-wrap:pretty}
         </div>
         <label class="consent"><input type="checkbox" id="pr-ok" data-k="ok"${d.ok ? ' checked' : ''}><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp sobre esta proposta e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
         <p class="vis-lgpd">Você assina a <b>Proposta do comprador</b> pela D4Sign (link no e-mail e no WhatsApp). Depois, o vendedor assina o <b>Aceite do vendedor</b>, com as mesmas condições, até a validade da sua oferta.</p>
+        <input class="pr-hp" id="pr-hp" name="site_url" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="pr-acts"><button class="cta cta-ghost" type="button" data-pr-voltar>Voltar</button><button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Enviar e assinar a proposta</button></div>
         <p class="vis-msg erro" id="pr-erro" hidden></p>
       </form>`;
@@ -2564,6 +2567,7 @@ p{text-wrap:pretty}
   async function prEnviar(body, resumoOk) {
     const bt = $('#pr-enviar'), err = $('#pr-erro');
     bt.disabled = true; bt.textContent = 'Enviando…';
+    body = Object.assign({}, body, { hp: (($('#pr-hp') || {}).value || '').trim() });
     try {
       const r = await fetch(CONFIG.propostaUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
