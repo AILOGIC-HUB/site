@@ -22,12 +22,32 @@
       ],
       "destination": "/?imovel=:id",
       "permanent": false
+    },
+    {
+      "source": "/regiao/:slug",
+      "missing": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot|Pinterest|SkypeUriPreview|redditbot|Embedly|Iframely|vkShare|Googlebot|bingbot|Applebot).*"
+        }
+      ],
+      "destination": "/?regiao=:slug",
+      "permanent": false
     }
   ],
   "rewrites": [
     {
       "source": "/pre-lancamento",
       "destination": "/pre-lancamento.html"
+    },
+    {
+      "source": "/regiao/:slug/foto.jpg",
+      "destination": "/api/regiao?slug=:slug&foto=1"
+    },
+    {
+      "source": "/regiao/:slug",
+      "destination": "/api/regiao?slug=:slug"
     },
     {
       "source": "/imovel/:id/foto.jpg",
@@ -40,6 +60,9 @@
   ],
   "functions": {
     "api/og.js": {
+      "includeFiles": "{api/_fonts/**,api/_img/**,assets/logo-horizontal.png}"
+    },
+    "api/regiao.js": {
       "includeFiles": "{api/_fonts/**,api/_img/**,assets/logo-horizontal.png}"
     }
   }

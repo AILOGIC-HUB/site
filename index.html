@@ -13,14 +13,17 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:title" content="AI Logic Hub — Imóveis com curadoria">
 <meta property="og:description" content="Poucos imóveis, todos visitados. Converse com o Sam e encontre o imóvel certo para você.">
-<meta property="og:image" content="https://site-orpin-two-16.vercel.app/assets/og-image.jpg">
-<meta property="og:image:secure_url" content="https://site-orpin-two-16.vercel.app/assets/og-image.jpg">
+<meta property="og:url" content="https://www.ailogichub.com.br/">
+<meta property="og:image" content="https://www.ailogichub.com.br/assets/og-image.jpg">
+<meta property="og:image:secure_url" content="https://www.ailogichub.com.br/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="AI Logic Hub: encontre o imóvel certo para você, com os botões Agendar visita e Falar com o Sam.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://site-orpin-two-16.vercel.app/assets/og-image.jpg">
+<meta name="twitter:image" content="https://www.ailogichub.com.br/assets/og-image.jpg">
+<link rel="canonical" href="https://www.ailogichub.com.br/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"AI Logic Hub","url":"https://www.ailogichub.com.br/","logo":"https://www.ailogichub.com.br/assets/logo-horizontal.png","image":"https://www.ailogichub.com.br/assets/og-image.jpg","description":"Imóveis de alto padrão escolhidos a dedo. Converse com o Sam a qualquer hora e visite só o que vale a pena.","areaServed":{"@type":"State","name":"São Paulo"},"knowsLanguage":"pt-BR"}</script>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -568,7 +571,12 @@ p{text-wrap:pretty}
 .regiao-bar button:hover{border-color:#fff;background:rgba(255,255,255,.1)}
 .regiao-bar .i{width:14px;height:14px;flex:none}
 .regiao-bar [data-action="regiao-sam"] .i{color:var(--cyan)}
-@media (max-width:640px){.regiao-bar{margin-bottom:14px}.regiao-bar button{min-height:40px;padding:0 13px}.rb-extra{display:none}}
+.vb-acts{display:flex;align-items:center;gap:8px;flex:none}
+.vb-share{display:none}
+/* no celular, "Compartilhar" da regiao sobe para o lado do titulo (a linha de botoes fica com dois) */
+@media (max-width:640px){.regiao-bar{margin-bottom:14px}.regiao-bar button{min-height:40px;padding:0 13px}.rb-extra{display:none}.regiao-bar [data-action="regiao-share"]{display:none}
+  .vb-share{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06);color:#fff}
+  .vb-share .i{width:17px;height:17px}}
 .hood-ico{position:absolute;top:20px;left:20px;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:var(--cyan)}
 .hood-ico .i{width:22px;height:22px}
 @media (max-width:420px){.hood-ico{top:14px;left:14px;width:40px;height:40px}}
@@ -1207,11 +1215,15 @@ p{text-wrap:pretty}
               <h2 class="vitrine-title" id="vitrine-title">Imóveis selecionados <span>para você</span></h2>
               <p class="result-count" id="result-count" aria-live="polite"></p>
             </div>
-            <button class="vitrine-pause" type="button" id="vitrine-pause" aria-label="Pausar a vitrine"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausar</span></button>
+            <div class="vb-acts">
+              <button class="vb-share" type="button" data-action="regiao-share" aria-label="Compartilhar a região" hidden><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></button>
+              <button class="vitrine-pause" type="button" id="vitrine-pause" aria-label="Pausar a vitrine"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg><span>Pausar</span></button>
+            </div>
           </div>
           <div class="regiao-bar" id="regiao-bar" hidden>
             <button type="button" data-action="regiao-limpar"><svg class="i" aria-hidden="true"><use href="#i-chev-l"/></svg>Todas as regiões</button>
             <button type="button" data-action="regiao-sam"><svg class="i" aria-hidden="true"><use href="#i-chat"/></svg><span>Perguntar ao Sam<span class="rb-extra"></span></span></button>
+            <button type="button" data-action="regiao-share" aria-label="Compartilhar a região"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg><span>Compartilhar</span></button>
           </div>
           <div class="vrows" id="grid" role="region" aria-roledescription="carrossel" aria-label="Vitrine de imóveis"></div>
           <p class="demo-note" id="demo-note">Imóveis ilustrativos, só para mostrar a experiência: não estão à venda nem para alugar. Os imóveis reais aparecem aqui assim que as imobiliárias parceiras publicarem. Para ver o que está disponível hoje, fale com o Sam.</p>
@@ -1655,6 +1667,7 @@ p{text-wrap:pretty}
     videoSam: 'assets/video-sam.mp4',      // vídeo "como funciona a conversa com o Sam"; sem o arquivo, mostra a demonstração animada
     // link de cada imóvel com prévia própria no Instagram/WhatsApp (funções em api/, na Vercel); '' = link com #imovel-<id>
     linkImovel: /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '/imovel/' : '',
+    linkRegiao: /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '/regiao/' : '',
     online: /^https?:$/.test(location.protocol)
   };
 
@@ -2721,7 +2734,7 @@ p{text-wrap:pretty}
      do aparelho. O Instagram nao aceita receber link pelo navegador: no celular vai pelo menu do aparelho; no
      computador o link e copiado para colar no Direct ou nos Stories. */
   const shareEl = $('#share');
-  let shareItem = null;
+  let shareAlvo = null;   // { item (so no imovel), titulo, assunto, intro, texto, url, copiado }
   function linkDoImovel(item) {
     return CONFIG.linkImovel
       ? new URL(CONFIG.linkImovel + encodeURIComponent(item.id), location.origin).href
@@ -2732,41 +2745,45 @@ p{text-wrap:pretty}
     const onde = norm(item.titulo).includes(norm(item.bairro || '~')) ? '' : [item.bairro, item.cidade].filter(Boolean).join(', ');
     return `${item.titulo}${onde ? ` · ${onde}` : ''} · ${priceOf(item)}`;
   }
-  function shareImovel(item) {
-    if (!item) return;
-    shareItem = item;
-    const url = linkDoImovel(item), txt = textoDoImovel(item);
+  function abrirShare(alvo) {
+    shareAlvo = alvo;
+    const { url, texto: txt, intro } = alvo;
+    $('#share-title').textContent = alvo.titulo;
     $('#share-sub').textContent = txt;
-    $('#share-wa').href = `https://wa.me/?text=${encodeURIComponent(`Olha este imóvel no AILogic Hub: ${txt}\n${url}`)}`;
-    $('#share-mail').href = `mailto:?subject=${encodeURIComponent(`${item.titulo} · AILogic Hub`)}&body=${encodeURIComponent(`Olha este imóvel no AILogic Hub:\n\n${txt}\n${url}`)}`;
-    $('#share-sms').href = `sms:?&body=${encodeURIComponent(`Olha este imóvel no AILogic Hub: ${txt} ${url}`)}`;
+    $('#share-wa').href = `https://wa.me/?text=${encodeURIComponent(`${intro}: ${txt}\n${url}`)}`;
+    $('#share-mail').href = `mailto:?subject=${encodeURIComponent(`${alvo.assunto} · AILogic Hub`)}&body=${encodeURIComponent(`${intro}:\n\n${txt}\n${url}`)}`;
+    $('#share-sms').href = `sms:?&body=${encodeURIComponent(`${intro}: ${txt} ${url}`)}`;
     $('#share-more').hidden = !navigator.share;
     $('.share-grid', shareEl).classList.toggle('cinco', !navigator.share);   // sem o menu do aparelho: "Copiar link" ocupa a linha
     $('#share-note').hidden = true;
     openDialog(shareEl);
   }
-  async function copiarLink(item, nota) {
-    try { await navigator.clipboard.writeText(linkDoImovel(item)); }
-    catch { const n = $('#share-note'); n.textContent = `Copie o link: ${linkDoImovel(item)}`; n.hidden = false; return false; }
-    if (nota) { const n = $('#share-note'); n.textContent = nota; n.hidden = false; } else toast('Link do imóvel copiado');
+  function shareImovel(item) {
+    if (!item) return;
+    abrirShare({ item, titulo: 'Compartilhar imóvel', assunto: item.titulo, intro: 'Olha este imóvel no AILogic Hub', texto: textoDoImovel(item), url: linkDoImovel(item), copiado: 'Link do imóvel copiado' });
+  }
+  async function copiarLink(alvo, nota) {
+    try { await navigator.clipboard.writeText(alvo.url); }
+    catch { const n = $('#share-note'); n.textContent = `Copie o link: ${alvo.url}`; n.hidden = false; return false; }
+    if (nota) { const n = $('#share-note'); n.textContent = nota; n.hidden = false; } else toast(alvo.copiado);
     return true;
   }
   shareEl.addEventListener('click', async e => {
-    const op = e.target.closest('[data-share]'); if (!op || !shareItem) return;
-    const k = op.dataset.share, item = shareItem;
-    medir('compartilhar', { metodo: k }, item);
+    const op = e.target.closest('[data-share]'); if (!op || !shareAlvo) return;
+    const k = op.dataset.share, alvo = shareAlvo, dados = { title: `${alvo.assunto} · AILogic Hub`, text: alvo.texto, url: alvo.url };
+    medir('compartilhar', alvo.item ? { metodo: k } : { metodo: k, tipo: 'regiao' }, alvo.item || undefined);
     if (k === 'whatsapp' || k === 'email' || k === 'sms') { setTimeout(() => closeDialog(shareEl), 150); return; }   // o link do proprio botao abre o app
-    if (k === 'copiar') { if (await copiarLink(item)) closeDialog(shareEl); return; }
+    if (k === 'copiar') { if (await copiarLink(alvo)) closeDialog(shareEl); return; }
     if (k === 'instagram') {
       if (navigator.share && matchMedia('(pointer: coarse)').matches) {
-        try { await navigator.share({ title: `${item.titulo} · AILogic Hub`, text: textoDoImovel(item), url: linkDoImovel(item) }); closeDialog(shareEl); return; }
+        try { await navigator.share(dados); closeDialog(shareEl); return; }
         catch (err) { if (err && err.name === 'AbortError') return; }
       }
-      copiarLink(item, 'Link copiado. Abra o Instagram e cole no Direct ou nos Stories (figurinha "Link").');
+      copiarLink(alvo, 'Link copiado. Abra o Instagram e cole no Direct ou nos Stories (figurinha "Link").');
       return;
     }
     if (k === 'mais' && navigator.share) {
-      try { await navigator.share({ title: `${item.titulo} · AILogic Hub`, text: textoDoImovel(item), url: linkDoImovel(item) }); closeDialog(shareEl); }
+      try { await navigator.share(dados); closeDialog(shareEl); }
       catch (err) { /* cancelado */ }
     }
   });
@@ -2827,22 +2844,33 @@ p{text-wrap:pretty}
   function syncRegiao() {
     const r = regiao && regioes().find(x => x.key === regiao);
     $('#vitrine-title').innerHTML = r ? `Imóveis em <span>${esc(r.nome)}</span>` : 'Imóveis selecionados <span>para você</span>';
-    const bar = $('#regiao-bar'); bar.hidden = !r;
+    const bar = $('#regiao-bar'); bar.hidden = !r; $('.vb-share').hidden = !r;
     if (r) $('.rb-extra', bar).textContent = ` sobre ${r.nome}`;
     return r;
+  }
+  function linkDaRegiao(r) {
+    return CONFIG.linkRegiao ? new URL(CONFIG.linkRegiao + r.slug, location.origin).href : `${location.origin}${location.pathname}#regiao=${r.slug}`;
+  }
+  function shareRegiao() {
+    const r = regiao && regioes().find(x => x.key === regiao); if (!r) return;
+    const texto = `Imóveis em ${r.nome}${r.cidade ? `, ${r.cidade}` : ''} · ${plural(r.itens.length, 'imóvel', 'imóveis')}`;
+    abrirShare({ item: null, titulo: 'Compartilhar região', assunto: `Imóveis em ${r.nome}`, intro: 'Olha os imóveis do AILogic Hub', texto, url: linkDaRegiao(r), copiado: 'Link da região copiado' });
   }
   function escolherRegiao(key, { rolar = true } = {}) {
     const r = key ? regioes().find(x => x.key === key) : null;
     regiao = r ? r.key : null;
     if (r) medir('regiao', { regiao: r.nome });
     renderGrid();
-    try { history.replaceState(null, '', r ? `#regiao=${r.slug}` : location.pathname + location.search); } catch {}
+    const q = new URLSearchParams(location.search); q.delete('regiao');
+    const base = location.pathname + (q.toString() ? `?${q}` : '');
+    try { history.replaceState(null, '', r ? `${base}#regiao=${r.slug}` : base); } catch {}
     if (rolar) vitrineSec.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
   }
-  // link direto para uma regiao (ex.: ailogichub.com.br/#regiao=fazenda-alvorada-porto-feliz)
+  // link direto para uma regiao: /regiao/<slug> (com previa no WhatsApp) chega como ?regiao=<slug>; tambem vale #regiao=<slug>
   function regiaoDoHash() {
-    const m = /^#regiao=([a-z0-9-]+)$/.exec(location.hash); if (!m) return;
-    const r = regioes().find(x => x.slug === m[1]);
+    const m = /^#regiao=([a-z0-9-]+)$/.exec(location.hash), q = new URLSearchParams(location.search).get('regiao');
+    const slug = q && /^[a-z0-9-]+$/.test(q) ? q : m ? m[1] : ''; if (!slug) return;
+    const r = regioes().find(x => x.slug === slug);
     if (r) escolherRegiao(r.key);
   }
   // depois da entrada, os cards param de animar (mover um card no carrossel reiniciaria a animação)
@@ -3646,6 +3674,7 @@ p{text-wrap:pretty}
       case 'regiao': { const r = a.dataset.regiao ? { key: a.dataset.regiao } : regioes().find(x => norm(x.nome) === norm(a.dataset.bairro)); if (r) escolherRegiao(r.key); else Sam.open({ bairro: a.dataset.bairro }); break; }
       case 'regiao-limpar': escolherRegiao(null, { rolar: false }); break;
       case 'regiao-sam': { const r = regioes().find(x => x.key === regiao); Sam.open(r ? { bairro: r.nome } : {}); break; }
+      case 'regiao-share': shareRegiao(); break;
       case 'hood-mais': hoodTodas = true; renderHoods(); break;
       case 'ask': { const it = byId(id); closeDialog(detail, { restoreFocus: false }); Sam.open({ imovel: it }); break; }
       case 'sam-restart': Sam.reset(); break;

@@ -3,12 +3,22 @@
 import { DEMO } from './demo.js';
 
 export const HUB = 'https://www.ailogichuboficial.com';
-export const SITE = 'https://site-orpin-two-16.vercel.app'; // usado só se o cabeçalho Host vier inválido
+export const SITE = 'https://www.ailogichub.com.br'; // usado só se o cabeçalho Host vier inválido
 
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
 const NUM = new Intl.NumberFormat('pt-BR');
 const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+export const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+const MINUSC = new Set(['de', 'da', 'do', 'das', 'dos', 'e']);
+/** Mesma regra do index.html: nome de lugar todo em maiúsculas ("FAZENDA ALVORADA") vira título ("Fazenda Alvorada"). */
+export function lugar(v) {
+  const t = String(v ?? '').replace(/\s+/g, ' ').trim();
+  if (!t || !/\p{L}/u.test(t) || t !== t.toLocaleUpperCase('pt-BR')) return t;
+  return t.toLocaleLowerCase('pt-BR').split(' ').map((w, k) => (k && MINUSC.has(w)) ? w : /^[ivx]{1,4}$/.test(w) ? w.toUpperCase()
+    : w.split('-').map(p => p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1)).join('-')).join(' ');
+}
+/** Endereço da região na URL (mesma regra do index.html): "Fazenda Alvorada" + "Porto Feliz" -> fazenda-alvorada-porto-feliz. */
+export const slugDe = t => norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 /** id vindo da URL (/imovel/<id>, ?id=<id>); só letras, números, ponto, hífen e sublinhado. */
 export function pickId(req) {
@@ -19,6 +29,16 @@ export function pickId(req) {
     raw = decodeURIComponent(String(raw));
   } catch { return ''; }
   return /^[\w.-]{1,80}$/.test(raw) ? raw : '';
+}
+
+/** slug da região vindo da URL (/regiao/<slug>, ?slug=<slug>); só letras minúsculas, números e hífen. */
+export function pickSlug(req) {
+  let raw = '';
+  try {
+    const u = new URL(req.url || '/', 'http://local');
+    raw = (req.query && req.query.slug) || u.searchParams.get('slug') || (/\/regiao\/([^/?#]+)/.exec(u.pathname) || [])[1] || '';
+  } catch { return ''; }
+  return /^[a-z0-9-]{1,120}$/.test(String(raw)) ? String(raw) : '';
 }
 
 /** Endereço do próprio site (domínio da Vercel ou domínio próprio, o que a pessoa abriu). */
@@ -39,8 +59,8 @@ function normalize(raw) {
       titulo: String(r.titulo || 'Imóvel'), tipo: String(r.tipo || ''),
       finalidade: ['venda', 'locacao', 'temporada'].includes(r.finalidade) ? r.finalidade : 'venda',
       preco: n(r.preco), area: n(r.area), quartos: n(r.quartos), suites: n(r.suites), banheiros: n(r.banheiros), vagas: n(r.vagas),
-      bairro: String(r.bairro || ''), cidade: String(r.cidade || ''), descricao: String(r.descricao || ''),
-      foto, fotos: fotos.length ? fotos : (foto ? [foto] : []),
+      bairro: lugar(r.bairro), cidade: lugar(r.cidade), descricao: String(r.descricao || ''),
+      foto, fotos: fotos.length ? fotos : (foto ? [foto] : []), destaque: !!r.destaque,
       categorias: Array.isArray(r.categorias) ? r.categorias : undefined
     };
   });
@@ -72,6 +92,18 @@ export async function findImovel(id, origin) {
   }
   const item = DEMO.find(i => i.id === id);
   return item ? { item, exemplo: true } : null;
+}
+
+/** Região (bairro, ou a cidade sem bairro) com os imóveis de lá; mesma regra das regiões do index.html. */
+export async function findRegiao(slug, origin) {
+  if (!slug) return null;
+  const hub = await vitrineHub(origin);
+  const lista = hub.length ? hub : DEMO.map(i => ({ ...i, bairro: lugar(i.bairro), cidade: lugar(i.cidade) }));
+  const itens = lista.filter(i => (i.bairro || i.cidade) && slugDe(`${i.bairro || i.cidade} ${i.bairro ? i.cidade : ''}`) === slug);
+  if (!itens.length) return null;
+  const i0 = itens[0];
+  const capa = itens.find(i => i.destaque && photosOf(i).length) || itens.find(i => photosOf(i).length) || i0;
+  return { nome: i0.bairro || i0.cidade, cidade: i0.bairro ? i0.cidade : '', n: itens.length, capa, exemplo: !hub.length };
 }
 
 function catsOf(i) {

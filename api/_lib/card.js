@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import jpeg from 'jpeg-js';
-import { tagOf, priceOf, specsOf, locOf, photosOf } from './imoveis.js';
+import { tagOf, priceOf, specsOf, locOf, photosOf, plural } from './imoveis.js';
 
 const W = 1200, H = 630;
 const file = p => fs.readFileSync(new URL(p, import.meta.url));
@@ -92,7 +92,7 @@ export async function renderCard({ item, exemplo }) {
       // selos
       el('div', { display: 'flex', position: 'absolute', left: 30, top: 30, gap: 10 },
         el('div', { ...pill, fontSize: 16, fontWeight: 600, letterSpacing: 2 }, tag),
-        el('div', { ...pill, gap: 9, fontSize: 19, fontWeight: 500 }, icon('photos', 22), String(fotos))
+        fotos ? el('div', { ...pill, gap: 9, fontSize: 19, fontWeight: 500 }, icon('photos', 22), String(fotos)) : null
       ),
       // ações na lateral
       el('div', { display: 'flex', flexDirection: 'column', position: 'absolute', right: 16, top: 22, gap: 14 },
@@ -101,7 +101,10 @@ export async function renderCard({ item, exemplo }) {
       // informações
       el('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: 36, bottom: 34, width: 820 },
         loc ? el('div', { display: 'flex', alignItems: 'center', gap: 8, fontSize: 22, color: 'rgba(255,255,255,0.9)', marginBottom: 6 }, icon('pin', 25), el('div', { ...one, maxWidth: 780 }, loc)) : null,
-        el('div', { ...one, fontSize: 58, fontWeight: 700, lineHeight: 1.1, letterSpacing: -1.6 }, item.titulo),
+        // titulo longo ("Casa em condominio na Fazenda Alvorada") vai em ate duas linhas, um pouco menor, em vez de cortar
+        String(item.titulo).length > 26
+          ? el('div', { display: 'block', lineClamp: 2, width: 900, fontSize: 50, fontWeight: 700, lineHeight: 1.08, letterSpacing: -1.4 }, item.titulo)
+          : el('div', { ...one, fontSize: 58, fontWeight: 700, lineHeight: 1.1, letterSpacing: -1.6 }, item.titulo),
         specs ? el('div', { ...one, fontSize: 24, color: 'rgba(255,255,255,0.88)', marginTop: 8 }, specs) : null,
         el('div', { fontSize: 44, fontWeight: 700, letterSpacing: -1, marginTop: 6 }, priceOf(item)),
         el('div', { display: 'flex', gap: 14, marginTop: 18 },
@@ -114,6 +117,46 @@ export async function renderCard({ item, exemplo }) {
     )
   );
 
+  const svg = await satori(tree, { width: W, height: H, fonts: FONTS });
+  const img = new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render();
+  return jpeg.encode({ data: img.pixels, width: img.width, height: img.height }, 84).data;
+}
+
+/* Prévia da região (link /regiao/<slug>): a foto de um imóvel de lá, o nome da região, a cidade e quantos imóveis tem,
+   no mesmo visual escuro do site. */
+export async function renderRegiao({ nome, cidade, n, capa, exemplo }) {
+  const foto = await photoData(capa);
+  const linha = [cidade, plural(n, 'imóvel', 'imóveis')].filter(Boolean).join(' · ');
+  const one = { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
+  const pill = { display: 'flex', alignItems: 'center', height: 48, padding: '0 20px', border: '1.5px solid rgba(255,255,255,0.16)', borderRadius: 999, backgroundColor: 'rgba(6,19,38,0.74)', color: '#fff' };
+  const tree = el('div', {
+    display: 'flex', width: W, height: H, fontFamily: 'Inter', color: '#fff', backgroundColor: '#061326',
+    backgroundImage: 'radial-gradient(circle at 0% 100%, rgba(15,139,255,0.30), rgba(15,139,255,0) 55%)'
+  },
+    el('div', {
+      display: 'flex', position: 'absolute', left: 24, top: 24, width: W - 48, height: H - 48,
+      borderRadius: 30, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.16)',
+      backgroundColor: '#0b1727', ...(foto ? {} : { backgroundImage: 'linear-gradient(135deg, #0F8BFF 0%, #0b2a52 45%, #061326 100%)' })
+    },
+      foto ? { type: 'img', props: { src: foto, width: W - 48, height: H - 48, style: { position: 'absolute', left: 0, top: 0, width: W - 48, height: H - 48, objectFit: 'cover' } } } : null,
+      el('div', {
+        display: 'flex', position: 'absolute', left: 0, top: 0, width: W - 48, height: H - 48,
+        backgroundImage: 'linear-gradient(90deg, rgba(6,19,38,0.6) 0%, rgba(6,19,38,0.2) 50%, rgba(6,19,38,0) 72%), linear-gradient(180deg, rgba(6,19,38,0.45) 0%, rgba(6,19,38,0) 26%, rgba(6,19,38,0.1) 44%, rgba(6,19,38,0.8) 72%, rgba(6,19,38,0.96) 100%)'
+      }),
+      el('div', { display: 'flex', position: 'absolute', left: 30, top: 30, gap: 10 },
+        el('div', { ...pill, gap: 10, fontSize: 16, fontWeight: 600, letterSpacing: 2 }, icon('pin', 22), exemplo ? 'REGIÃO · EXEMPLO' : 'REGIÃO')
+      ),
+      el('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: 40, bottom: 40, width: 860 },
+        el('div', { fontSize: 22, fontWeight: 600, letterSpacing: 3, color: '#4CC6FF', marginBottom: 10 }, 'CONHECEMOS CADA RUA'),
+        el('div', { ...one, fontSize: 76, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2.4 }, nome),
+        el('div', { ...one, fontSize: 30, color: 'rgba(255,255,255,0.9)', marginTop: 12 }, linha),
+        el('div', { display: 'flex', marginTop: 24 },
+          el('div', { display: 'flex', alignItems: 'center', justifyContent: 'center', height: 66, padding: '0 34px', borderRadius: 16, backgroundColor: '#0F8BFF', fontSize: 24, fontWeight: 500 }, 'Ver os imóveis')
+        )
+      ),
+      { type: 'img', props: { src: LOGO, width: 152, height: 47, style: { position: 'absolute', right: 30, bottom: 40 } } }
+    )
+  );
   const svg = await satori(tree, { width: W, height: H, fonts: FONTS });
   const img = new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render();
   return jpeg.encode({ data: img.pixels, width: img.width, height: img.height }, 84).data;

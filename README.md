@@ -127,6 +127,21 @@ O botão **Compartilhar** gera `https://<site>/imovel/<id>`. As redes não rodam
 - Se os exemplos do `index.html` mudarem, gere de novo `api/_lib/demo.js` (são os mesmos campos do `DEMO`).
 - Para testar: cole um link de imóvel em developers.facebook.com/tools/debug. Fora da Vercel (ou abrindo o arquivo direto), o Compartilhar volta ao link com `#imovel-<id>`.
 
+## Prévia de cada região e Google (Rodada 141 do Hub, 15/11/2026)
+
+- **Regiões:** a seção "Conhecemos cada rua." monta as regiões a partir dos imóveis publicados (bairro, ou a cidade sem bairro; nunca o endereço). O cartão leva à vitrine filtrada, com "Todas as regiões", "Perguntar ao Sam" e **Compartilhar** (no celular, o ícone ao lado do título).
+- **Link da região:** o Compartilhar da região gera `https://<site>/regiao/<slug>` (ex.: `/regiao/fazenda-alvorada-porto-feliz`). Funciona como o link do imóvel:
+  - `vercel.json`: no navegador, vai direto para `/?regiao=<slug>`, que abre a vitrine na região (o endereço fica como `/#regiao=<slug>`, mantendo `utm_*`).
+  - Robôs das redes: seguem para `api/regiao.js`, que devolve título ("Imóveis em …"), descrição (cidade e quantidade) e a imagem `/regiao/<slug>/foto.jpg`. A imagem é desenhada por `renderRegiao` em `api/_lib/card.js`: foto de um imóvel de lá (o destaque, se houver), nome da região, cidade, quantidade e a marca.
+  - Região desconhecida: prévia geral do site.
+- **Nomes de lugar:** o que chega do cadastro em caixa alta ("FAZENDA ALVORADA") vira título ("Fazenda Alvorada") no site e nas prévias (`lugar()` no `index.html` e em `api/_lib/imoveis.js`, com a mesma regra).
+- **Título longo:** na imagem do imóvel, o título longo vai em até duas linhas antes de cortar.
+- **Google:**
+  - `robots.txt` libera o site (menos `/api/`) e aponta o `sitemap.xml` (página inicial e Política de Privacidade).
+  - A página tem endereço canônico, `og:url` e imagem de prévia no domínio oficial (`www.ailogichub.com.br`), além dos dados da empresa (`RealEstateAgent`, em JSON-LD).
+  - As páginas de prévia (`/imovel/…`, `/regiao/…`) respondem `noindex`.
+- **Para testar:** `testes/regioes_site` e `testes/lancamento_site` no repositório do Hub (abrem o site servido localmente; o segundo chama as funções direto, com a vitrine simulada).
+
 ## Vitrine real e imóveis de exemplo (ajuste de 10/11/2026)
 
 - A vitrine lê `/api/vitrine` do Hub, que responde `{ rows: [...] }` (um card por oferta: venda e locação do mesmo imóvel têm `id` e código próprios, como `VM-1001-V` e `VM-1001-L`). Antes o site só procurava `imoveis`, `data` ou `items` e, por isso, ficava sempre nos exemplos.
