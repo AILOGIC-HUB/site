@@ -782,6 +782,15 @@ p{text-wrap:pretty}
 #proposta .field select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#9fb3c8 50%),linear-gradient(135deg,#9fb3c8 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 15px) 21px;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
 #proposta .field select option{color:#0b1f44}
 .pr-passos{margin:16px 0 18px;padding:0;list-style:none;display:grid;gap:10px;text-align:left}
+/* locacao online (rodada 148 do Hub) */
+.lo-faixa{display:flex;flex-direction:column;align-items:stretch;gap:14px;margin:4px 0 26px;padding:16px 18px;border-radius:16px;border:1px solid rgba(76,198,255,.3);background:linear-gradient(135deg,rgba(76,198,255,.12),rgba(76,198,255,.03))}
+.lo-faixa .lo-txt{flex:1;min-width:0}.lo-faixa b{display:block;color:#fff;font-size:15.5px;font-weight:700}
+.lo-faixa span{display:block;margin-top:3px;color:var(--g300);font-size:13.5px;line-height:1.5}
+.lo-faixa .cta{width:100%;min-height:48px;font-size:14.5px}
+.lo-trilha{margin:14px 0 18px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.lo-trilha li{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;color:var(--g300);font-size:12px;line-height:1.3}
+.lo-trilha li i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(76,198,255,.16);color:var(--cyan);font-style:normal;font-weight:700;font-size:12.5px}
+@media (max-width:560px){.lo-trilha li{font-size:10.5px}}
 .pr-passos li{display:flex;gap:12px;align-items:flex-start;color:var(--g200,#dbe7f3);font-size:14px;line-height:1.45}
 .pr-passos li i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(76,198,255,.16);color:var(--cyan);font-style:normal;font-weight:700;font-size:13px}
 .vis-ok .vis-ok-acts .i{width:17px;height:17px;padding:0;border-radius:0;background:none;color:inherit}
@@ -1456,7 +1465,7 @@ p{text-wrap:pretty}
   <div class="modal-backdrop" data-action="close"></div>
   <div class="modal-card modal-card--visita">
     <button class="modal-x" type="button" data-action="close" aria-label="Fechar a proposta"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
-    <p class="eyebrow">Ficha de proposta</p>
+    <p class="eyebrow" id="proposta-eyebrow">Ficha de proposta</p>
     <h2 class="share-title" id="proposta-title"></h2>
     <p class="share-sub" id="proposta-sub">Preencha e assine pela D4Sign: a proposta segue para o proprietário com as mesmas condições.</p>
     <div id="proposta-corpo"></div>
@@ -1853,13 +1862,16 @@ p{text-wrap:pretty}
         comodidades: Array.isArray(r.comodidades) ? r.comodidades.map(String).filter(Boolean).slice(0, 30) : [],
         destaque: !!r.destaque, foto, fotos: fotos.length ? fotos : (foto ? [foto] : []),
         imobiliaria: String(r.imobiliaria || ''), categorias: Array.isArray(r.categorias) ? r.categorias : undefined,
+        // locacao online (rodada 148 do Hub): so na oferta de locacao com a chave ligada no cadastro do imovel
+        lo: r.locacao_online && typeof r.locacao_online === 'object' && r.finalidade === 'locacao'
+          ? { visita: r.locacao_online.exige_visita === true, garantias: Array.isArray(r.locacao_online.garantias) ? r.locacao_online.garantias.map(String).filter(Boolean).slice(0, 10) : [] } : null,
         match: r.match === undefined || r.match === null || r.match === '' ? undefined : Number(r.match)
       };
     });
     // venda e locacao do mesmo imovel viram UM cartao com os dois valores (cada oferta segue com o seu codigo)
     const ORD = { venda: 0, locacao: 1, temporada: 2 }, grupos = new Map(), lista = [];
     itens.forEach(it => {
-      const of = { id: it.id, codigo: it.codigo, finalidade: it.finalidade, preco: it.preco };
+      const of = { id: it.id, codigo: it.codigo, finalidade: it.finalidade, preco: it.preco, lo: it.lo };
       const g = grupos.get(it.imovel);
       if (!g) { it.ofertas = [of]; grupos.set(it.imovel, it); lista.push(it); return; }
       g.ofertas.push(of);
@@ -2368,14 +2380,59 @@ p{text-wrap:pretty}
     return item.ofertas && item.ofertas.length > 1 ? item.ofertas : [{ id: item.id, codigo: item.codigo, finalidade: item.finalidade, preco: item.preco }];
   }
   function prNovoV() { return { passo: 1, d: { entrada_quando: 'compromisso', posse: 'escritura', validade_data: prHoje(3), validade_hora: '18:00', credito_ate: prHoje(30), pessoa: 'pf', nacionalidade: 'Brasileira', uniao_estavel: 'nao' } }; }
-  function abrirProposta(item) {
+  function abrirProposta(item, opt) {
     if (!item) return;
     if (ehExemplo() || !CONFIG.online || !CONFIG.propostaUrl) { window.open(waLink(pedidoProposta(item)), '_blank', 'noopener'); return; }
-    prItem = item; prOf = prOfertas(item)[0]; prV = prNovoV();
+    const lo = opt && opt.online ? loOferta(item) : null;
+    prItem = item; prOf = lo || prOfertas(item)[0]; prV = prNovoV(); prV.lo = lo ? lo.lo : null;
     $('#proposta-title').textContent = item.titulo;
+    $('#proposta-eyebrow').textContent = lo ? 'Locação online' : 'Ficha de proposta';
+    $('#proposta-sub').textContent = lo ? 'Faça a proposta e assine a ficha pela D4Sign. Depois, acompanhe documentos, garantia, contrato e chaves pela Área do Cliente.'
+      : 'Preencha e assine pela D4Sign: a proposta segue para o proprietário com as mesmas condições.';
     prPintar();
     openDialog(prEl, { focus: $('.modal-x', prEl) });
-    medir('fazer_proposta', { etapa: 'abriu' }, item);
+    medir(lo ? 'locacao_online' : 'fazer_proposta', { etapa: 'abriu' }, item);
+  }
+  /* ---- Locacao online (rodada 148 do Hub): a oferta de locacao com a chave ligada no cadastro do imovel ---- */
+  const PR_GAR_TODAS = ['Caução', 'Fiador', 'Seguro-fiança', 'Título de capitalização', 'Fiança bancária', 'Garantia por empresa (fintech)'];
+  /** Oferta de locacao com a locacao online ligada, ou null. */
+  function loOferta(item) {
+    if (!item) return null;
+    const ofs = item.ofertas && item.ofertas.length ? item.ofertas : [{ id: item.id, codigo: item.codigo, finalidade: item.finalidade, preco: item.preco, lo: item.lo }];
+    return ofs.find(o => o.finalidade === 'locacao' && o.lo) || null;
+  }
+  function loFaixa(item) {
+    const o = loOferta(item);
+    return `<div class="lo-faixa"><div class="lo-txt"><b>Locação online</b><span>Faça a proposta, assine a ficha e acompanhe documentos, garantia, contrato, vistoria e chaves pela Área do Cliente, com o time do Hub ao seu lado.${o.lo.visita ? ' Para este imóvel, a visita vem antes.' : ''}</span></div>
+      <button class="cta cta-primary" type="button" data-action="locacao" data-id="${esc(item.id)}">${ico('doc')}Iniciar locação online</button></div>`;
+  }
+  function prPintarLO() {
+    const keep = id => { const e = $('#' + id); return e ? e.value : ''; };
+    const nome = keep('pr-nome'), fone = keep('pr-fone'), email = keep('pr-email'), cpf = keep('pr-cpf'), gar0 = keep('pr-gar'), prazo0 = keep('pr-prazo') || '30 meses';
+    const valor = keep('pr-valor') || (prOf.preco ? prMoeda(prOf.preco) : '');
+    const visitou = !!($('#pr-visitou') && $('#pr-visitou').checked);
+    const gar = prV.lo.garantias.length ? prV.lo.garantias : PR_GAR_TODAS;
+    prCorpo().innerHTML = `<p class="pr-ref">Aluguel anunciado: <b>${esc(priceOne(prOf))}</b>${prOf.codigo ? ` · <span style="white-space:nowrap">cód. ${esc(String(prOf.codigo))}</span>` : ''}</p>
+      <ol class="lo-trilha" aria-label="Como funciona a locação online">
+        <li><i>1</i><span>Proposta e ficha</span></li><li><i>2</i><span>Aceite do proprietário</span></li><li><i>3</i><span>Documentos e garantia</span></li><li><i>4</i><span>Contrato digital</span></li><li><i>5</i><span>Vistoria e chaves</span></li>
+      </ol>
+      <form class="vis-form" id="pr-form" novalidate>
+        <div class="fields">
+          <div class="field"><label for="pr-nome">Nome completo</label><input id="pr-nome" autocomplete="name" required maxlength="120" value="${esc(nome)}"></div>
+          <div class="field"><label for="pr-fone">WhatsApp com DDD</label><input id="pr-fone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="20" placeholder="(11) 99999-9999" value="${esc(fone)}"></div>
+          <div class="field"><label for="pr-email">E-mail</label><input id="pr-email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@email.com" value="${esc(email)}"></div>
+          <div class="field"><label for="pr-cpf">CPF</label><input id="pr-cpf" inputmode="numeric" autocomplete="off" required maxlength="14" placeholder="000.000.000-00" value="${esc(cpf)}"></div>
+          <div class="field full"><label for="pr-valor">Aluguel que você propõe (por mês)</label><input id="pr-valor" inputmode="numeric" required maxlength="16" placeholder="R$" value="${esc(valor)}"></div>
+          <div class="field"><label for="pr-prazo">Prazo do contrato</label><select id="pr-prazo">${['12 meses', '30 meses'].map(x => `<option${x === prazo0 ? ' selected' : ''}>${x}</option>`).join('')}</select></div>
+          <div class="field"><label for="pr-gar">Garantia</label><select id="pr-gar"><option value="">Escolha</option>${gar.map(x => `<option${x === gar0 ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></div>
+        </div>
+        ${prV.lo.visita ? `<label class="consent"><input type="checkbox" id="pr-visitou"${visitou ? ' checked' : ''}><span>Já visitei este imóvel. Ainda não? <a href="#" data-action="visit" data-id="${esc(prItem.id)}">Agende a sua visita</a>.</span></label>` : ''}
+        <label class="consent"><input type="checkbox" id="pr-ok"><span>Autorizo o AiLogic Hub a falar comigo pelo WhatsApp e pelo e-mail sobre esta locação e aceito a <a href="politica-de-privacidade.html" data-action="privacidade">Política de Privacidade</a>.</span></label>
+        <p class="vis-lgpd">Você assina a ficha de proposta pela D4Sign. Em seguida, mandamos para o seu e-mail o acesso à Área do Cliente, onde você acompanha cada etapa e envia os documentos com segurança. Cada etapa é conferida pelo time do Hub.</p>
+        <input class="pr-hp" id="pr-hp" name="site_url" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="cta cta-primary" type="submit" id="pr-enviar" style="min-height:50px">${ico('doc')}Iniciar locação online</button>
+        <p class="vis-msg erro" id="pr-erro" hidden></p>
+      </form>`;
   }
   // guarda o que ja foi digitado (campos com data-k) antes de redesenhar
   function prColetar() { if (!prV) return; $$('[data-k]', prEl).forEach(el => { prV.d[el.dataset.k] = el.type === 'checkbox' ? el.checked : el.value; }); }
@@ -2388,6 +2445,7 @@ p{text-wrap:pretty}
       : `<p class="pr-ref">Valor anunciado: <b>${esc(priceOne(prOf))}</b> (${esc((FIN_NOME[prOf.finalidade] || 'venda').toLowerCase())})${item.codigo ? ` · cód. ${esc(String(item.codigo).split(' / ')[0])}` : ''}</p>`;
   }
   function prPintar() {
+    if (prV && prV.lo) return prPintarLO();
     if (prOf.finalidade === 'venda') return prPintarVenda();
     const keep = id => { const e = $('#' + id); return e ? e.value : ''; };
     const nome = keep('pr-nome'), fone = keep('pr-fone'), valor = keep('pr-valor'), email = keep('pr-email'), cpf = keep('pr-cpf');
@@ -2565,17 +2623,17 @@ p{text-wrap:pretty}
     return null;
   }
   async function prEnviar(body, resumoOk) {
-    const bt = $('#pr-enviar'), err = $('#pr-erro');
+    const bt = $('#pr-enviar'), err = $('#pr-erro'), txt0 = bt.innerHTML;
     bt.disabled = true; bt.textContent = 'Enviando…';
     body = Object.assign({}, body, { hp: (($('#pr-hp') || {}).value || '').trim() });
     try {
       const r = await fetch(CONFIG.propostaUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.ok) throw new Error(j.error || '');
-      medir('fazer_proposta', { etapa: 'enviada' }, prItem);
-      prCorpo().innerHTML = resumoOk(j.ficha === 'enviado');
+      medir(body.locacao_online ? 'locacao_online' : 'fazer_proposta', { etapa: 'enviada' }, prItem);
+      prCorpo().innerHTML = resumoOk(j.ficha === 'enviado', j);
     } catch (ex) {
-      bt.disabled = false; bt.innerHTML = `${ico('doc')}Enviar e assinar a proposta`;
+      bt.disabled = false; bt.innerHTML = txt0;
       err.innerHTML = `${esc(ex.message || 'Não foi possível enviar agora.')} <a href="${esc(waLink(pedidoProposta(prItem)))}" target="_blank" rel="noopener" style="color:var(--cyan)">Enviar pelo WhatsApp do Hub</a>`; err.hidden = false;
     }
   }
@@ -2634,9 +2692,24 @@ p{text-wrap:pretty}
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)) return mostra('Informe um e-mail válido: é por ele que chega o pedido de assinatura.', '#pr-email');
     if (!prCpfOk(cpf)) return mostra('Confira o CPF.', '#pr-cpf');
     if (!Number(valor)) return mostra('Informe o valor da sua proposta.', '#pr-valor');
-    if (!$('#pr-ok').checked) return mostra('Marque a autorização de contato para enviar.');
+    if (prV.lo && !$('#pr-gar').value) return mostra('Escolha a garantia.', '#pr-gar');
+    if (prV.lo && prV.lo.visita && !$('#pr-visitou').checked) return mostra('Para este imóvel, a locação online começa depois da visita. Marque se já visitou ou agende a sua.', '#pr-visitou');
+    if (!$('#pr-ok').checked) return mostra('Marque a autorização de contato para enviar.', prV.lo ? '#pr-ok' : undefined);
     const body = { ...visBase(prItem), cod: String(prOf.codigo || prItem.codigo || '').split(' / ')[0], cliente: nome, whatsapp: fone, email, cpf, valor,
       finalidade: 'locacao', prazo: $('#pr-prazo').value, garantia: $('#pr-gar').value };
+    if (prV.lo) {
+      Object.assign(body, { locacao_online: true, visitou: !!($('#pr-visitou') && $('#pr-visitou').checked) });
+      const valorLO = BRL.format(Number(valor)) + '/mês';
+      return prEnviar(body, (jaFoi, j) => `<div class="vis-ok">${ico('check')}<h3>Locação online iniciada</h3><p><b>${esc(valorLO)}</b><br>${esc(body.prazo)} · ${esc(body.garantia)}</p>
+        <p class="vis-msg" style="text-align:left;margin:0 0 4px">${(j && j.locacao_online && j.locacao_online.area === 'enviada') ? `Mandamos para <b>${esc(email)}</b> o acesso à sua <b>Área do Cliente</b>.` : `O acesso à sua <b>Área do Cliente</b> chega no e-mail <b>${esc(email)}</b>; se não chegar, o time do Hub manda pelo WhatsApp.`} ${jaFoi ? 'A ficha de proposta também já está no seu e-mail para assinar (D4Sign).' : 'A ficha de proposta chega para assinar pela D4Sign em alguns minutos.'}</p>
+        <ol class="pr-passos">
+          <li><i>1</i><span>Você assina a ficha de proposta pela D4Sign.</span></li>
+          <li><i>2</i><span>O proprietário assina: é o aceite. Se ele quiser contrapropor, você responde pela Área do Cliente.</span></li>
+          <li><i>3</i><span>Pela Área do Cliente você envia os documentos e confirma a garantia. O time do Hub confere tudo.</span></li>
+          <li><i>4</i><span>O contrato é assinado de forma digital. Depois vêm a vistoria e a entrega das chaves, registradas na Área do Cliente.</span></li>
+        </ol>
+        <button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`);
+    }
     const valorTxt = BRL.format(Number(valor)) + (prOf.finalidade === 'temporada' ? '/diária' : '/mês');
     prEnviar(body, jaFoi => `<div class="vis-ok">${ico('check')}<h3>Proposta enviada</h3><p><b>${esc(valorTxt)}</b><br>${esc(body.prazo)} · ${esc(body.garantia)}</p>
         <p class="vis-msg" style="text-align:left;margin:0 0 4px">${jaFoi ? `Enviamos a ficha de proposta para você assinar: confira o e-mail <b>${esc(email)}</b> e o seu WhatsApp (mensagem da D4Sign).` : `A ficha de proposta chega para você assinar no e-mail <b>${esc(email)}</b> e no seu WhatsApp (D4Sign) em alguns minutos.`}</p>
@@ -3046,6 +3119,7 @@ p{text-wrap:pretty}
         <p class="detail-price${!exemplo && item.ofertas && item.ofertas.length > 1 ? ' duo' : ''}">${exemplo ? 'Imóvel ilustrativo' : priceHTML(item)}</p>
         <dl class="specs">${specs.map(([ic, k, v]) => `<div><dt>${ico(ic)}${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
         ${descDetalhe(item)}
+        ${!exemplo && loOferta(item) ? loFaixa(item) : ''}
         ${exemplo ? '<p class="detail-by">Imóvel ilustrativo, só para mostrar a experiência: não está à venda nem para alugar. O Sam mostra os imóveis disponíveis hoje.</p>' : (item.imobiliaria ? `<p class="detail-by">Anunciado por ${esc(item.imobiliaria)}</p>` : '')}
         <div class="detail-actions">
           ${exemplo ? '' : `<div class="detail-quick">
@@ -3665,6 +3739,7 @@ p{text-wrap:pretty}
       case 'share': shareImovel(byId(id)); break;
       case 'visit': abrirVisita(byId(id)); break;
       case 'proposta': abrirProposta(byId(id)); break;
+      case 'locacao': abrirProposta(byId(id), { online: true }); break;
       case 'lead': closeDrop(); closeMenu(); openLead(a.dataset.tab); break;
       case 'parceiro': closeDrop(); closeMenu(); openLead('parceiro', a.dataset.perfil); break;
       case 'video': openVideo(); break;
@@ -3849,6 +3924,7 @@ p{text-wrap:pretty}
     compartilhar: { ga: 'share' },
     agendar_visita: { ga: 'agendar_visita', meta: 'Schedule' },
     fazer_proposta: { ga: 'fazer_proposta', meta: 'Contact' },
+    locacao_online: { ga: 'locacao_online', metaCustom: 'LocacaoOnline' },
     whatsapp: { ga: 'whatsapp_click', meta: 'Contact' },
     lead: { ga: 'generate_lead', meta: 'Lead' },
     sam_abrir: { ga: 'sam_abrir', metaCustom: 'ConversaSam' },
