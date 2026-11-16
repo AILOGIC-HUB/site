@@ -7,5 +7,6 @@ Coloque aqui os arquivos reais da marca, com exatamente estes nomes:
 - `favicon.png`
 - `apple-touch-icon.png`
 - `hero-1.webp`, `hero-2.webp`, `hero-3.webp`, `hero-4.webp` (fotos escuras de imóveis, ~1920×1080)
+- `video-sam.mp4` (vídeo de lançamento, 1920×1080, H.264) e `video-sam-capa.jpg` (capa 1200×800 da seção Coleção)
 
 O `index.html` já aponta para eles. Enquanto faltarem, a página usa os fallbacks descritos no README principal.
