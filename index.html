@@ -748,6 +748,7 @@ p{text-wrap:pretty}
 .fv-dados dd{margin:3px 0 0;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
 .fv-texto{max-height:190px;overflow:auto;margin:12px 0 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);font-size:13px;line-height:1.55;color:var(--g200,#dbe7f3)}
 .fv-texto p{margin:0 0 10px}.fv-texto p:last-child{margin:0}.fv-texto .fv-nota{color:var(--g300);font-size:12px}
+.fv-texto .fv-decl{padding:10px 12px;border:1px solid rgba(86,200,255,.3);border-radius:10px;background:rgba(11,102,255,.08)}
 .fv-texto:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .fv .vis-form{margin-top:16px}
 .fv-mais summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--cyan);padding:4px 0}
@@ -2758,7 +2759,11 @@ p{text-wrap:pretty}
     const im = f.imovel || {}, co = f.corretor || {};
     const corretor = co.nome ? co.nome + (co.creci ? ` · CRECI ${co.creci}` : '') : 'Definido pelo Hub na confirmação';
     const local = [im.bairro, im.cidade].filter(Boolean).join(', ');
-    const clausulas = (f.clausulas || []).map(c => { const k = c.indexOf('. '); return f.versao === 'v1' || k < 0 ? `<p>${esc(c)}</p>` : `<p><b>${esc(c.slice(0, k + 1))}</b> ${esc(c.slice(k + 2))}</p>`; }).join('');
+    // v3 (documento final de 16/11/2026): clausulas numeradas, **trecho** em negrito e a declaracao de aceite
+    const fmt = c => esc(c).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    const q = f.quadro || null, hub = (q && q.hub) || {};
+    const clausulas = (f.clausulas || []).map((c, i) => { const k = c.indexOf('. '); if (f.versao === 'v1' || k < 0) return `<p>${esc(c)}</p>`; return f.numeradas ? `<p><b>${i + 1}. ${esc(c.slice(0, k + 1).toUpperCase())}</b> ${fmt(c.slice(k + 2))}</p>` : `<p><b>${esc(c.slice(0, k + 1))}</b> ${esc(c.slice(k + 2))}</p>`; }).join('')
+      + (f.declaracao ? `<p class="fv-decl"><b>Declaração de aceite.</b> ${fmt(f.declaracao)}</p>` : '');
     const fv = $('#fv'); if (!fv) return;
     fv.querySelector('#fv-carrega').outerHTML = `
       <dl class="fv-dados">
@@ -2766,6 +2771,8 @@ p{text-wrap:pretty}
         <div><dt>Localização</dt><dd>${esc(local || 'A confirmar')}</dd></div>
         <div><dt>${esc(im.operacao || 'Valor')}</dt><dd>${esc(fvValor(im))}</dd></div>
         <div class="full"><dt>Corretor responsável</dt><dd>${esc(corretor)}</dd></div>
+        ${q ? `<div class="full"><dt>Intermediação</dt><dd>AiLogic Hub · CRECI-PJ ${esc(hub.creci_pj || '')}</dd></div>
+        <div class="full"><dt>Cancelar ou remarcar</dt><dd>Até ${esc(q.cancelamento_horas)} horas antes, pelo WhatsApp do Hub</dd></div>` : ''}
       </dl>
       <div class="fv-texto" tabindex="0" role="region" aria-label="Texto da ficha de visita">${clausulas}<p class="fv-nota">O corretor responsável confirma o CRECI e este compromisso pela plataforma ao confirmar a visita.</p></div>
       <form class="vis-form" id="fv-form" novalidate>
@@ -2779,7 +2786,10 @@ p{text-wrap:pretty}
             <div class="field"><label for="fv-cpf2">CPF (opcional)</label><input id="fv-cpf2" inputmode="numeric" maxlength="14"></div>
           </div>
         </details>
-        <label class="consent"><input type="checkbox" id="fv-ok"><span>Conferi os dados e aceito esta ficha de visita (versão ${esc(f.versao || '')}).</span></label>
+        ${f.numeradas ? `<details class="fv-mais"><summary>Já conhecia este imóvel antes?</summary>
+          <div class="fields"><div class="field full"><label for="fv-rel">Conte como (opcional)</label><input id="fv-rel" maxlength="200" placeholder="Ex.: já visitei com outro corretor em 2025"></div></div>
+        </details>` : ''}
+        <label class="consent"><input type="checkbox" id="fv-ok"><span>Conferi os dados e aceito esta ficha de visita (versão ${esc(f.versao || '')})${f.numeradas ? ', inclusive a declaração de aceite' : ''}.</span></label>
         <button class="cta cta-primary" type="submit" id="fv-assinar" style="min-height:50px">${ico('doc')}Assinar ficha de visita</button>
         <p class="vis-msg erro" id="fv-erro" hidden></p>
         <p class="fv-depois">${fvAtual.url ? `<a href="${esc(fvAtual.url)}" target="_blank" rel="noopener">Ver a ficha completa</a> · ` : ''}<button type="button" data-action="close">Assinar depois</button></p>
@@ -2798,7 +2808,7 @@ p{text-wrap:pretty}
     if (!$('#fv-ok').checked) return mostra('Marque que conferiu os dados e aceita a ficha.');
     bt.disabled = true; bt.textContent = 'Assinando…';
     try {
-      const r = await fetch(`${CONFIG.visitaUrl}?action=ficha_aceitar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: fvAtual.t, nome, cpf, aceito: true, telefone: fvAtual.fone || '', nome2, cpf2 }) });
+      const r = await fetch(`${CONFIG.visitaUrl}?action=ficha_aceitar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: fvAtual.t, nome, cpf, aceito: true, telefone: fvAtual.fone || '', nome2, cpf2, relacao_anterior: ($('#fv-rel') || {}).value || '' }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) { bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar ficha de visita`; return mostra(j.error || 'Não foi possível registrar a assinatura. Tente de novo.'); }
       medir('agendar_visita', { etapa: 'ficha_assinada' }, visItem);
