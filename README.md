@@ -14,8 +14,9 @@ Os arquivos da marca ficam em `assets/` (os mesmos do sistema do Hub). Só o ví
 | `assets/favicon.png`, `assets/apple-touch-icon.png` | aba do navegador / iOS |
 | `assets/hero-1.webp` | primeiro slide do banner |
 | `assets/hero-2.webp`, `hero-3.webp`, `hero-4.webp` | os 3 slides de imóveis em destaque |
-| `assets/video-sam.mp4` | vídeo explicativo da conversa com o Sam (painel da coleção) |
-| `assets/video-sam-capa.jpg` | capa do vídeo |
+| `assets/video-jornada.mp4` | vídeo da página inicial: a jornada de compra pela visão da cliente, 1 min (painel da coleção) |
+| `assets/video-jornada-capa.jpg` | capa do vídeo |
+| `assets/video-sam.mp4` e `assets/video-sam-capa.jpg` | vídeo de lançamento completo (2 min), guardado para a área de parceiros; hoje fora da página |
 | `assets/og-image.jpg` (1200×630) | prévia do link ao compartilhar o site (Instagram, WhatsApp, Facebook, LinkedIn), no mesmo visual dos cards |
 
 Enquanto um arquivo não existe, a página não quebra:
@@ -94,7 +95,7 @@ O site chama o sistema em `https://www.ailogichuboficial.com` (constante `HUB`; 
   - `whatsapp`, `vitrineUrl`, `samUrl`, `leadUrl`;
   - `loginUrl`: destino do "Entrar" (acesso ao sistema do Hub): `https://www.ailogichuboficial.com/`;
   - `parceiros`: página própria de cada perfil (`corretor`, `imobiliaria`, `indicador`), se houver. Sem URL, o item abre o cadastro no próprio site;
-  - `videoSam`: caminho do vídeo (`assets/video-sam.mp4`);
+  - `videoSam`: caminho do vídeo (`assets/video-jornada.mp4`);
   - `ga4` e `metaPixel`: IDs do Google Analytics 4 e do Pixel da Meta (veja "Métricas e anúncios").
 - A CSP hoje está em `report-only`; passe para **enforce** (cabeçalho `Content-Security-Policy`). Um ponto de partida para esta página:
 
