@@ -42,6 +42,10 @@
       "destination": "/pre-lancamento.html"
     },
     {
+      "source": "/parceiros",
+      "destination": "/parceiros.html"
+    },
+    {
       "source": "/regiao/:slug/foto.jpg",
       "destination": "/api/regiao?slug=:slug&foto=1"
     },
