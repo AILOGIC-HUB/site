@@ -806,6 +806,7 @@ p{text-wrap:pretty}
 .pr-aviso-dados{display:flex;gap:12px;align-items:flex-start;margin:0 0 16px;padding:13px 15px;border-radius:14px;background:rgba(76,198,255,.08);border:1px solid rgba(76,198,255,.22);text-align:left}
 .pr-aviso-dados .i{flex:none;width:20px;height:20px;margin-top:1px;color:var(--cyan)}
 .pr-aviso-dados p{margin:0;color:var(--g200,#dbe7f3);font-size:13.5px;line-height:1.55}
+.pr-aviso-dados p.pr-obg{margin-top:6px;color:var(--g300);font-size:12.5px}
 /* locacao online (rodada 148 do Hub) */
 .lo-faixa{display:flex;flex-direction:column;align-items:stretch;gap:14px;margin:4px 0 26px;padding:16px 18px;border-radius:16px;border:1px solid rgba(76,198,255,.3);background:linear-gradient(135deg,rgba(76,198,255,.12),rgba(76,198,255,.03))}
 .lo-faixa .lo-txt{flex:1;min-width:0}.lo-faixa b{display:block;color:#fff;font-size:15.5px;font-weight:700}
@@ -2437,7 +2438,8 @@ p{text-wrap:pretty}
     return exigHtml(ofs.find(o => o.finalidade === 'locacao' && o.exig));
   }
   const PR_AVISO_DADOS = 'Seus dados serão usados para analisar esta proposta e, se ela for aceita, preparar o contrato, evitando que você precise preencher tudo novamente. Confira e edite as informações antes de enviar. Depois do envio, você poderá solicitar correções pelo atendimento.';
-  const prAvisoDados = () => `<div class="pr-aviso-dados" role="note">${ico('shield')}<p>${PR_AVISO_DADOS}</p></div>`;
+  // rodada 158: o aviso tambem diz quais campos sao obrigatorios (na compra, os opcionais vem marcados)
+  const prAvisoDados = (venda) => `<div class="pr-aviso-dados" role="note">${ico('shield')}<div><p>${PR_AVISO_DADOS}</p><p class="pr-obg">${venda ? 'Os campos marcados como opcional podem ficar em branco; os demais são obrigatórios.' : 'Todos os campos abaixo são obrigatórios.'}</p></div></div>`;
   // o aceite da proposta nunca vem junto com autorizacao de marketing
   const PR_SEM_MKT = ' Este aceite vale só para esta proposta: não autoriza o envio de ofertas ou propaganda.';
   const PR_GAR_TODAS = ['Caução', 'Fiador', 'Seguro-fiança', 'Título de capitalização', 'Fiança bancária', 'Garantia por empresa (fintech)'];
@@ -2547,7 +2549,7 @@ p{text-wrap:pretty}
     const pj = d.pessoa === 'pj', reg = d.estado_civil === 'Casado(a)' || d.uniao_estavel === 'sim';
     prCorpo().innerHTML = `${prTopo()}${prPassos()}
       <form class="vis-form" id="pr-form" data-passo="2" novalidate>
-        ${prAvisoDados()}
+        ${prAvisoDados(true)}
         <div class="pr-ofs pr-pessoa" role="group" aria-label="Você compra como"><button type="button" class="pr-of" data-pr-pessoa="pf" aria-pressed="${!pj}"><b>Pessoa física</b><span>Com CPF</span></button><button type="button" class="pr-of" data-pr-pessoa="pj" aria-pressed="${pj}"><b>Empresa</b><span>Com CNPJ</span></button></div>
         <div class="fields">
           <div class="field"><label for="pr-nome">${pj ? 'Razão social' : 'Nome completo'}</label><input id="pr-nome" data-k="nome" autocomplete="${pj ? 'organization' : 'name'}" maxlength="160" value="${prVal('nome')}"></div>
