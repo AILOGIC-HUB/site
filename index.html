@@ -748,6 +748,20 @@ p{text-wrap:pretty}
 .fv-dados dd{margin:3px 0 0;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
 .fv-texto{max-height:190px;overflow:auto;margin:12px 0 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);font-size:13px;line-height:1.55;color:var(--g200,#dbe7f3)}
 .fv-texto p{margin:0 0 10px}.fv-texto p:last-child{margin:0}.fv-texto .fv-nota{color:var(--g300);font-size:12px}
+.pr-rev-c{margin:6px 0 0;color:var(--g300);font-size:14px;line-height:1.5}
+.pr-rev-l{display:grid;gap:10px;margin:14px 0 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.pr-rev-l dt{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g300)}.pr-rev-l dd{margin:3px 0 0;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.pr-rev-ver{margin:12px 0 0;background:none;border:0;padding:0;color:var(--cyan);font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.pr-cond{margin:12px 0 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);font-size:14px;line-height:1.6;color:var(--g200,#dbe7f3)}
+.pr-cond p{margin:0 0 12px}.pr-cond .pr-cond-v{font-size:12px;color:var(--g300);text-transform:uppercase;letter-spacing:.08em}
+.fv-passos{display:flex;gap:6px;list-style:none;margin:14px 0 0;padding:0;counter-reset:fvp}
+.fv-passos li{flex:1;min-width:0;font-size:11.5px;font-weight:600;color:var(--g300);padding-top:7px;border-top:3px solid rgba(255,255,255,.12);counter-increment:fvp}
+.fv-passos li::before{content:counter(fvp) ". "}
+.fv-passos li.on{color:#fff;border-top-color:var(--cyan)}.fv-passos li.ok{color:var(--g200,#dbe7f3);border-top-color:rgba(86,200,255,.45)}
+.fv-doc{margin:12px 0 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);font-size:14px;line-height:1.6;color:var(--g200,#dbe7f3)}
+.fv-doc p{margin:0 0 12px}.fv-doc p:last-child{margin:0}.fv-doc .fv-nota{color:var(--g300);font-size:12.5px}
+.fv-doc .fv-decl{padding:10px 12px;border:1px solid rgba(86,200,255,.3);border-radius:10px;background:rgba(11,102,255,.08)}
+.fv-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.fv-acts .cta{flex:1;min-width:150px}
 .fv-texto .fv-decl{padding:10px 12px;border:1px solid rgba(86,200,255,.3);border-radius:10px;background:rgba(11,102,255,.08)}
 .fv-texto:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .fv .vis-form{margin-top:16px}
@@ -2623,14 +2637,101 @@ p{text-wrap:pretty}
     if (!d.ok) return ['Marque a autorização de contato para enviar.', '#pr-ok'];
     return null;
   }
+  // rodada 156 (item 6 do relatório de 17/11): antes de enviar ou assinar, a etapa "Revisar proposta" mostra o resumo das
+  // condições e o texto integral (o mesmo do termo que vai para a assinatura, na mesma versão) e pede a confirmação expressa.
+  // "Voltar e corrigir" devolve o formulário com tudo o que foi digitado.
+  let prCond = null, prVolta = null;
+  async function prCondicoes() {
+    if (prCond) return prCond;
+    try { const r = await fetch(`${CONFIG.visitaUrl}?action=proposta_condicoes`, { cache: 'no-store' }); prCond = r.ok ? await r.json() : null; } catch { prCond = null; }
+    return prCond;
+  }
+  function prGuardarForm() {
+    const vals = {}; $$('input[id], select[id], textarea[id]', prCorpo()).forEach(el => { vals[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
+    prVolta = { html: prCorpo().innerHTML, vals };
+  }
+  function prRestaurarForm() {
+    if (!prVolta) return; prCorpo().innerHTML = prVolta.html;
+    Object.keys(prVolta.vals).forEach(id => { const el = $('#' + id); if (!el) return; if (el.type === 'checkbox') el.checked = prVolta.vals[id]; else el.value = prVolta.vals[id]; });
+    const f = $('#pr-form'); if (f) f.scrollIntoView({ block: 'start' }); prResumo();
+  }
+  const prMasc = d => { d = String(d || '').replace(/\D/g, ''); return d.length === 11 ? `***.${d.slice(3, 6)}.${d.slice(6, 9)}-**` : (d.length === 14 ? `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}` : ''); };
+  const prOp = (lista, v) => { const o = lista.find(x => x[0] === v); return o ? o[1] : ''; };
+  async function prRevisar(body, resumoOk) {
+    prGuardarForm();
+    const venda = !!body.oferta, lo = !!body.locacao_online, item = prItem;
+    prCorpo().innerHTML = `${prTopo()}<div class="pr-rev"><p class="vis-rot" style="margin-top:0">Revisar proposta</p><p class="pr-rev-c">Carregando as condições…</p></div>`;
+    const cond = await prCondicoes();
+    const c = cond ? (venda ? cond.venda : cond.locacao) : null;
+    const lin = [], imv = `${item.titulo || ''}${item.codigo ? ` · cód. ${String(item.codigo).split(' / ')[0]}` : ''}`;
+    lin.push(['Imóvel', imv]);
+    if (venda) {
+      const o = body.oferta, v = prNum(body.valor), ent = prNum(o.entrada), cred = prNum(o.credito_valor) + prNum(o.fgts_valor), multa = Math.round(ent * ((c && c.multa_pct) || 10) / 100);
+      const quando = o.entrada_quando === 'data' && o.entrada_data ? `em ${o.entrada_data.split('-').reverse().join('/')}` : (prOp(PR_ENT, o.entrada_quando) || '').toLowerCase();
+      const validade = new Date(o.validade_data + 'T' + (o.validade_hora || '18:00') + ':00-03:00').toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      lin.push(['Preço oferecido', BRL.format(v)], ['Forma de pagamento', PR_PAG_LONGO[o.pagamento] || ''],
+        ['Entrada', `${BRL.format(ent)}, paga ${quando}. É adiantamento do preço, sem natureza de arras.`],
+        ['Saldo', `${BRL.format(v - ent)}${cred ? `, com ${o.pagamento === 'consorcio' ? 'carta de consórcio' : 'financiamento'} de ${BRL.format(cred)} aprovado até ${String(o.credito_ate || '').split('-').reverse().join('/')}` : ''}`],
+        ['Posse e chaves', prOp(PR_POSSE, o.posse)], ['Validade da oferta', `até ${validade} (horário de Brasília)`],
+        ['Aceite', 'A proposta só vale como aceita com a assinatura do comprador e do vendedor, dentro da validade. Se o vendedor mudar alguma condição, vira contraproposta.'],
+        ['Desistência', `Depois do aceite das duas partes, quem desistir sem justificativa paga multa de ${(c && c.multa_pct) || 10}% da entrada: ${BRL.format(multa)}. Não há multa nos casos previstos no texto, como crédito negado sem culpa ou irregularidade do imóvel.`],
+        ['Próximos prazos', c ? `Documentos em até ${c.prazo_docs_dias} dias e compromisso de compra e venda em até ${c.prazo_compromisso_dias} dias depois do aceite.` : ''],
+        ['Comprador', [body.comprador && body.comprador.nome, prMasc(body.cpf || (body.comprador && body.comprador.doc)), body.email, body.whatsapp].filter(Boolean).join(' · ')]);
+      if (o.obs) lin.push(['Observações', o.obs]);
+    } else {
+      lin.push([prOf.finalidade === 'temporada' ? 'Diária proposta' : 'Aluguel proposto', `${BRL.format(prNum(body.valor))}${prOf.finalidade === 'temporada' ? ' por diária' : ' por mês'}`]);
+      if (body.prazo) lin.push(['Prazo do contrato', body.prazo]);
+      if (body.garantia) lin.push(['Garantia', body.garantia]);
+      if (lo) lin.push(['Locação online', 'Depois da proposta, você acompanha documentos, garantia, contrato, vistoria e chaves pela Área do Cliente.']);
+      lin.push(['Aceite', 'A assinatura do proprietário na ficha de proposta registra o aceite. O contrato vem depois da análise dos documentos.'],
+        ['Proponente', [body.cliente, prMasc(body.cpf), body.email, body.whatsapp].filter(Boolean).join(' · ')]);
+    }
+    const fmtC = ([t, x]) => `<p>${t ? `<b>${esc(t)}</b> ` : ''}${esc(x)}</p>`;
+    const integral = !c ? '' : venda
+      ? `<p>${esc(c.declaracao)}</p>${c.clausulas.map(fmtC).join('')}<p><b>Confirmação.</b> ${esc(c.confirmacao)}</p><p>${esc(c.integra)}</p><p>${esc(c.outros)}</p>`
+      : c.clausulas.map(x => { const k = x.indexOf('. '); return k > 0 ? `<p><b>${esc(x.slice(0, k + 1))}</b> ${esc(x.slice(k + 2))}</p>` : `<p>${esc(x)}</p>`; }).join('');
+    prCorpo().innerHTML = `${prTopo()}${venda ? `<ol class="pr-steps" aria-label="Etapas da proposta"><li class="ok"><i>1</i>Sua oferta</li><li class="ok"><i>2</i>Seus dados</li><li class="on"><i>3</i>Revisar</li></ol>` : ''}
+      <div class="pr-rev" id="pr-rev">
+        <p class="vis-rot" style="margin-top:0">Revisar proposta</p>
+        <p class="pr-rev-c">Confira as condições antes de ${venda ? 'enviar e assinar' : 'enviar'}. Se algo estiver errado, volte e corrija: nada do que você digitou se perde.</p>
+        <dl class="pr-rev-l">${lin.filter(x => x[1]).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+        ${c ? `<button type="button" class="pr-rev-ver" id="pr-cond-ver" aria-expanded="false" aria-controls="pr-cond">Ver condições completas</button>
+        <div class="pr-cond" id="pr-cond" hidden><p class="pr-cond-v">${venda ? 'Proposta de compra e venda' : 'Ficha de proposta de locação'} · versão ${esc(venda ? c.modelo : c.versao)} · o mesmo texto do documento que vai para a assinatura</p>${integral}<button type="button" class="pr-rev-ver" id="pr-cond-fecha">Voltar ao resumo</button></div>
+        <label class="consent"><input type="checkbox" id="pr-rev-ok"><span>Li o resumo e as condições completas e confirmo esta proposta.</span></label>`
+        : `<p class="vis-msg erro">Não foi possível carregar as condições completas agora. <button type="button" class="pr-rev-ver" id="pr-cond-tenta">Tentar de novo</button></p>`}
+        <div class="pr-acts"><button class="cta cta-ghost" type="button" id="pr-rev-volta">Voltar e corrigir</button><button class="cta cta-primary" type="button" id="pr-enviar" style="min-height:50px"${c ? '' : ' disabled'}>${ico('doc')}${lo ? 'Iniciar locação online' : (venda ? 'Enviar e assinar a proposta' : 'Enviar proposta')}</button></div>
+        <p class="vis-msg erro" id="pr-erro" hidden></p>
+      </div>`;
+    prV = prV || {}; prV.revisao = { body, resumoOk, versao: c ? (venda ? c.modelo : c.versao) : null };
+    const top = $('#pr-rev'); if (top) top.scrollIntoView({ block: 'start' });
+  }
+  prEl.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || !prV || !prV.revisao) return;
+    if (b.id === 'pr-cond-ver') { const p = $('#pr-cond'); p.hidden = false; b.setAttribute('aria-expanded', 'true'); b.hidden = true; p.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    else if (b.id === 'pr-cond-fecha') { $('#pr-cond').hidden = true; const v = $('#pr-cond-ver'); v.hidden = false; v.setAttribute('aria-expanded', 'false'); $('#pr-rev').scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    else if (b.id === 'pr-cond-tenta') { prCond = null; prRevisar(prV.revisao.body, prV.revisao.resumoOk); }
+    else if (b.id === 'pr-rev-volta') { prV.revisao = null; prRestaurarForm(); }
+    else if (b.id === 'pr-enviar' && b.type === 'button') {
+      const err = $('#pr-erro'); err.hidden = true;
+      if (!$('#pr-rev-ok').checked) { err.textContent = 'Marque que leu o resumo e as condições completas para enviar.'; err.hidden = false; return; }
+      const r = prV.revisao;
+      prEnviarAgora(Object.assign({}, r.body, { ciencia_condicoes: true, condicoes_versao: r.versao }), r.resumoOk);
+    }
+  });
   async function prEnviar(body, resumoOk) {
+    // sem a revisao confirmada, o envio passa pela etapa "Revisar proposta"
+    body = Object.assign({}, body, { hp: (($('#pr-hp') || {}).value || '').trim() });
+    return prRevisar(body, resumoOk);
+  }
+  async function prEnviarAgora(body, resumoOk) {
     const bt = $('#pr-enviar'), err = $('#pr-erro'), txt0 = bt.innerHTML;
     bt.disabled = true; bt.textContent = 'Enviando…';
-    body = Object.assign({}, body, { hp: (($('#pr-hp') || {}).value || '').trim() });
     try {
       const r = await fetch(CONFIG.propostaUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
+      if (r.status === 409 && j.motivo === 'condicoes') { prCond = null; return prRevisar(body, resumoOk); }
       if (!r.ok || !j.ok) throw new Error(j.error || '');
+      if (prV) prV.revisao = null;
       medir(body.locacao_online ? 'locacao_online' : 'fazer_proposta', { etapa: 'enviada' }, prItem);
       prCorpo().innerHTML = resumoOk(j.ficha === 'enviado', j);
     } catch (ex) {
@@ -2755,67 +2856,114 @@ p{text-wrap:pretty}
       box.outerHTML = `<p class="vis-msg">Não foi possível abrir a ficha aqui agora.${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener" style="color:var(--cyan)">Abrir a ficha em uma nova guia</a>.` : ' O corretor envia o link antes da visita.'}</p><div class="vis-ok-acts" style="margin-top:16px"><button class="cta cta-ghost" type="button" data-action="close" style="min-width:160px">Fechar</button></div>`;
     }
   }
+  // rodada 156 (itens 3 e 4 do relatório de 17/11): a ficha em três passos. 1) o documento integral para ler;
+  // 2) os dados, com CPF obrigatório (e do segundo visitante); 3) a revisão, com "Voltar e corrigir" e a confirmação
+  // expressa, sem marcação prévia. O servidor confere tudo de novo e guarda a versão aceita.
+  const fvCpfOk = c => { const d = String(c || '').replace(/\D/g, ''); if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false; for (let t = 9; t < 11; t++) { let sm = 0; for (let i = 0; i < t; i++) sm += Number(d[i]) * (t + 1 - i); if (((sm * 10) % 11) % 10 !== Number(d[t])) return false; } return true; };
+  const fvCpfFmt = c => { const d = String(c || '').replace(/\D/g, ''); return d.length === 11 ? `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}` : c; };
   function fichaPintar(f, nome) {
-    const im = f.imovel || {}, co = f.corretor || {};
+    const im = f.imovel || {}, co = f.corretor || {}, q = f.quadro || null, hub = (q && q.hub) || {};
     const corretor = co.nome ? co.nome + (co.creci ? ` · CRECI ${co.creci}` : '') : 'Definido pelo Hub na confirmação';
     const local = [im.bairro, im.cidade].filter(Boolean).join(', ');
-    // v3 (documento final de 16/11/2026): clausulas numeradas, **trecho** em negrito e a declaracao de aceite
     const fmt = c => esc(c).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-    const q = f.quadro || null, hub = (q && q.hub) || {};
     const clausulas = (f.clausulas || []).map((c, i) => { const k = c.indexOf('. '); if (f.versao === 'v1' || k < 0) return `<p>${esc(c)}</p>`; return f.numeradas ? `<p><b>${i + 1}. ${esc(c.slice(0, k + 1).toUpperCase())}</b> ${fmt(c.slice(k + 2))}</p>` : `<p><b>${esc(c.slice(0, k + 1))}</b> ${esc(c.slice(k + 2))}</p>`; }).join('')
       + (f.declaracao ? `<p class="fv-decl"><b>Declaração de aceite.</b> ${fmt(f.declaracao)}</p>` : '');
+    fvAtual.f = f; fvAtual.nome = nome || '';
     const fv = $('#fv'); if (!fv) return;
     fv.querySelector('#fv-carrega').outerHTML = `
-      <dl class="fv-dados">
-        <div class="full"><dt>Imóvel</dt><dd>${esc(im.titulo || '')}${im.codigo ? ` · ${esc(im.codigo)}` : ''}</dd></div>
-        <div><dt>Localização</dt><dd>${esc(local || 'A confirmar')}</dd></div>
-        <div><dt>${esc(im.operacao || 'Valor')}</dt><dd>${esc(fvValor(im))}</dd></div>
-        <div class="full"><dt>Corretor responsável</dt><dd>${esc(corretor)}</dd></div>
-        ${q ? `<div class="full"><dt>Intermediação</dt><dd>AiLogic Hub · CRECI-PJ ${esc(hub.creci_pj || '')}</dd></div>
-        <div class="full"><dt>Cancelar ou remarcar</dt><dd>Até ${esc(q.cancelamento_horas)} horas antes, pelo WhatsApp do Hub</dd></div>` : ''}
-      </dl>
-      <div class="fv-texto" tabindex="0" role="region" aria-label="Texto da ficha de visita">${clausulas}<p class="fv-nota">O corretor responsável confirma o CRECI e este compromisso pela plataforma ao confirmar a visita.</p></div>
-      <form class="vis-form" id="fv-form" novalidate>
+      <div id="fv-p1">
+        <ol class="fv-passos" aria-label="Passos"><li class="on">Ler a ficha</li><li>Seus dados</li><li>Conferir e assinar</li></ol>
+        <dl class="fv-dados">
+          <div class="full"><dt>Imóvel</dt><dd>${esc(im.titulo || '')}${im.codigo ? ` · ${esc(im.codigo)}` : ''}${local ? ` · ${esc(local)}` : ''}</dd></div>
+          ${q ? `<div class="full"><dt>Código da visita</dt><dd>${esc(q.visita || '')}</dd></div>` : ''}
+          <div><dt>${esc(im.operacao || 'Valor')}</dt><dd>${esc(fvValor(im))}</dd></div>
+          <div><dt>Data e horário</dt><dd>${esc(fvData(f.quando))}${q ? ` · ${esc((q.forma || 'Presencial').toLowerCase())}` : ''}</dd></div>
+          <div class="full"><dt>Corretor responsável</dt><dd>${esc(corretor)}</dd></div>
+          ${q ? `<div class="full"><dt>Intermediação</dt><dd>${esc(hub.razao || 'AiLogic Hub')} · CNPJ ${esc(hub.cnpj || '')} · CRECI-PJ ${esc(hub.creci_pj || '')}</dd></div>
+          <div class="full"><dt>Cancelar ou remarcar</dt><dd>Até ${esc(q.cancelamento_horas)} horas antes, pelo WhatsApp do Hub ou pela Área do Cliente</dd></div>` : ''}
+          <div class="full"><dt>Situação</dt><dd>Agendamento: esta ficha não declara que a visita já aconteceu. A visita realizada é registrada depois pelo corretor.</dd></div>
+        </dl>
+        <div class="fv-doc" role="region" aria-label="Texto integral da ficha de visita">${clausulas}<p class="fv-nota">O corretor responsável confirma o CRECI e este compromisso pela plataforma ao confirmar a visita.</p></div>
+        <div class="fv-acts"><button class="cta cta-primary" type="button" id="fv-ir2" style="min-height:50px">Li a ficha, continuar</button></div>
+        <p class="fv-depois">${fvAtual.url ? `<a href="${esc(fvAtual.url)}" target="_blank" rel="noopener">Abrir a ficha em página inteira</a> · ` : ''}<button type="button" data-action="close">Assinar depois</button></p>
+      </div>
+      <form class="vis-form" id="fv-form" novalidate hidden>
+        <ol class="fv-passos" aria-label="Passos"><li class="ok">Ler a ficha</li><li class="on">Seus dados</li><li>Conferir e assinar</li></ol>
         <div class="fields">
           <div class="field"><label for="fv-nome">Nome completo</label><input id="fv-nome" autocomplete="name" required maxlength="120" value="${esc(nome || '')}"></div>
-          <div class="field"><label for="fv-cpf">CPF (opcional)</label><input id="fv-cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00"></div>
+          <div class="field"><label for="fv-cpf">CPF</label><input id="fv-cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required aria-describedby="fv-cpf-err"><p class="field-error" id="fv-cpf-err" aria-live="polite"></p></div>
         </div>
-        <details class="fv-mais"><summary>Vai mais alguém na visita?</summary>
+        <details class="fv-mais" id="fv-mais"><summary>Vai mais alguém na visita?</summary>
           <div class="fields">
             <div class="field"><label for="fv-nome2">Nome completo</label><input id="fv-nome2" maxlength="120"></div>
-            <div class="field"><label for="fv-cpf2">CPF (opcional)</label><input id="fv-cpf2" inputmode="numeric" maxlength="14"></div>
+            <div class="field"><label for="fv-cpf2">CPF</label><input id="fv-cpf2" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" aria-describedby="fv-cpf2-err"><p class="field-error" id="fv-cpf2-err" aria-live="polite"></p></div>
           </div>
         </details>
         ${f.numeradas ? `<details class="fv-mais"><summary>Já conhecia este imóvel antes?</summary>
           <div class="fields"><div class="field full"><label for="fv-rel">Conte como (opcional)</label><input id="fv-rel" maxlength="200" placeholder="Ex.: já visitei com outro corretor em 2025"></div></div>
         </details>` : ''}
-        <label class="consent"><input type="checkbox" id="fv-ok"><span>Conferi os dados e aceito esta ficha de visita (versão ${esc(f.versao || '')})${f.numeradas ? ', inclusive a declaração de aceite' : ''}.</span></label>
-        <button class="cta cta-primary" type="submit" id="fv-assinar" style="min-height:50px">${ico('doc')}Assinar ficha de visita</button>
         <p class="vis-msg erro" id="fv-erro" hidden></p>
-        <p class="fv-depois">${fvAtual.url ? `<a href="${esc(fvAtual.url)}" target="_blank" rel="noopener">Ver a ficha completa</a> · ` : ''}<button type="button" data-action="close">Assinar depois</button></p>
-      </form>`;
+        <div class="fv-acts"><button class="cta cta-ghost" type="button" id="fv-volta1">Voltar à ficha</button><button class="cta cta-primary" type="submit" id="fv-ir3">Conferir e assinar</button></div>
+      </form>
+      <div id="fv-p3" hidden></div>`;
   }
-  visEl.addEventListener('submit', async e => {
+  function fvPasso(n) { ['#fv-p1', '#fv-form', '#fv-p3'].forEach((id, i) => { const el = $(id); if (el) el.hidden = i !== n - 1; }); const fv = $('#fv'); if (fv) fv.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+  function fvErroCampo(id, msg) { const inp = $('#' + id), er = $('#' + id + '-err'); if (er) er.textContent = msg || ''; if (inp) { inp.toggleAttribute('aria-invalid', !!msg); if (msg) inp.focus(); } }
+  function fvDados() { const v = id => (($('#' + id) || {}).value || '').trim(); return { nome: v('fv-nome').replace(/\s+/g, ' '), cpf: v('fv-cpf').replace(/\D/g, ''), nome2: v('fv-nome2'), cpf2: v('fv-cpf2').replace(/\D/g, ''), relacao_anterior: v('fv-rel') }; }
+  visEl.addEventListener('click', e => {
+    if (!fvAtual) return;
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'fv-ir2') fvPasso(2);
+    else if (b.id === 'fv-volta1') fvPasso(1);
+    else if (b.id === 'fv-volta2') fvPasso(2);
+    else if (b.id === 'fv-assinar') fvAssinar(b);
+  });
+  visEl.addEventListener('submit', e => {
     if (e.target.id !== 'fv-form' || !fvAtual) return;
     e.preventDefault();
-    const err = $('#fv-erro'), bt = $('#fv-assinar');
+    const err = $('#fv-erro'); err.hidden = true; fvErroCampo('fv-cpf', ''); fvErroCampo('fv-cpf2', '');
     const mostra = m => { err.textContent = m; err.hidden = false; };
+    const d = fvDados();
+    if (d.nome.split(' ').length < 2) { $('#fv-nome').focus(); return mostra('Informe seu nome completo.'); }
+    if (!d.cpf) return fvErroCampo('fv-cpf', 'Informe o seu CPF.');
+    if (!fvCpfOk(d.cpf)) return fvErroCampo('fv-cpf', 'CPF inválido. Confira os números.');
+    if (d.nome2 && d.nome2.split(/\s+/).length < 2) { $('#fv-mais').open = true; $('#fv-nome2').focus(); return mostra('Informe o nome completo de quem vai junto.'); }
+    if (d.nome2 && !d.cpf2) { $('#fv-mais').open = true; return fvErroCampo('fv-cpf2', 'Informe o CPF de quem vai junto.'); }
+    if (d.nome2 && !fvCpfOk(d.cpf2)) { $('#fv-mais').open = true; return fvErroCampo('fv-cpf2', 'CPF inválido. Confira os números.'); }
+    if (d.nome2 && d.cpf2 === d.cpf) { $('#fv-mais').open = true; return fvErroCampo('fv-cpf2', 'Os dois visitantes não podem ter o mesmo CPF.'); }
+    const f = fvAtual.f || {}, im = f.imovel || {};
+    $('#fv-p3').innerHTML = `
+      <ol class="fv-passos" aria-label="Passos"><li class="ok">Ler a ficha</li><li class="ok">Seus dados</li><li class="on">Conferir e assinar</li></ol>
+      <dl class="fv-dados">
+        <div class="full"><dt>Visitante</dt><dd>${esc(d.nome)} · CPF ${esc(fvCpfFmt(d.cpf))}</dd></div>
+        ${d.nome2 ? `<div class="full"><dt>Vai junto</dt><dd>${esc(d.nome2)} · CPF ${esc(fvCpfFmt(d.cpf2))}</dd></div>` : ''}
+        <div class="full"><dt>Visita</dt><dd>${esc(im.titulo || '')}${im.codigo ? ` · ${esc(im.codigo)}` : ''} · ${esc(fvData(f.quando))}</dd></div>
+        ${f.numeradas ? `<div class="full"><dt>Relação anterior com o imóvel</dt><dd>${esc(d.relacao_anterior || 'Nenhuma')}</dd></div>` : ''}
+      </dl>
+      <label class="consent"><input type="checkbox" id="fv-ok"><span>Li a ficha completa e aceito esta ficha de visita (versão ${esc(f.versao || '')})${f.numeradas ? ', inclusive a declaração de aceite' : ''}.</span></label>
+      <p class="vis-msg erro" id="fv-erro3" hidden></p>
+      <div class="fv-acts"><button class="cta cta-ghost" type="button" id="fv-volta2">Voltar e corrigir</button><button class="cta cta-primary" type="button" id="fv-assinar" style="min-height:50px">${ico('doc')}Assinar a ficha</button></div>`;
+    fvAtual.d = d; fvPasso(3);
+  });
+  async function fvAssinar(bt) {
+    const err = $('#fv-erro3'), mostra = m => { err.textContent = m; err.hidden = false; };
     err.hidden = true;
-    const nome = $('#fv-nome').value.trim().replace(/\s+/g, ' '), cpf = $('#fv-cpf').value.replace(/\D/g, ''), nome2 = $('#fv-nome2').value.trim(), cpf2 = $('#fv-cpf2').value.replace(/\D/g, '');
-    if (nome.split(' ').length < 2) { $('#fv-nome').focus(); return mostra('Informe seu nome completo.'); }
-    if (cpf && cpf.length !== 11) { $('#fv-cpf').focus(); return mostra('Confira o CPF (11 números) ou deixe em branco.'); }
-    if (nome2 && nome2.split(/\s+/).length < 2) { $('#fv-nome2').focus(); return mostra('Informe o nome completo de quem vai junto.'); }
-    if (!$('#fv-ok').checked) return mostra('Marque que conferiu os dados e aceita a ficha.');
+    if (!$('#fv-ok').checked) return mostra('Marque que leu a ficha completa e aceita.');
+    const d = fvAtual.d || fvDados();
     bt.disabled = true; bt.textContent = 'Assinando…';
     try {
-      const r = await fetch(`${CONFIG.visitaUrl}?action=ficha_aceitar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: fvAtual.t, nome, cpf, aceito: true, telefone: fvAtual.fone || '', nome2, cpf2, relacao_anterior: ($('#fv-rel') || {}).value || '' }) });
+      const r = await fetch(`${CONFIG.visitaUrl}?action=ficha_aceitar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: fvAtual.t, aceito: true, telefone: fvAtual.fone || '', ...d }) });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) { bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar ficha de visita`; return mostra(j.error || 'Não foi possível registrar a assinatura. Tente de novo.'); }
+      if (!r.ok) {
+        bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar a ficha`;
+        if (j.campo === 'cpf' || j.campo === 'cpf2') { fvPasso(2); return fvErroCampo(j.campo === 'cpf' ? 'fv-cpf' : 'fv-cpf2', j.error); }
+        return mostra(j.error || 'Não foi possível registrar a assinatura. Tente de novo.');
+      }
       medir('agendar_visita', { etapa: 'ficha_assinada' }, visItem);
-      const a = j.aceite || {};
+      const a = j.aceite || {}, nome = d.nome;
       $('#fv').innerHTML = `<div class="vis-ok">${ico('check')}<h3>Ficha assinada</h3><p>Por <b>${esc(a.nome || nome)}</b>${a.visitante2 ? ` e ${esc(a.visitante2)}` : ''}${a.em ? ` em ${esc(fvData(a.em))}` : ''}.<br>Você recebe a confirmação da visita pelo WhatsApp.</p><div class="vis-ok-acts">${fvAtual.url ? `<a class="cta cta-ghost" href="${esc(fvAtual.url)}" target="_blank" rel="noopener" style="min-width:160px">${ico('doc')}Ver a ficha</a>` : ''}<button class="cta cta-primary" type="button" data-action="close" style="min-width:160px">Fechar</button></div></div>`;
-    } catch { bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar ficha de visita`; mostra('Sem conexão agora. Tente de novo.'); }
-  });
+    } catch { bt.disabled = false; bt.innerHTML = `${ico('doc')}Assinar a ficha`; mostra('Sem conexão agora. Tente de novo.'); }
+  }
 
   /* Compartilhar: janela com WhatsApp, e-mail, mensagem de celular, Instagram, copiar link e (no celular) o menu
      do aparelho. O Instagram nao aceita receber link pelo navegador: no celular vai pelo menu do aparelho; no
