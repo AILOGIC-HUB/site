@@ -1,8 +1,10 @@
 // GET /imovel/<id>/foto.jpg (ou /api/og?id=<id>): imagem de prévia do imóvel, no visual do card da vitrine.
 // Sem o imóvel, ou se algo falhar, devolve a prévia geral do site.
+import { limitar } from './_lib/limite.js';
 import { pickId, siteOrigin, findImovel } from './_lib/imoveis.js';
 
 export default async function handler(req, res) {
+  if (limitar(req, res, 'og', 60)) return;   // rodada 165 do Hub: barra rajada de pedidos
   const id = pickId(req);
   const origin = siteOrigin(req);
   try {

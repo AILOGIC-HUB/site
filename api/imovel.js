@@ -1,12 +1,14 @@
 // GET /imovel/<id>: página lida pelas redes (Instagram, WhatsApp, Facebook...) para montar a prévia do link.
 // Quem abre o link no navegador é levado direto ao site pelo vercel.json (/?imovel=<id>), sem passar por aqui;
 // se alguém chegar aqui mesmo assim, o script abaixo leva ao site.
+import { limitar } from './_lib/limite.js';
 import { pickId, siteOrigin, findImovel, priceOf, specsOf, locOf } from './_lib/imoveis.js';
 
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ESC[c]);
 
 export default async function handler(req, res) {
+  if (limitar(req, res, 'imovel', 120)) return;   // rodada 165 do Hub: barra rajada de pedidos
   const id = pickId(req);
   const origin = siteOrigin(req);
   let found = null;

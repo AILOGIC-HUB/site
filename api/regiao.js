@@ -2,12 +2,14 @@
 // GET /regiao/<slug>/foto.jpg: a imagem dessa prévia (foto de um imóvel de lá, nome da região e quantos imóveis tem).
 // Quem abre o link no navegador é levado direto ao site pelo vercel.json (/?regiao=<slug>), sem passar por aqui;
 // se alguém chegar aqui mesmo assim, o script abaixo leva ao site.
+import { limitar } from './_lib/limite.js';
 import { pickSlug, siteOrigin, findRegiao, plural } from './_lib/imoveis.js';
 
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ESC[c]);
 
 export default async function handler(req, res) {
+  if (limitar(req, res, 'regiao', 120)) return;   // rodada 165 do Hub: barra rajada de pedidos
   const slug = pickSlug(req);
   const origin = siteOrigin(req);
   const querFoto = (req.query && String(req.query.foto) === '1') || /\/foto\.jpg$/.test(String(req.url || '').split('?')[0]);
