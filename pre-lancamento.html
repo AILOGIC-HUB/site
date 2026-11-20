@@ -381,6 +381,13 @@ body:has(dialog[open]) { overflow: hidden; }
 .form-result h3 { font-family: var(--heading); font-weight: 400; font-size: 40px; letter-spacing: -.03em; line-height: 1.05; margin-top: 13px; }
 .form-result > p:not(.eyebrow) { margin-block: 15px 19px; color: var(--muted); }
 .form-result .plain-button { display: block; margin-top: 12px; font-size: 14px; min-height: 44px; }
+/* Hub (rodada 180): o cadastro grava direto no Hub; erro de envio no proprio formulario */
+.form-erro { margin-top: 14px; padding: 12px 14px; border: 1px solid #f0b4b4; background: #fff4f4; color: #9b1c1c; font-size: 14px; line-height: 1.45; }
+.form-erro a { color: #9b1c1c; font-weight: 700; text-underline-offset: .2em; }
+.form-submit[disabled] { opacity: .65; cursor: wait; }
+.result-ok { width: 54px; height: 54px; border-radius: 50%; background: #0f8a5f; color: #fff; display: grid; place-items: center; }
+.result-ok svg { width: 26px; height: 26px; }
+.hp-campo { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
 .faq { background: var(--mist); }
 .faq .two-column { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; }
@@ -582,7 +589,7 @@ body:has(dialog[open]) { overflow: hidden; }
           <li class="milestone-current" aria-current="step">
             <p class="eyebrow">Agora</p>
             <h3>Pré-cadastro de parceiros</h3>
-            <p>Envie seu pré-cadastro pelo WhatsApp para entrar na lista.</p>
+            <p>Faça seu pré-cadastro aqui na página para entrar na lista.</p>
           </li>
           <li>
             <p class="eyebrow">Em breve</p>
@@ -614,7 +621,7 @@ body:has(dialog[open]) { overflow: hidden; }
           <article>
             <p class="eyebrow">01 · Pré-cadastro</p>
             <h4>Entre na lista.</h4>
-            <p>Escolha seu perfil e envie a mensagem de pré-cadastro pelo WhatsApp.</p>
+            <p>Escolha seu perfil e preencha o pré-cadastro aqui na página.</p>
           </article>
           <article>
             <p class="eyebrow">02 · Convite</p>
@@ -796,7 +803,7 @@ body:has(dialog[open]) { overflow: hidden; }
       <div class="signup-intro">
         <p class="eyebrow">Cadastro · todo o Brasil</p>
         <h2 id="signup-title">Garanta seu convite.</h2>
-        <p>Escolha seu perfil, preencha seus dados e envie a mensagem pelo WhatsApp. Parceiros entram na lista para receber o convite com a data oficial. Quem procura um imóvel recebe o contato da nossa curadoria.</p>
+        <p>Escolha seu perfil e preencha seus dados. Parceiros entram na lista para receber o convite com a data oficial. Quem procura um imóvel recebe o contato da nossa curadoria.</p>
         <p class="signup-privacy"><svg class="icon" aria-hidden="true"><use href="#lock"/></svg> A equipe usa seu contato para avisar sobre o lançamento, orientar os próximos passos da parceria ou atender a sua busca.</p>
       </div>
       <div class="signup-card" id="signup-card">
@@ -851,15 +858,17 @@ body:has(dialog[open]) { overflow: hidden; }
             <input id="aceite" name="aceite" type="checkbox" required>
             <div><label for="aceite">Autorizo o AiLogicHub a entrar em contato comigo sobre o lançamento, a parceria ou a minha busca de imóvel pelo WhatsApp e, se informado, por e-mail.</label> <a href="https://site-orpin-two-16.vercel.app/politica-de-privacidade.html" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>.</div>
           </div>
-          <button class="button button-primary form-submit" type="submit">Preparar meu pré-cadastro <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
-          <p class="form-note">Seu pré-cadastro é concluído quando você envia a mensagem pelo WhatsApp.</p>
+          <div class="hp-campo" aria-hidden="true"><label>Não preencha este campo <input name="hp" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <button class="button button-primary form-submit" id="form-enviar" type="submit">Fazer meu pré-cadastro <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
+          <div class="form-erro" id="form-erro" role="alert" hidden></div>
+          <p class="form-note">Seus dados ficam guardados com a equipe do AiLogicHub e são usados só para este contato.</p>
         </form>
         <div class="form-result" id="form-result" hidden>
-          <p class="eyebrow" id="result-eyebrow">Última etapa</p>
-          <h3 id="result-title" tabindex="-1">Envie seu pré-cadastro pelo WhatsApp.</h3>
-          <p id="result-text">Abra o WhatsApp e envie a mensagem preparada. É assim que a equipe inclui você na lista do lançamento.</p>
-          <a class="button button-primary" id="send-whatsapp" target="_blank" rel="noopener noreferrer">Abrir o WhatsApp <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
-          <button class="plain-button" id="edit-signup" type="button">Editar meus dados</button>
+          <div class="result-ok" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <p class="eyebrow" id="result-eyebrow">Cadastro recebido</p>
+          <h3 id="result-title" tabindex="-1">Obrigado por se cadastrar!</h3>
+          <p id="result-text">Em breve a nossa equipe entra em contato com você.</p>
+          <button class="plain-button" id="edit-signup" type="button">Corrigir meus dados</button>
         </div>
         <noscript>
           <p>Faça seu pré-cadastro pelo WhatsApp do AiLogicHub para receber o convite.</p>
@@ -920,7 +929,7 @@ body:has(dialog[open]) { overflow: hidden; }
       <div class="wrap final-content">
         <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Lista de parceiros aberta</p>
         <h2 id="final-title">Receba o convite<br> para o lançamento.</h2>
-        <p>Conclua o pré-cadastro pelo WhatsApp para receber a data oficial e participar da apresentação.</p>
+        <p>Faça o pré-cadastro para receber a data oficial e participar da apresentação.</p>
         <a class="button button-primary" href="#lista">Quero meu convite <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
       </div>
     </section>
@@ -1032,12 +1041,16 @@ const result = document.querySelector("#form-result");
 const resultEyebrow = document.querySelector("#result-eyebrow");
 const resultTitle = document.querySelector("#result-title");
 const resultText = document.querySelector("#result-text");
-const sendWhatsApp = document.querySelector("#send-whatsapp");
 const editSignup = document.querySelector("#edit-signup");
+const sendButton = document.querySelector("#form-enviar");
+const formError = document.querySelector("#form-erro");
 const busca = document.querySelector("#busca");
 const cityLabel = document.querySelector("#cidade-rotulo");
 const fields = form.elements;
 const contact = "https://wa.me/5511988021148";
+// Hub (rodada 180): o pre-cadastro grava direto no sistema do Hub, na aba Pre-lancamento da diretoria
+const HUB = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? "" : "https://www.ailogichuboficial.com";
+const ENDPOINT = HUB + "/api/proposta?action=prelancamento_site";
 
 function selectedProfile() {
   return form.querySelector('input[name="perfil"]:checked');
@@ -1052,9 +1065,26 @@ function syncProfile() {
 
 function showForm() {
   result.hidden = true;
-  sendWhatsApp.removeAttribute("href");
   form.hidden = false;
   syncProfile();
+}
+
+function showError(text, whatsappText) {
+  formError.textContent = text;
+  if (whatsappText) {
+    const link = document.createElement("a");
+    link.href = contact + "?text=" + encodeURIComponent(whatsappText);
+    link.target = "_blank"; link.rel = "noopener noreferrer";
+    link.textContent = "Se preferir, envie pelo WhatsApp";
+    formError.append(" ", link, ".");
+  }
+  formError.hidden = false;
+}
+
+function campaign() {
+  const q = new URLSearchParams(location.search), utm = {};
+  ["source", "medium", "campaign"].forEach(k => { const v = (q.get("utm_" + k) || "").slice(0, 80); if (v) utm[k] = v; });
+  return Object.keys(utm).length ? utm : null;
 }
 
 form.querySelectorAll('input[name="perfil"]').forEach(input => input.addEventListener("change", syncProfile));
@@ -1071,8 +1101,11 @@ document.querySelectorAll("[data-profile]").forEach(link => {
   field.addEventListener("input", () => field.setCustomValidity(""));
 });
 
-form.addEventListener("submit", event => {
+let sending = false;
+form.addEventListener("submit", async event => {
   event.preventDefault();
+  if (sending) return;
+  formError.hidden = true;
   const name = fields.nome.value.trim();
   const city = fields.cidade.value.trim();
   let digits = fields.whatsapp.value.replace(/\D/g, "");
@@ -1092,33 +1125,45 @@ form.addEventListener("submit", event => {
   const searchInput = form.querySelector('input[name="busca"]:checked');
   const searchText = client && searchInput ? searchInput.labels[0].textContent.trim() : "";
   const email = fields.email.value.trim();
+  const phoneShown = digits.length === 11 ? "(" + digits.slice(0, 2) + ") " + digits.slice(2, 7) + "-" + digits.slice(7) : "(" + digits.slice(0, 2) + ") " + digits.slice(2, 6) + "-" + digits.slice(6);
+  // texto de reserva, so se o envio ao Hub falhar
   const lines = client
-    ? [
-      "Olá! Procuro um imóvel e quero o atendimento da curadoria do AiLogicHub.",
-      "Quero: " + searchText,
-      "Nome: " + name,
-      "WhatsApp: +55 " + digits,
-      "Cidade: " + city + " / " + uf
-    ]
-    : [
-      "Olá! Quero fazer meu pré-cadastro de parceiro e receber o convite para o lançamento do AiLogicHub.",
-      "Perfil: " + profile,
-      "Nome: " + name,
-      "WhatsApp: +55 " + digits,
-      "Cidade de atuação: " + city + " / " + uf
-    ];
+    ? ["Olá! Procuro um imóvel e quero o atendimento da curadoria do AiLogicHub.", "Quero: " + searchText, "Nome: " + name, "WhatsApp: +55 " + digits, "Cidade: " + city + " / " + uf]
+    : ["Olá! Quero fazer meu pré-cadastro de parceiro e receber o convite para o lançamento do AiLogicHub.", "Perfil: " + profile, "Nome: " + name, "WhatsApp: +55 " + digits, "Cidade de atuação: " + city + " / " + uf];
   if (email) lines.push("E-mail: " + email);
-  lines.push(client ? "Autorizo o contato sobre a minha busca." : "Autorizo o contato sobre o lançamento e a parceria.");
-  sendWhatsApp.href = contact + "?text=" + encodeURIComponent(lines.join("\n"));
 
-  resultEyebrow.textContent = "Última etapa";
-  resultTitle.textContent = client ? "Envie sua busca pelo WhatsApp." : "Envie seu pré-cadastro pelo WhatsApp.";
-  resultText.textContent = client
-    ? "Abra o WhatsApp e envie a mensagem preparada. É assim que a nossa curadoria recebe a sua busca em " + city + " (" + state + ")."
-    : "Abra o WhatsApp e envie a mensagem preparada. É assim que a equipe inclui você na lista do lançamento.";
-  form.hidden = true;
-  result.hidden = false;
-  resultTitle.focus();
+  sending = true;
+  sendButton.disabled = true;
+  const label = sendButton.firstChild.nodeValue;
+  sendButton.firstChild.nodeValue = "Enviando… ";
+  try {
+    const response = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ perfil: profileValue, nome: name, whatsapp: digits, email: email, busca: client && searchInput ? searchInput.value : "", cidade: city, uf: uf, aceite: fields.aceite.checked === true, hp: fields.hp.value, utm: campaign() })
+    });
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      if (response.status === 400 && answer.error) showError(answer.error);
+      else showError(answer.error || "Não conseguimos enviar o seu cadastro agora. Tente de novo em instantes.", lines.join("\n"));
+      return;
+    }
+    const first = name.split(/\s+/)[0];
+    resultEyebrow.textContent = "Cadastro recebido";
+    resultTitle.textContent = "Obrigado por se cadastrar, " + first + "!";
+    resultText.textContent = client
+      ? "Recebemos a sua busca em " + city + " (" + state + "). Em breve a nossa curadoria entra em contato com você pelo WhatsApp " + phoneShown + "."
+      : "Você está na lista do lançamento do AiLogicHub. Em breve a nossa equipe entra em contato com você pelo WhatsApp " + phoneShown + " com o convite e os próximos passos.";
+    form.hidden = true;
+    result.hidden = false;
+    resultTitle.focus();
+  } catch (error) {
+    showError("Sem conexão com o servidor agora. Confira a internet e tente de novo.", lines.join("\n"));
+  } finally {
+    sending = false;
+    sendButton.disabled = false;
+    sendButton.firstChild.nodeValue = label;
+  }
 });
 
 editSignup.addEventListener("click", () => {
