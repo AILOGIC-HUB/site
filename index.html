@@ -943,8 +943,8 @@ p{text-wrap:pretty}
   .vd-steps li:not(.is-on){display:none}
 }
 
-/* galeria */
-.lb{position:fixed;inset:0;z-index:80;display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:rgba(3,8,16,.97);visibility:hidden;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s}
+/* galeria. A coluna da grade e minmax(0,1fr): sem isso, no celular, o titulo longo (nowrap) esticava a galeria alem da tela e a foto aparecia cortada e deslocada (rodada 192 do Hub) */
+.lb{position:fixed;inset:0;z-index:80;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;background:#030810;visibility:hidden;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s}
 .lb.is-open{visibility:visible;opacity:1;transition:opacity .3s ease}
 .lb-top{display:flex;align-items:center;gap:16px;padding:10px 10px 10px clamp(16px,3vw,28px);padding-top:calc(10px + env(safe-area-inset-top))}
 .lb-title{flex:1;min-width:0;margin:0;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
