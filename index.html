@@ -202,7 +202,18 @@ p{text-wrap:pretty}
 .eyebrow{margin:0 0 18px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
 .panel-title{margin:0;font-size:clamp(42px,6.4vw,92px);font-weight:700;line-height:.95;letter-spacing:-.06em}
 .panel-title--sm{font-size:clamp(40px,5.4vw,78px);font-weight:600;letter-spacing:-.055em}
-.panel-sub{margin:22px auto 0;max-width:560px;font-size:clamp(16px,1.35vw,19px);line-height:1.5;color:rgba(255,255,255,.86)}
+/* rodada 189 do Hub: titulo de imovel longo ("Residencia de alto padrao com 4 suites, terraco exclusivo e piscina aquecida")
+   com letra menor e no maximo 3 linhas; em tela baixa, menos espaco e texto em 2 linhas: titulo, texto e botoes nunca
+   ficam embaixo da caixa do Sam */
+.panel-title.longo{font-size:clamp(32px,3.9vw,58px);line-height:1.04;letter-spacing:-.045em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;padding-bottom:.06em}
+@media (max-height:820px){
+  .panel .panel-inner{padding-top:calc(var(--header-h) + 3vh)}
+  .panel .panel-title--sm{font-size:clamp(36px,4.6vw,64px)}
+  .panel .panel-title.longo{font-size:clamp(28px,3.3vw,46px)}
+  .panel .panel-sub{margin-top:14px;-webkit-line-clamp:2;line-clamp:2}
+  .panel .panel-meta{margin-top:12px}
+}
+.panel-sub{margin:22px auto 0;max-width:560px;font-size:clamp(16px,1.35vw,19px);line-height:1.5;color:rgba(255,255,255,.86);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
 .panel-meta{margin:22px 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 0;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.92);font-variant-numeric:tabular-nums}
 .panel-meta span{padding:0 14px;position:relative}
 .panel-meta span + span::before{content:"";position:absolute;left:0;top:50%;width:1px;height:12px;margin-top:-6px;background:rgba(255,255,255,.4)}
@@ -1874,6 +1885,18 @@ p{text-wrap:pretty}
   }
   const photosOf = i => (Array.isArray(i.fotos) && i.fotos.length ? i.fotos : [i.foto]).map(safeUrl).filter(Boolean);
   const firstSentence = t => (String(t || '').match(/^.*?[.!?](\s|$)/) || [String(t || '')])[0].trim();
+  // Texto do banner (rodada 189 do Hub): a descricao curta, que e o primeiro texto que o cliente le; sem ela, a primeira
+  // frase de verdade da descricao. Linhas so em MAIUSCULAS (FAZENDA ALVORADA, O IMOVEL, PORTO FELIZ | SP) e marcadores (•)
+  // ficam de fora. Antes, uma descricao que comecava por um titulo sem ponto final vinha inteira para o banner e cobria a
+  // busca e os botoes. Nunca passa de 180 caracteres (e o CSS ainda corta em 3 linhas).
+  const textoBanner = item => {
+    const limpar = t => String(t || '').split(/\n+/).map(l => l.replace(/^[\s•·*–-]+/, '').trim())
+      .filter(l => l && /[a-zà-ÿ]/.test(l)).join(' ').replace(/\s+/g, ' ').trim();
+    const base = limpar(item.curta) || limpar(item.descricao);
+    let s = firstSentence(base);
+    if (s.length > 180) s = s.slice(0, 180).replace(/[\s,;:]+\S*$/, '') + '…';
+    return s;
+  };
 
   // exigencias da locacao (rodada 157 do Hub, item 2): so na oferta de locacao, com o texto que o Hub manda
   function exigDe(r) {
@@ -2177,7 +2200,8 @@ p{text-wrap:pretty}
       const f = k => $(`[data-f="${k}"]`, panel);
       f('eyebrow').textContent = `${tagOf(item)} · ${item.bairro}` + (ehExemplo() ? ' · Exemplo' : '');
       f('title').textContent = item.titulo;
-      f('sub').textContent = firstSentence(item.descricao);
+      f('title').classList.toggle('longo', item.titulo.length > 44);   // rodada 189: titulo longo com letra menor (no maximo 3 linhas)
+      f('sub').textContent = textoBanner(item);
       const meta = f('meta'); meta.textContent = '';
       [priceOf(item), ...specsOf(item)].forEach((s, k) => { const sp = document.createElement('span'); if (!k) sp.className = 'price'; sp.textContent = s; meta.appendChild(sp); });
       const img = f('img');
