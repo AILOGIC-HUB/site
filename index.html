@@ -723,6 +723,71 @@ p{text-wrap:pretty}
 }
 @media (max-width:420px){.specs{grid-template-columns:repeat(2,minmax(0,1fr))}.detail-cta .cta{font-size:13.5px;padding:0 6px}}
 
+/* lançamentos (rodada 196 do Hub): um card por empreendimento de construtora; ao abrir, as unidades disponíveis */
+.lanc{background:var(--ink)}
+.lanc-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 40px;margin-bottom:clamp(32px,4.5vw,52px)}
+.lanc-head .section-title span{color:var(--g400)}
+.lanc-sub{margin:18px 0 0;max-width:580px;font-size:clamp(16px,1.3vw,18px);color:var(--g300)}
+.lanc-count{margin:0;font-size:13px;color:var(--g400);font-variant-numeric:tabular-nums}
+.lanc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:clamp(16px,2vw,24px)}
+.lanc-card{position:relative;display:flex;flex-direction:column;padding:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--surface);color:inherit;text-align:left;font:inherit;cursor:pointer;transition:transform .5s var(--ease-out),border-color .3s ease,box-shadow .5s var(--ease-out)}
+.lanc-card:hover{transform:translateY(-4px);border-color:#2c4260;box-shadow:0 30px 60px -30px rgba(0,0,0,.75)}
+.lanc-card:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.lanc-card > span{display:block}
+.lanc-media{position:relative;aspect-ratio:4/3;overflow:hidden}
+.lanc-media img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out)}
+.lanc-card:hover .lanc-media img{transform:scale(1.04)}
+.lanc-media::after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(transparent,rgba(6,19,38,.6));pointer-events:none}
+.lanc-fase{position:absolute;left:14px;top:14px;z-index:1;display:inline-flex;align-items:center;gap:8px;min-height:30px;padding:0 12px;border-radius:999px;background:rgba(6,19,38,.74);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12px;font-weight:600;letter-spacing:.02em;color:#fff}
+.lanc-fase::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan)}
+.lanc-fase.pronto::before{background:#3ddc97}
+.lanc-body{display:flex !important;flex-direction:column;gap:6px;flex:1;padding:20px 22px 22px}
+.lanc-body > span{display:block}
+.lanc-cons{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.lanc-nome{font-size:clamp(21px,1.9vw,24px);font-weight:700;line-height:1.15;letter-spacing:-.03em}
+.lanc-loc{font-size:14px;color:var(--g300)}
+.lanc-foot{display:flex !important;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid var(--line);position:relative;top:8px}
+.lanc-preco small{display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--g400)}
+.lanc-preco b{display:block;margin-top:2px;font-size:20px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.lanc-un{font-size:13px;color:var(--g200);white-space:nowrap}
+.modal-card--emp{height:min(820px,calc(100vh - 2 * clamp(12px,3vw,32px)));overflow:hidden}
+.emp{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);grid-template-rows:minmax(0,1fr);height:100%}
+.emp-media{position:relative;min-height:0}
+.emp-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.emp-body{--dpad:clamp(24px,3.4vw,40px);display:flex;flex-direction:column;min-height:0;overflow:auto;overscroll-behavior:contain;padding:var(--dpad) var(--dpad) 0}
+.emp-body > *{flex-shrink:0}
+.emp-body .eyebrow{margin-bottom:12px}
+.emp-body h2{margin:0;font-size:clamp(30px,3.1vw,42px);font-weight:700;line-height:1;letter-spacing:-.05em}
+.emp-texto{margin:18px 0 0;font-size:15.5px;line-height:1.6;color:var(--g200)}
+.emp-h{margin:28px 0 12px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--g400)}
+.emp-units{display:grid;gap:10px;margin:0 0 24px;padding:0;list-style:none}
+.emp-unit{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+.emp-thumb{width:72px;height:72px;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2);cursor:zoom-in}
+.emp-thumb img{width:100%;height:100%;object-fit:cover}
+.emp-thumb.planta{background:#fff}
+.emp-thumb.planta img{object-fit:contain;padding:3px}
+.emp-un-t{margin:0;font-size:15.5px;font-weight:600;line-height:1.3}
+.emp-un-s{margin:3px 0 0;font-size:13px;color:var(--g300)}
+.emp-un-p{margin:6px 0 0;font-size:16px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.emp-un-acts{display:flex;flex-direction:column;gap:6px}
+.emp-un-acts .cta{min-height:38px;padding:0 14px;font-size:13px}
+.emp-un-acts .cta-ghost{-webkit-backdrop-filter:none;backdrop-filter:none;background:transparent}
+.emp-acts{position:sticky;bottom:0;z-index:2;margin:auto calc(var(--dpad) * -1) 0;padding:14px var(--dpad) calc(18px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
+.emp-acts .cta{width:100%;min-height:48px;padding:8px 16px;font-size:14.5px;line-height:1.25;white-space:normal;text-align:center}
+@media (max-width:860px){
+  .modal-card--emp{height:auto;overflow:auto}
+  .emp{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;height:auto}
+  .emp-media{aspect-ratio:16/10}
+  .emp-body{overflow:visible}
+}
+@media (max-width:520px){
+  .emp-unit{grid-template-columns:64px minmax(0,1fr)}
+  .emp-thumb{width:64px;height:64px}
+  .emp-un-acts{grid-column:1/-1;flex-direction:row}
+  .emp-un-acts .cta{flex:1}
+  .lanc-foot{flex-wrap:wrap}
+}
+
 /* formulários de lead */
 .modal-card--form{width:min(600px,100%);padding:clamp(24px,4vw,40px)}
 /* agendar visita: dias e horarios livres da agenda de quem atende o imovel */
@@ -1041,6 +1106,7 @@ p{text-wrap:pretty}
         <p class="drop-foot"><span>Já é parceiro?</span><a href="https://www.ailogichuboficial.com/" target="_blank" rel="noopener" data-login>Entrar <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
       </div>
     </div>
+    <a class="nav-link" href="#lancamentos" data-lanc-link hidden>Lançamentos</a>
     <button class="nav-link" type="button" data-action="lead" data-tab="anunciar">Anuncie seu imóvel</button>
     <a class="nav-link" href="https://www.ailogichuboficial.com/" target="_blank" rel="noopener" data-login>Entrar</a>
   </nav>
@@ -1066,6 +1132,7 @@ p{text-wrap:pretty}
       <button class="mm-sublink" type="button" data-action="parceiro" data-perfil="indicador"><span class="drop-ico"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></span><span><strong>Indicadores de imóveis</strong><small>Indique um imóvel que vale a pena.</small></span></button>
       <button class="mm-sublink" type="button" data-action="cartorios" data-cartorios hidden><span class="drop-ico"><svg class="i" aria-hidden="true"><use href="#i-landmark"/></svg></span><span><strong>Cartórios parceiros</strong><small>Tabelionatos e registros que trabalham com o Hub.</small></span></button>
     </div>
+    <a class="mm-link mm-d1" href="#lancamentos" data-action="menu-link" data-lanc-link hidden>Lançamentos <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     <button class="mm-link mm-d1" type="button" data-action="lead" data-tab="anunciar">Anuncie seu imóvel <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     <a class="mm-link mm-d2" href="https://www.ailogichuboficial.com/" target="_blank" rel="noopener" data-login>Entrar <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
   </nav>
@@ -1276,6 +1343,21 @@ p{text-wrap:pretty}
           </div>
           <div class="vrows" id="grid" role="region" aria-roledescription="carrossel" aria-label="Vitrine de imóveis"></div>
           <p class="demo-note" id="demo-note">Imóveis ilustrativos, só para mostrar a experiência: não estão à venda nem para alugar. Os imóveis reais aparecem aqui assim que as imobiliárias parceiras publicarem. Para ver o que está disponível hoje, fale com o Sam.</p>
+      </div>
+    </section>
+
+    <!-- rodada 196 do Hub: lancamentos de construtora, um card por empreendimento (so aparece quando ha unidade publicada) -->
+    <section class="section lanc" id="lancamentos" aria-labelledby="lanc-title" hidden>
+      <div class="wrap">
+        <div class="lanc-head" data-reveal>
+          <div>
+            <p class="eyebrow">Lançamentos</p>
+            <h2 class="section-title" id="lanc-title">Direto da construtora. <span>Escolha a sua unidade.</span></h2>
+            <p class="lanc-sub">Empreendimentos novos com as unidades disponíveis, a planta e o valor de cada uma. O Sam tira as dúvidas e agenda a sua visita.</p>
+          </div>
+          <p class="lanc-count" id="lanc-count" aria-live="polite"></p>
+        </div>
+        <div class="lanc-grid" id="lanc-grid"></div>
       </div>
     </section>
 
@@ -1547,6 +1629,15 @@ p{text-wrap:pretty}
   <div class="modal-card modal-card--detail">
     <button class="modal-x" type="button" data-action="close" aria-label="Fechar detalhes"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
     <div class="detail" id="detail-body"></div>
+  </div>
+</div>
+
+<!-- ============ EMPREENDIMENTO (rodada 196 do Hub) ============ -->
+<div class="modal" id="emp" role="dialog" aria-modal="true" aria-labelledby="emp-title">
+  <div class="modal-backdrop" data-action="close"></div>
+  <div class="modal-card modal-card--emp">
+    <button class="modal-x" type="button" data-action="close" aria-label="Fechar empreendimento"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div class="emp" id="emp-body"></div>
   </div>
 </div>
 
@@ -1842,10 +1933,10 @@ p{text-wrap:pretty}
     if (i.ofertas && i.ofertas.length > 1) { const u = new Set(); i.ofertas.forEach(o => catsOf({ ...i, ofertas: null, finalidade: o.finalidade, preco: o.preco }).forEach(x => u.add(x))); return u; }
     const c = new Set(Array.isArray(i.categorias) ? i.categorias.map(norm) : []);
     const txt = norm(`${i.tipo} ${i.titulo} ${i.descricao}`);
-    const lanc = /lancamento|na planta/.test(txt);
+    const lanc = !!i.lanc || /lancamento|na planta/.test(txt);
     if (i.finalidade === 'locacao' || i.finalidade === 'temporada') c.add('alugar');
     if (i.finalidade === 'venda') c.add('morar');
-    if (lanc) { c.add('lancamentos'); c.add('investir'); }
+    if (lanc) { c.add('lancamentos'); if (!i.lanc) c.add('investir'); }
     if (i.finalidade === 'venda' && (i.area && i.area <= 60 || /studio|sala|loja|renda/.test(txt))) c.add('investir');
     if ((i.finalidade === 'venda' && i.preco >= 4000000) || (i.finalidade !== 'venda' && i.preco >= 15000)) c.add('alto-padrao');
     return c;
@@ -1905,6 +1996,12 @@ p{text-wrap:pretty}
     const t = v => String(v || '').slice(0, 260);
     return { titulo: t(x.titulo), pagador: t(x.pagador_texto), nota: t(x.nota) };
   }
+  function lancDe(r) {
+    const l = r && r.lancamento;
+    if (!l || typeof l !== 'object' || !l.empreendimento) return null;
+    const t = (v, n) => String(v || '').trim().slice(0, n);
+    return { emp: t(l.empreendimento, 120), construtora: t(l.construtora, 120), entrega: t(l.entrega, 60), fase: t(l.fase, 40), ano: Number(l.ano_entrega) || null, unidade: t(l.unidade, 30), bloco: t(l.bloco, 40) };
+  }
   function normalize(raw) {
     const arr = Array.isArray(raw) ? raw : (raw && (raw.rows || raw.imoveis || raw.data || raw.items)) || [];   // o Hub responde { rows: [...] }
     const n = v => (v === null || v === undefined || v === '' ? 0 : Number(v) || 0);
@@ -1926,6 +2023,9 @@ p{text-wrap:pretty}
           ? { visita: r.locacao_online.exige_visita === true, garantias: Array.isArray(r.locacao_online.garantias) ? r.locacao_online.garantias.map(String).filter(Boolean).slice(0, 10) : [] } : null,
         // exigencias da locacao (rodada 157 do Hub, item 2): o texto vem do Hub, uma fonte so para site, proposta e contrato
         exig: exigDe(r),
+        // lancamento de construtora (rodada 196 do Hub): empreendimento, construtora, entrega, fase, unidade e torre
+        lanc: lancDe(r),
+        ambientes: Array.isArray(r.fotos_ambiente) ? r.fotos_ambiente.map(x => String(x || '')) : [],
         match: r.match === undefined || r.match === null || r.match === '' ? undefined : Number(r.match)
       };
     });
@@ -1963,6 +2063,7 @@ p{text-wrap:pretty}
       const nota = $('#demo-note'); if (nota) nota.hidden = true;
       hydratePanels();
       renderGrid();
+      renderLanc();
       renderHoods();
       openFromHash();
       regiaoDoHash();
@@ -3178,7 +3279,9 @@ p{text-wrap:pretty}
   function settleSoon() { clearTimeout(V.settleT); V.settleT = setTimeout(() => grid.classList.add('settled'), 1700); }
   function renderGrid() {
     if (regiao && !IMOVEIS.some(i => regKey(i) === regiao)) regiao = null;   // a vitrine mudou (exemplos -> imoveis reais)
-    const list = IMOVEIS.filter(i => (filter === 'todos' ? true : filter === 'salvos' ? favs.has(String(i.id)) : catsOf(i).has(filter)) && (!regiao || regKey(i) === regiao));
+    // rodada 196 do Hub: unidade de lancamento de construtora fica na secao Lancamentos (e no filtro "Lancamentos"), nao enche a vitrine
+    const soLanc = !IMOVEIS.some(i => !i.lanc);   // so ha lancamentos publicados: a vitrine mostra eles em vez de ficar vazia
+    const list = IMOVEIS.filter(i => (filter === 'todos' ? (!i.lanc || soLanc) : filter === 'salvos' ? favs.has(String(i.id)) : catsOf(i).has(filter) && (!i.lanc || filter === 'lancamentos')) && (!regiao || regKey(i) === regiao));
     const n = list.length, rg = syncRegiao();
     $('#result-count').textContent = n ? `${plural(n, 'imóvel', 'imóveis')}${ehExemplo() ? ' de exemplo' : ''}${rg && rg.cidade ? ` · ${rg.cidade}` : ''}` : '';
     if (!n) {
@@ -3420,6 +3523,82 @@ p{text-wrap:pretty}
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) cb(dx < 0 ? 1 : -1);
     });
     el.addEventListener('pointercancel', () => { x0 = null; });
+  }
+
+  /* ================= LANÇAMENTOS (rodada 196 do Hub) ================= */
+  // um card por empreendimento (o condominio no Hub), com as unidades publicadas; ao abrir, cada unidade com planta, valor e visita
+  const empModal = $('#emp');
+  function faseTxt(l) {
+    if (!l) return '';
+    if (l.fase === 'Pronto para morar') return 'Pronto para morar';
+    const ent = l.entrega ? `entrega ${l.entrega}` : (l.ano ? `entrega em ${l.ano}` : '');
+    if (l.fase) return ent ? `${l.fase} · ${ent}` : l.fase;
+    return ent ? ent.charAt(0).toUpperCase() + ent.slice(1) : '';
+  }
+  function empreendimentos() {
+    if (ehExemplo()) return [];
+    const g = new Map();
+    IMOVEIS.filter(i => i.lanc && i.lanc.emp).forEach(i => {
+      const k = norm(i.lanc.emp) || 'x';
+      if (!g.has(k)) g.set(k, { key: k, nome: i.lanc.emp, lanc: i.lanc, bairro: i.bairro, cidade: i.cidade, unidades: [] });
+      g.get(k).unidades.push(i);
+    });
+    return Array.from(g.values()).map(e => {
+      e.unidades.sort((a, b) => (a.preco || Infinity) - (b.preco || Infinity));
+      const p = e.unidades.find(u => u.preco > 0);
+      e.minimo = p ? p.preco : 0;
+      e.capa = e.unidades.map(u => u.foto || photosOf(u)[0]).find(Boolean) || '';
+      e.fase = faseTxt(e.lanc);
+      return e;
+    }).sort((a, b) => a.nome.localeCompare(b.nome, 'pt', { sensitivity: 'base' }));
+  }
+  function renderLanc() {
+    const sec = $('#lancamentos'); if (!sec) return;
+    const es = empreendimentos();
+    sec.hidden = !es.length;
+    $$('[data-lanc-link]').forEach(a => { a.hidden = !es.length; });
+    if (!es.length) { $('#lanc-grid').innerHTML = ''; return; }
+    const nu = es.reduce((s, e) => s + e.unidades.length, 0);
+    $('#lanc-count').textContent = `${plural(es.length, 'empreendimento', 'empreendimentos')} · ${plural(nu, 'unidade disponível', 'unidades disponíveis')}`;
+    $('#lanc-grid').innerHTML = es.map(e => `<button class="lanc-card" type="button" data-action="emp" data-emp="${esc(e.key)}" aria-label="Ver as unidades do ${esc(e.nome)}">
+        <span class="lanc-media media">${e.capa ? `<img src="${esc(sized(e.capa, 900))}" alt="" width="900" height="675" loading="lazy" decoding="async">` : ''}${e.fase ? `<span class="lanc-fase${/pronto/i.test(e.fase) ? ' pronto' : ''}">${esc(e.fase)}</span>` : ''}</span>
+        <span class="lanc-body">${e.lanc.construtora ? `<span class="lanc-cons">${esc(e.lanc.construtora)}</span>` : ''}<span class="lanc-nome">${esc(e.nome)}</span><span class="lanc-loc">${esc([e.bairro, e.cidade].filter(Boolean).join(', '))}</span>
+          <span class="lanc-foot"><span class="lanc-preco">${e.minimo ? `<small>A partir de</small><b>${esc(BRL.format(e.minimo))}</b>` : '<b>Sob consulta</b>'}</span><span class="lanc-un">${esc(plural(e.unidades.length, 'unidade disponível', 'unidades disponíveis'))}</span></span>
+        </span></button>`).join('');
+  }
+  function unidadeHTML(u) {
+    const l = u.lanc || {}, fotos = photosOf(u), amb = u.ambientes || [];
+    const pi = amb.findIndex(a => /planta/i.test(a)), k = pi >= 0 ? pi : (fotos.length > 1 ? 1 : 0);
+    const nome = [l.unidade ? `Unidade ${l.unidade}` : '', l.bloco].filter(Boolean).join(' · ') || u.titulo;
+    const specs = [u.area ? `${NUM.format(u.area)} m²` : '', u.suites ? plural(u.suites, 'suíte', 'suítes') : '', u.vagas ? plural(u.vagas, 'vaga', 'vagas') : ''].filter(Boolean).join(' · ');
+    const id = esc(u.id);
+    return `<li class="emp-unit">
+        <button class="emp-thumb${pi >= 0 ? ' planta' : ''}" type="button" data-action="emp-foto" data-id="${id}" data-k="${k}" aria-label="${pi >= 0 ? 'Ver a planta' : 'Ver as fotos'}: ${esc(nome)}">${fotos[k] ? `<img src="${esc(sized(fotos[k], 240))}" alt="" width="72" height="72" loading="lazy" decoding="async">` : ''}</button>
+        <div><p class="emp-un-t">${esc(nome)}</p>${specs ? `<p class="emp-un-s">${esc(specs)}</p>` : ''}<p class="emp-un-p">${esc(priceOne(u))}</p></div>
+        <div class="emp-un-acts"><button class="cta cta-ghost" type="button" data-action="details" data-id="${id}">Detalhes</button><button class="cta cta-primary" type="button" data-action="visit" data-id="${id}">Agendar visita</button></div>
+      </li>`;
+  }
+  function openEmp(key) {
+    const e = empreendimentos().find(x => x.key === key); if (!e) return;
+    const u0 = e.unidades[0], fotos = photosOf(u0), texto = textoBanner(u0);
+    medir('ver_imovel', {}, u0);
+    const chips = [e.fase, e.minimo ? `A partir de ${BRL.format(e.minimo)}` : '', plural(e.unidades.length, 'unidade disponível', 'unidades disponíveis')].filter(Boolean);
+    $('#emp-body').innerHTML = `
+      <div class="emp-media media">
+        ${e.capa ? `<img src="${esc(sized(e.capa, 1400))}" alt="${esc(e.nome)}" width="1400" height="1050" decoding="async">` : ''}
+        ${fotos.length ? `<button class="photos-btn" type="button" data-action="gallery" data-id="${esc(u0.id)}">${ico('photos')} Ver fotos · ${fotos.length}</button>` : ''}
+      </div>
+      <div class="emp-body">
+        <p class="eyebrow">Lançamento${e.lanc.construtora ? ` · ${esc(e.lanc.construtora)}` : ''}</p>
+        <h2 id="emp-title">${esc(e.nome)}</h2>
+        <p class="detail-loc">${esc([e.bairro, e.cidade].filter(Boolean).join(', '))}</p>
+        <ul class="detail-chips">${chips.map(c => `<li>${esc(c)}</li>`).join('')}</ul>
+        ${texto ? `<p class="emp-texto">${esc(texto)}</p>` : ''}
+        <h3 class="emp-h">Unidades disponíveis</h3>
+        <ul class="emp-units">${e.unidades.map(unidadeHTML).join('')}</ul>
+        <div class="emp-acts"><button class="cta cta-ghost" type="button" data-action="emp-sam" data-id="${esc(u0.id)}">${ico('chat')}Perguntar ao Sam sobre o ${esc(e.nome)}</button></div>
+      </div>`;
+    openDialog(empModal, { focus: $('.modal-x', empModal) });
   }
 
   /* ================= SAM ================= */
@@ -3959,6 +4138,9 @@ p{text-wrap:pretty}
     switch (act) {
       case 'sam': e.preventDefault(); [lead, videoModal].forEach(m => { if (stack.some(d => d.el === m)) closeDialog(m, { restoreFocus: false }); }); Sam.open({ fromMenu: menu.classList.contains('is-open') }); break;
       case 'details': openDetail(byId(id)); break;
+      case 'emp': openEmp(a.dataset.emp); break;   // rodada 196 do Hub
+      case 'emp-foto': openGallery(byId(id), Number(a.dataset.k) || 0); break;
+      case 'emp-sam': { const it = byId(id); closeDialog(empModal, { restoreFocus: false }); Sam.open({ imovel: it }); break; }
       case 'gallery': openGallery(byId(id)); break;
       case 'fav': toggleFav(id, a); break;
       case 'share': shareImovel(byId(id)); break;
